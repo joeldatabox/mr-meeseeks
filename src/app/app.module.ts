@@ -6,6 +6,7 @@ import {AppComponent} from "./app.component";
 import {MrHttpModule} from "./modules/mr-http/mr-http.module";
 import {MrStorageModule} from "./modules/mr-storage/mr-storage.module";
 import {MrViewUtilsModule} from "./modules/mr-view-utils/mr-view-utils.module";
+import {CommonModule} from "@angular/common";
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import {MrViewUtilsModule} from "./modules/mr-view-utils/mr-view-utils.module";
     AppComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     MrHttpModule,
     MrStorageModule,

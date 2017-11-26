@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs/Subject";
 import {LoaderState} from "../model/loading";
+import {Observable} from "rxjs/Observable";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -9,7 +10,7 @@ import {LoaderState} from "../model/loading";
 @Injectable()
 export class MrLoadingTopbarService {
   private loaderSubject = new Subject<LoaderState>();
-  loaderState = this.loaderSubject.asObservable();
+  loaderState: Observable<LoaderState> = this.loaderSubject.asObservable();
 
   constructor() {
   }
