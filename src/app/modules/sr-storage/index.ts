@@ -1,1 +1,1 @@
-export * from "./sr-storage.module";
+export * from "./sr-local-storage.module";

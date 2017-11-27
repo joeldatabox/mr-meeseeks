@@ -2,11 +2,11 @@
   "name": "sr-meeseeks",
   "author": "Joel Rodrigues Moreira",
   "repository": "https://github.com/joeldatabox/mr-meeseeks",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "buildAndPublish": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ && npm login && ng-packagr -p ng-package.json && npm pack && npm publish dist",
+    "buildAndPublish": "npm login && npm run republish",
     "republish": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ && ng-packagr -p ng-package.json && npm pack && npm publish dist",
     "packagr": "ng-packagr -p ng-package.json",
     "start": "ng serve",

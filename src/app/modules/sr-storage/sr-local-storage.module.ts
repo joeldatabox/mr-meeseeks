@@ -14,5 +14,5 @@ export * from "./services/sr-local-storage.service";
   ],
   declarations: []
 })
-export class SrStorageModule {
+export class SrLocalStorageModule {
 }
