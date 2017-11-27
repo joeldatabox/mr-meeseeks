@@ -2,7 +2,6 @@ import {Logger} from "ng2-logger/src/logger";
 import {Level, Log} from "ng2-logger";
 import {isEmpty} from "../commons/sr-commons.model";
 
-
 export class SrLogg {
   private readonly _data: SrLoggData;
   private readonly _error: SrLoggError;
@@ -14,6 +13,10 @@ export class SrLogg {
     this._error = SrLoggError.of(value);
     this._info = SrLoggInfo.of(value);
     this._warn = SrLoggWarn.of(value);
+  }
+
+  public static setProductionMode() {
+    Log.setProductionMode();
   }
 
   public static of(value: string): SrLogg {
@@ -49,6 +52,10 @@ export class SrLoggData {
     this._data.color = "#16c6d0";
   }
 
+  public static setProductionMode() {
+    Log.setProductionMode();
+  }
+
   public static of(value: string): SrLoggData {
     return new SrLoggData(value);
   }
@@ -65,6 +72,10 @@ export class SrLoggError {
   constructor(private value: string) {
     this._error = Log.create("e_" + value, Level.ERROR);
     this._error.color = "#e26a6a";
+  }
+
+  public static setProductionMode() {
+    Log.setProductionMode();
   }
 
   public static of(value: string): SrLoggError {
@@ -85,6 +96,10 @@ export class SrLoggInfo {
     this._info.color = "#92a2b9";
   }
 
+  public static setProductionMode() {
+    Log.setProductionMode();
+  }
+
   public static of(value: string): SrLoggInfo {
     return new SrLoggInfo(value);
   }
@@ -101,6 +116,10 @@ export class SrLoggWarn {
   constructor(private value: string) {
     this._warn = Log.create("w_" + value, Level.WARN);
     this._warn.color = "#fcb66c";
+  }
+
+  public static setProductionMode() {
+    Log.setProductionMode();
   }
 
   public static of(value: string): SrLoggWarn {
