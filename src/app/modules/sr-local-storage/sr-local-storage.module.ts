@@ -6,8 +6,7 @@ export * from "./services/sr-local-storage.service";
 
 @NgModule({
   imports: [
-    CommonModule,
-    SrLocalStorageService
+    CommonModule
   ],
   providers: [
     SrLocalStorageService
