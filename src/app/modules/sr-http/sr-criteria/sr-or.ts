@@ -20,12 +20,12 @@ export class SrOr extends SrCriterion {
   build(): string {
     let query = "";
     this.criterions.forEach((cri: SrCriterion) => {
-      let value = cri.build();
+      const value = cri.build();
       if (isNotNullOrUndefined(value)) {
         query += value + ";;";
       }
     });
-    if (query.length != 0) {
+    if (query.length !== 0) {
       query = query.substr(0, query.length - 2);
     }
     if (query === "") {

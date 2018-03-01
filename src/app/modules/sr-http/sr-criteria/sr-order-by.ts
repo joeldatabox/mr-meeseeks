@@ -8,7 +8,7 @@ export class SrOrderBy extends SrCriterion {
   constructor(operator: string, value?: any) {
     super();
     if (!(value instanceof Array)) {
-      let values = new Array();
+      const values = new Array();
       values.push(value);
       value = values;
     }
@@ -22,7 +22,7 @@ export class SrOrderBy extends SrCriterion {
   }
 
   protected buildMultParams(values: Array<string>) {
-    let params: string = ";";
+    let params = ";";
     values.forEach(i => params += i + ";");
     return params;
   }

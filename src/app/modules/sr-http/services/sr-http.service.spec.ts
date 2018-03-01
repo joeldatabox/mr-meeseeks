@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { SrHttpService } from './sr-http.service';
+import { SrHttpService } from "./sr-http.service";
 
-describe('SrHttpService', () => {
+describe("SrHttpService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SrHttpService]
     });
   });
 
-  it('should be created', inject([SrHttpService], (service: SrHttpService) => {
+  it("should be created", inject([SrHttpService], (service: SrHttpService) => {
     expect(service).toBeTruthy();
   }));
 });
