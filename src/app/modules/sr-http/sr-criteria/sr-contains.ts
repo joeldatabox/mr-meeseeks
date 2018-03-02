@@ -6,7 +6,7 @@ export class SrContains extends SrCriterion {
   constructor(key: string, value: string) {
     super();
     this.key = key;
-    let values = new Array();
+    const values = new Array();
     values.push(value);
     this.value = values;
     this.operator = SrOperators.CONTAINS;

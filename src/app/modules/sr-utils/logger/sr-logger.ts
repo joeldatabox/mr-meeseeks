@@ -1,5 +1,4 @@
-import {Logger} from "ng2-logger/src/logger";
-import {Level, Log} from "ng2-logger";
+import {Level, Log, Logger} from "ng2-logger";
 import {isEmpty} from "../commons/sr-commons.model";
 
 export class SrLogg {
