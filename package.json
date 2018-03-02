@@ -7,7 +7,7 @@
   "scripts": {
     "ng": "ng",
     "buildAndPublish": "npm login && npm run republish",
-    "republish": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ && ng-packagr -p ng-package.json && npm pack && npm publish dist",
+    "republish": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ .ng_pkg_build/ && ng-packagr -p ng-package.json && npm pack && npm publish dist",
     "buildprod":"ng build --prod --aot --env=prod --build-optimize --no-sourcemap",
     "packagr": "ng-packagr -p ng-package.json",
     "start": "ng serve",
