@@ -10,7 +10,7 @@ import {SrLoaderState} from "../model/sr-loading";
 })
 export class SrLoadingTopbarComponent implements OnInit, OnDestroy {
 
-  show: boolean = false;
+  show = false;
   private subscription: Subscription;
 
   constructor(private loadingService: SrLoadingTopbarService) {
