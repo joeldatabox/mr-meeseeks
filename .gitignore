@@ -42,3 +42,4 @@ testem.log
 Thumbs.db
 *.tgz
 /package-lock.json
+/.ng_pkg_build/
