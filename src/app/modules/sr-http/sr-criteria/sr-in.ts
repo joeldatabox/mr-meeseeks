@@ -7,7 +7,7 @@ export class SrIn extends SrCriterion {
   constructor(key: string, value?: any) {
     super();
     if (!(value instanceof Array)) {
-      let values = new Array();
+      const values = new Array();
       values.push(value);
       value = values;
     }

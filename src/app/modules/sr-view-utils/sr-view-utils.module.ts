@@ -32,10 +32,10 @@ export * from "./services/snack/sr-snack.service";
     CovalentLoadingModule
   ],
   declarations: [
-    //SrLoadingTopbarComponent
+    SrLoadingTopbarComponent
   ],
   exports: [
-    //SrLoadingTopbarComponent
+    SrLoadingTopbarComponent
   ],
   providers: [
     SrMetaService,

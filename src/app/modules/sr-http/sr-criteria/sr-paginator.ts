@@ -15,7 +15,7 @@ export class SrPaginator extends SrCriterion {
 
   build(): string {
     let skp = this.indexPage === 0 ? $skip(this.indexPage) : $skip(this.indexPage * this.pageSize);
-    let lmt = $limit(this.pageSize);
+    const lmt = $limit(this.pageSize);
     if (this.indexPage === 0) {
       skp = $skip(this.indexPage);
     }
