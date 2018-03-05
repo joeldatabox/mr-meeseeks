@@ -9,10 +9,12 @@ import {Observable} from "rxjs/Observable";
  */
 @Injectable()
 export class SrLoadingTopbarService {
-  private loaderSubject = new Subject<SrLoaderState>();
-  loaderState: Observable<SrLoaderState> = this.loaderSubject.asObservable();
+  private loaderSubject;
+  loaderState: Observable<SrLoaderState>;
 
   constructor() {
+    this.loaderSubject = new Subject<SrLoaderState>();
+    this.loaderState = this.loaderSubject.asObservable();
   }
 
   public show() {
