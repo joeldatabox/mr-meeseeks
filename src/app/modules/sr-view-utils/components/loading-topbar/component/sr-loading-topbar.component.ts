@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {SrLoadingTopbarService} from "../service/sr-loading-topbar.service";
 import {Subscription} from "rxjs/Subscription";
-import {SrLoaderState} from "../model/sr-loading";
 
 @Component({
   selector: "sr-loading-topbar",
@@ -19,7 +18,7 @@ export class SrLoadingTopbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.loadingService
       .loaderState
-      .subscribe((state: SrLoaderState) => {
+      .subscribe(state => {
         this.show = state.show;
       });
   }
