@@ -16,10 +16,10 @@ export class SrLoadingTopbarService {
   }
 
   public show() {
-    this.loaderSubject.next(<SrLoaderState>{show: true});
+    this.loaderSubject.next({show: true});
   }
 
   public hide() {
-    this.loaderSubject.next(<SrLoaderState>{show: false});
+    this.loaderSubject.next({show: false});
   }
 }
