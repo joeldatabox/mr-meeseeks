@@ -1,4 +1,4 @@
-import {NgModule} from "@angular/core";
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {SrMetaService} from "./services/meta/sr-meta.service";
 import {SrSnackService} from "./services/snack/sr-snack.service";
@@ -10,9 +10,7 @@ import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr
 import {SrLoadingService} from "./services/loading/sr-loading.service";
 import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
 
-export * from "./components/loading-topbar/service/sr-loading-topbar.service";
-export * from "./components/loading-topbar/component/sr-loading-topbar.component";
-export * from "./components/loading-topbar/model/sr-loading";
+export * from "./components";
 
 export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";
@@ -45,7 +43,9 @@ export * from "./services/snack/sr-snack.service";
     SrDialogService,
     SrLoadingService,
     SrLoadingTopbarService
-  ]
+  ], schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
 })
 export class SrViewUtilsModule {
 }
