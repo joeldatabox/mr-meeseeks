@@ -4,7 +4,9 @@
     "entryFile": "index.ts",
     "externals": {
       "@angular/material": "ng.material",
-      "ng2-logger": "logger"
+      "ng2-logger": "logger",
+      "class-transformer": "class-transformer",
+      "reflect-metadata": "reflect-metadata"
     }
   }
 }

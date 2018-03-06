@@ -2,10 +2,8 @@ import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {SrHttpService} from "./services/sr-http.service";
-
-export * from "./services/sr-http.service";
-export * from "./services/sr-media-type";
-export * from "./sr-criteria";
+//é necessário para o funcionamento do class-transformer
+import "reflect-metadata";
 
 @NgModule({
   imports: [
