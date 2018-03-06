@@ -1,16 +1,24 @@
-import {Type} from "class-transformer";
-
+import {isEmpty, isNotNullOrUndefined} from "../../sr-utils";
 
 export class MetaData {
   page: number;
   pageSize: number;
   totalPages: number;
   totalRecords: number;
-  @Type(() => Link)
   links: Link[];
 
-  constructor() {
+  constructor(inst?: any) {
     this.links = new Array();
+    if (isNotNullOrUndefined(inst)) {
+      this.page = inst.page;
+      this.pageSize = inst.pageSize;
+      this.totalPages = inst.totalPages;
+      this.totalRecords = inst.totalRecords;
+      this.totalRecords = inst.totalRecords;
+      if (!isEmpty(inst.links)) {
+        inst.links.forEach(l => this.links.push(new Link(l)));
+      }
+    }
   }
 
 
@@ -72,4 +80,11 @@ export class MetaData {
 export class Link {
   rel: string;
   href: string;
+
+  constructor(inst?: any) {
+    if (isNotNullOrUndefined(inst)) {
+      this.rel = inst.rel;
+      this.href = inst.href;
+    }
+  }
 }
