@@ -1,6 +1,6 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {inject, TestBed} from '@angular/core/testing';
 
-import { SrAbstractRestService } from './sr-abstract-rest.service';
+import {SrAbstractRestService} from './sr-abstract-rest.service';
 
 describe('SrAbstractRestService', () => {
   beforeEach(() => {
