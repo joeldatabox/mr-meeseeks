@@ -88,7 +88,7 @@ export abstract class SrAbstractRestService<T extends Model> {
         const list = new ListResource<T>();
         if (isNotNullOrUndefined(res)) {
           list.records = <Array<T>>plainToClass(this.clazz, res.records);
-          list._metadata = deserialize(MetaData, JSON.stringify(res._metadata));
+          list._metadata = new MetaData(res._metadata);
           this.log.d("payload", list);
         }
         return list;
