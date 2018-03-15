@@ -1,6 +1,6 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isNotNullOrUndefined, isNullOrUndefined, SrLogg} from "../../sr-utils";
+import {isNotNullOrUndefined, isNullOrUndefined, isString, SrLogg} from "../../sr-utils";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
@@ -11,14 +11,14 @@ import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
 import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
+import {throwErrorMessage} from "../model";
+import {ModelService} from "./model-service.interface";
 
-export abstract class SrAbstractRestService<T extends Model> {
+export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.labelLog);
 
-  constructor(protected clazz: any, protected http: SrHttpService) {
+  constructor(private clazz: any, private serviceUrl: string, private http: SrHttpService) {
   }
-
-  protected abstract get serviceUrl(): string;
 
   protected buildServiceUrl(query?: SrQuery) {
     if (isNullOrUndefined(query)) {
@@ -30,84 +30,93 @@ export abstract class SrAbstractRestService<T extends Model> {
   save(value: T): Observable<T> {
     const payload = serialize(value);
     this.log.i("POST[" + this.buildServiceUrl() + "]", JSON.parse(payload));
-    return this.http.createRequest()
+    return this.http
+      .createRequest()
       .url(this.buildServiceUrl())
       .post(payload)
-      .catch(err => this.exceptionHandler(err));
+      //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
+      //.map((res: Response) => res.json())
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
   update(value: T): Observable<T> {
     const payload = serialize(value);
     this.log.i("PUT[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(payload));
-    return this.http.createRequest()
+    return this.http
+      .createRequest()
       .url(this.buildServiceUrl() + "/" + value.id)
       .put(payload)
-      .map(res => deserialize(this.clazz, JSON.stringify(res)))
-      .catch((error) => this.exceptionHandler(error));
+      .map((result) => deserialize(this.clazz, JSON.stringify(result)))
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
   findById(id: any): Observable<T> {
     this.log.i("GET[" + this.buildServiceUrl() + "/" + id + "]");
-    return this.http.createRequest()
+    return this.http
+      .createRequest()
       .url(this.buildServiceUrl() + "/" + id)
       .get()
-      .map(value => deserialize(this.clazz, JSON.stringify(value)))
-      .catch((error) => this.exceptionHandler(error));
+      .map((result) => JSON.stringify(result))
+      .map((value: any) => deserialize(this.clazz, value))
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
-  delete(value: T): Observable<void> {
+  first(): Observable<T> {
+    this.log.i("GET[" + this.buildServiceUrl() + "/first]");
+    return this
+      .http.createRequest()
+      .url(this.buildServiceUrl() + "/first")
+      .get()
+      .map((result) => JSON.stringify(result))
+      .map((value: any) => deserialize(this.clazz, value))
+      .catch((err) => throwErrorMessage(err, this.log));
+  }
+
+  delete(value: T): Observable<T> {
     this.log.i("DELETE[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(serialize(value)));
-    return this.http.createRequest()
-      .url(this.buildServiceUrl() + "/" + value.id)
+    return this.http.createRequest().url(this.buildServiceUrl() + "/" + value.id)
       .delete()
-      .catch((error) => this.exceptionHandler(error));
+      //.map((res: Response) => res.json())
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
   count(): Observable<number> {
     this.log.i("GET[" + this.buildServiceUrl() + "/count" + "]");
-    return this.http.createRequest()
+    return this.http
+      .createRequest()
       .url(this.buildServiceUrl() + "/count")
       .acceptTextOnly()
       .get()
-      .map(value => Number(JSON.stringify(value)))
-      .catch((error) => this.exceptionHandler(error));
+      .map((value: string) => Number(value))
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
   list(query?: SrQuery | string): Observable<ListResource<T>> {
-    let url = "";
-    if (query && typeof query === "string") {
-      url = query;
-    } else {
-      url = this.buildServiceUrl(query as SrQuery);
-    }
+    const url = isString(query) ? query as string : this.buildServiceUrl(query as SrQuery);
+
     this.log.i("GET[" + url + "]");
-    return this.http.createRequest()
+    return this.http
+      .createRequest()
       .url(url)
       .get()
-      .map(res => {
+      .map((result) => {
         const list = new ListResource<T>();
-        if (isNotNullOrUndefined(res)) {
-          list.records = <Array<T>>plainToClass(this.clazz, res.records);
-          list._metadata = new MetaData(res._metadata);
+        if (isNotNullOrUndefined(result)) {
+          list.records = <Array<T>>plainToClass(this.clazz, result.records);
+          list._metadata = deserialize(MetaData, JSON.stringify(result._metadata));
           this.log.d("payload", list);
         }
         return list;
       })
-      .catch((error) => this.exceptionHandler(error));
+      .catch((err) => throwErrorMessage(err, this.log));
   }
 
   listAll(query?: SrQuery | string): Observable<ListResource<T>> {
     return this.list(query)
-      .expand((list: ListResource<T>) => {
-        if (list.hasNextPage()) {
-          return this.list(list._metadata.nextPage());
-        } else {
-          return Observable.of(new ListResource());
-        }
-      })
+      .expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : Observable.of(null))
       //devemos continuar o processo enquanto temos um list populado
       .takeWhile((list: ListResource<T>) => {
-        return !list.isEmpty();
+        return isNotNullOrUndefined(list) && !list.isEmpty();
       });
   }
 
@@ -115,8 +124,4 @@ export abstract class SrAbstractRestService<T extends Model> {
     return "AbstractRestService<T>";
   }
 
-  protected exceptionHandler(error: any): Observable<any> {
-    this.log.e("error ocurred", error);
-    return Observable.throw(error);
-  }
 }
