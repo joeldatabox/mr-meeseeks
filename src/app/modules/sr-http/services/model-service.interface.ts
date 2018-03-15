@@ -1,6 +1,7 @@
 import {Observable} from "rxjs/Observable";
-import {ListResource, SrQuery} from "sr-meeseeks";
-import {Model} from "../model";
+
+import {ListResource, Model} from "../model";
+import {SrQuery} from "../sr-criteria";
 
 
 export interface ModelService<T extends Model> {
