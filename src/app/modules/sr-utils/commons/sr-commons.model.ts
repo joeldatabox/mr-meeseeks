@@ -3,6 +3,7 @@
  * @param value -> array of any elements or single element
  * @return true if all values of parameters is null and undefined
  */
+
 export function isNullOrUndefined(...value: any[]): boolean {
   if (value === null || value === undefined) return true;
   let result = true;
@@ -102,4 +103,22 @@ export function isNumber(value: any): boolean {
  */
 export function isPrimitive(value: any): boolean {
   return isString(value) || isBoolean(value) || isDate(value) || isNumber(value);
+}
+
+export function cloneObject(value: any): object {
+  if (isNullOrUndefined(value)) {
+    return null;
+  }
+  const clone = {};
+
+  Object.keys(value).forEach(key => {
+    if (isArray(value[key])) {
+      clone[key] = new Array(value[key]);
+    } else if (isObject(value[key])) {
+      clone[key] = cloneObject(value[key]);
+    } else {
+      clone[key] = value[key];
+    }
+  });
+  return clone;
 }
