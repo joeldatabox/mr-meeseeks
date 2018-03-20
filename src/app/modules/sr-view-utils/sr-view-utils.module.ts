@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 import {SrMetaService} from "./services/meta/sr-meta.service";
 import {SrSnackService} from "./services/snack/sr-snack.service";
 import {MatDialogModule, MatProgressBarModule, MatSnackBarModule} from "@angular/material";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {SrDialogService} from "./services/dialog/sr-dialog.service";
 import {CovalentDialogsModule, CovalentLoadingModule} from "@covalent/core";
 import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr-loading-topbar.component";
@@ -18,7 +17,6 @@ import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loa
 @NgModule({
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     MatSnackBarModule,
     MatDialogModule,
     MatProgressBarModule,
@@ -29,7 +27,9 @@ import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loa
     SrLoadingTopbarComponent
   ],
   exports: [
-    SrLoadingTopbarComponent
+    SrLoadingTopbarComponent,
+    CovalentLoadingModule,
+    CovalentDialogsModule
   ],
   providers: [
     SrMetaService,
