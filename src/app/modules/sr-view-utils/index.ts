@@ -1,5 +1,5 @@
 export * from "./sr-view-utils.module";
-export * from "./components";
+export * from "./components/index";
 
 export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";

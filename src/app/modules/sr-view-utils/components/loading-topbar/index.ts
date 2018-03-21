@@ -1,3 +1,3 @@
-export * from "./component";
-export * from "./model";
-export * from "./service";
+export * from "./component/index";
+export * from "./model/index";
+export * from "./service/index";
