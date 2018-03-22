@@ -1,4 +1,4 @@
-export * from "./model";
-export * from "./services";
-export * from "./sr-criteria";
+export * from "./model/index";
+export * from "./services/index";
+export * from "./sr-criteria/index";
 export * from "./sr-http.module";

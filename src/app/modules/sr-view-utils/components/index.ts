@@ -1,1 +1,1 @@
-export * from "./loading-topbar";
+export * from "./loading-topbar/index";
