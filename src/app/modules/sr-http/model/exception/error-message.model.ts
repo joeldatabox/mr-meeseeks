@@ -46,7 +46,7 @@ export function throwErrorMessage(response: HttpErrorResponse, log?: SrLogg): Ob
   } else if (response.status === 504) {
     const message: ErrorMessage = new ErrorMessage();
     message.status = new HttpStatus({code: 504, reasonPhrase: "Gateway Timeout", statusName: "TIMEOUT"});
-    message.message = "Parece que você está sem conexão com o servidor :rocket:";
+    message.message = "Parece que você está sem conexão com o servidor";
     throws = message;
   } else {
     throws = (response.error || "Server error");
