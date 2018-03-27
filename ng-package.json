@@ -4,6 +4,9 @@
     "entryFile": "index.ts",
     "externals": {
       "@angular/material": "ng.material",
+      "@covalent/core": "covalent",
+      "angular2-text-mask": "angular2-text-mask",
+      "text-mask-addons": "text-mask-addons",
       "ng2-logger": "logger",
       "class-transformer": "class-transformer",
       "reflect-metadata": "reflect-metadata"
