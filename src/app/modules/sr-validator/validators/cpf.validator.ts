@@ -2,7 +2,7 @@ import {AbstractControl, ValidationErrors} from "@angular/forms";
 import {isEmpty, isString} from "../../sr-utils";
 
 export function validateCpf(control: AbstractControl | string): ValidationErrors {
-  let value = null;
+  let value: any = null;
   if (isString(control)) {
     value = (control as string);
   } else {

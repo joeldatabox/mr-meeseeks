@@ -7,16 +7,17 @@ const INVALID_RESULT = {
 };
 
 export function validateCellNumber(control: AbstractControl | string): ValidationErrors {
-  let value = null;
   if (isString(control)) {
-    value = (control as string);
-  } else {
-    value = (control as AbstractControl).value;
+    return validate(control as string);
   }
+  return validate((control as AbstractControl).value);
+}
+
+function validate(value: any): ValidationErrors {
   if ((!isString(value)) && isEmpty(value)) {
     return INVALID_RESULT;
   }
-  if (!control.value.match(CELL_REGEX)) {
+  if (!value.match(CELL_REGEX)) {
     return INVALID_RESULT;
   }
   return null;

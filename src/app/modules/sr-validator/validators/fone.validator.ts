@@ -8,16 +8,17 @@ const INVALID_RESULT = {
 };
 
 export function validateFoneNumber(control: AbstractControl | string): ValidationErrors {
-  let value = null;
   if (isString(control)) {
-    value = (control as string);
-  } else {
-    value = (control as AbstractControl).value;
+    return validate(control as string);
   }
+  return validate((control as AbstractControl).value);
+}
+
+function validate(value: any) {
   if ((!isString(value)) && isEmpty(value)) {
     return INVALID_RESULT;
   }
-  if (!control.value.match(FONE_REGEX)) {
+  if (!value.match(FONE_REGEX)) {
     return INVALID_RESULT;
   }
   return null;
