@@ -1,5 +1,6 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isEmpty, isString} from "../../sr-utils";
+import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils";
+
 
 const CELL_REGEX = ".((10)|([1-9][1-9]).)\\s9[6-9][0-9]{3}-[0-9]{4}";
 const INVALID_RESULT = {
@@ -7,6 +8,9 @@ const INVALID_RESULT = {
 };
 
 export function validateCellNumber(control: AbstractControl | string): ValidationErrors {
+  if (isNullOrUndefined(control)) {
+    return INVALID_RESULT;
+  }
   if (isString(control)) {
     return validate(control as string);
   }
