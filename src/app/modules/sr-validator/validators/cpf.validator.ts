@@ -1,8 +1,14 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isEmpty} from "../../sr-utils";
+import {isEmpty, isString} from "../../sr-utils";
 
-export function validateCpf(control: AbstractControl): ValidationErrors {
-  if (!validateCPF(control.value)) {
+export function validateCpf(control: AbstractControl | string): ValidationErrors {
+  let value = null;
+  if (isString(control)) {
+    value = (control as string);
+  } else {
+    value = (control as AbstractControl).value;
+  }
+  if (!validateCPF(value)) {
     return {
       "cpf": "invalid"
     };

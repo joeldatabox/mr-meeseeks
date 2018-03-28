@@ -6,8 +6,14 @@ const INVALID_RESULT = {
   "cell": "invalid"
 };
 
-export function validateCellNumber(control: AbstractControl): ValidationErrors {
-  if ((!isString(control.value)) && isEmpty(control.value)) {
+export function validateCellNumber(control: AbstractControl | string): ValidationErrors {
+  let value = null;
+  if (isString(control)) {
+    value = (control as string);
+  } else {
+    value = (control as AbstractControl).value;
+  }
+  if ((!isString(value)) && isEmpty(value)) {
     return INVALID_RESULT;
   }
   if (!control.value.match(CELL_REGEX)) {
