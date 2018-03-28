@@ -2,7 +2,7 @@
   "name": "sr-meeseeks",
   "author": "Joel Rodrigues Moreira",
   "repository": "https://github.com/joeldatabox/mr-meeseeks",
-  "version": "0.4.3",
+  "version": "0.4.5",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -12,11 +12,12 @@
     "packagr": "ng-packagr -p ng-package.json",
     "start": "ng serve",
     "build": "ng build",
-    "test": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ node_modules/ .ng_pkg_build/ && npm install && ng-packagr -p ng-package.json && npm pack ",
+    "test": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ node_modules/ .ng_pkg_build/ && npm install &&  npm-install-peers && ng-packagr -p ng-package.json && npm pack ",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "@angular/animations": "^5.2.9",
     "@angular/cdk": "^5.2.4",
     "@angular/common": "^5.2.9",
@@ -30,15 +31,14 @@
     "@angular/router": "^5.2.9",
     "@covalent/core": "^1.0.0",
     "angular2-text-mask": "^8.0.4",
-    "class-transformer": "^0.1.9",
-    "core-js": "^2.5.3",
-    "ng2-logger": "^2.0.35",
-    "reflect-metadata": "^0.1.12",
-    "rxjs": "^5.5.7",
     "text-mask-addons": "^3.7.2",
+    "reflect-metadata": "^0.1.12",
+    "class-transformer": "^0.1.9",
+    "ng2-logger": "^2.0.35",
+    "core-js": "^2.5.3",
+    "rxjs": "^5.5.7",
     "zone.js": "^0.8.20"
   },
-  "peerDependencies": {},
   "devDependencies": {
     "@angular/cli": "1.7.3",
     "@angular/compiler-cli": "^5.2.9",
