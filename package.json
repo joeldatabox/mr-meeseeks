@@ -2,7 +2,7 @@
   "name": "sr-meeseeks",
   "author": "Joel Rodrigues Moreira",
   "repository": "https://github.com/joeldatabox/mr-meeseeks",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -56,6 +56,7 @@
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^1.0.0",
     "ng-packagr": "^2.2.0",
+    "npm-install-peers": "^1.2.1",
     "protractor": "~5.3.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
