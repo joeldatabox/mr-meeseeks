@@ -1,4 +1,3 @@
-import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {SrHttpModule} from "./modules/sr-http/sr-http.module";
@@ -13,7 +12,6 @@ import {CommonModule} from "@angular/common";
   ],
   imports: [
     CommonModule,
-    BrowserModule,
     SrHttpModule,
     SrLocalStorageModule,
     SrViewUtilsModule
