@@ -7,11 +7,18 @@ const INVALID_RESULT = {
   "fone": "invalid"
 };
 
-export function validateFoneNumber(control: AbstractControl): ValidationErrors {
-  if ((!isString(control.value)) && isEmpty(control.value)) {
+export function validateFoneNumber(control: AbstractControl | string): ValidationErrors {
+  if (isString(control)) {
+    return validate(control as string);
+  }
+  return validate((control as AbstractControl).value);
+}
+
+function validate(value: any) {
+  if ((!isString(value)) && isEmpty(value)) {
     return INVALID_RESULT;
   }
-  if (!control.value.match(FONE_REGEX)) {
+  if (!value.match(FONE_REGEX)) {
     return INVALID_RESULT;
   }
   return null;
