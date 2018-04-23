@@ -5,15 +5,16 @@ import {map, startWith} from "rxjs/operators";
 import "rxjs/add/operator/debounceTime";
 import {Observable} from "rxjs/Observable";
 import {isNotNullOrUndefined, isString} from "../../sr-utils";
+import {ListResource} from "../../sr-http/model";
 
-export abstract class SrAbstractAutoCompleteDirective<T, A> implements OnInit, AfterViewInit {
+export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit {
   itemSelected: T;
-  @Input("srAutoComplete")
+  @Input()
   matAutoComplete: MatAutocomplete;
   @Output()
   onItemSelectedEvent: EventEmitter<T> = new EventEmitter<T>();
   @Output()
-  onItensFiltered: EventEmitter<A> = new EventEmitter<A>();
+  onItensFiltered: EventEmitter<Array<T> | ListResource<T>> = new EventEmitter<Array<T> | ListResource<T>>();
 
   constructor(private elementRef: ElementRef, private form: NgControl) {
   }
@@ -79,7 +80,7 @@ export abstract class SrAbstractAutoCompleteDirective<T, A> implements OnInit, A
     this.form.control.updateValueAndValidity();
   }
 
-  abstract filter(term?: string): Observable<A>;
+  abstract filter(term?: string): Observable<Array<T> | ListResource<T>>;
 
   abstract display(value: T): string;
 }
