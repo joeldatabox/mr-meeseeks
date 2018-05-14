@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 
 /**
  * @author Joel Rodrigues Moreira

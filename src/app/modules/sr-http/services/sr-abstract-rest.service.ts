@@ -1,18 +1,15 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
 import {isNotNullOrUndefined, isNullOrUndefined, isString, SrLogg} from "../../sr-utils";
-import {Observable} from "rxjs/Observable";
-import "rxjs/add/operator/catch";
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/expand";
-import "rxjs/add/observable/of";
-import "rxjs/add/operator/takeWhile";
+import {Observable} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
 import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model";
 import {ModelService} from "./model-service.interface";
+import {catchError, expand, map, takeWhile} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.labelLog);
@@ -36,7 +33,9 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .post(payload)
       //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
       //.map((res: Response) => res.json())
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   update(value: T): Observable<T> {
@@ -46,8 +45,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .createRequest()
       .url(this.buildServiceUrl() + "/" + value.id)
       .put(payload)
-      .map((result) => deserialize(this.clazz, JSON.stringify(result)))
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        map((result) => deserialize(this.clazz, JSON.stringify(result))),
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   findById(id: any): Observable<T> {
@@ -56,9 +57,11 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .createRequest()
       .url(this.buildServiceUrl() + "/" + id)
       .get()
-      .map((result) => JSON.stringify(result))
-      .map((value: any) => deserialize(this.clazz, value))
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        map((result) => JSON.stringify(result)),
+        map((value: any) => deserialize(this.clazz, value)),
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   first(): Observable<T> {
@@ -67,9 +70,11 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .http.createRequest()
       .url(this.buildServiceUrl() + "/first")
       .get()
-      .map((result) => JSON.stringify(result))
-      .map((value: any) => deserialize(this.clazz, value))
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        map((result) => JSON.stringify(result)),
+        map((value: any) => deserialize(this.clazz, value)),
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   delete(value: T): Observable<T> {
@@ -77,7 +82,9 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return this.http.createRequest().url(this.buildServiceUrl() + "/" + value.id)
       .delete()
       //.map((res: Response) => res.json())
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   count(): Observable<number> {
@@ -87,8 +94,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .url(this.buildServiceUrl() + "/count")
       .acceptTextOnly()
       .get()
-      .map((value: string) => Number(value))
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        map((value: string) => Number(value)),
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   list(query?: SrQuery | string): Observable<ListResource<T>> {
@@ -99,25 +108,30 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       .createRequest()
       .url(url)
       .get()
-      .map((result) => {
-        const list = new ListResource<T>();
-        if (isNotNullOrUndefined(result)) {
-          list.records = <Array<T>>plainToClass(this.clazz, result.records);
-          list._metadata = deserialize(MetaData, JSON.stringify(result._metadata));
-          this.log.d("payload", list);
-        }
-        return list;
-      })
-      .catch((err) => throwErrorMessage(err, this.log));
+      .pipe(
+        map((result) => {
+          const list = new ListResource<T>();
+          if (isNotNullOrUndefined(result)) {
+            list.records = <Array<T>>plainToClass(this.clazz, result.records);
+            list._metadata = deserialize(MetaData, JSON.stringify(result._metadata));
+            this.log.d("payload", list);
+          }
+          return list;
+        }),
+        catchError((err) => throwErrorMessage(err, this.log))
+      );
   }
 
   listAll(query?: SrQuery | string): Observable<ListResource<T>> {
     return this.list(query)
-      .expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : Observable.of(null))
-      //devemos continuar o processo enquanto temos um list populado
-      .takeWhile((list: ListResource<T>) => {
-        return isNotNullOrUndefined(list) && !list.isEmpty();
-      });
+      .pipe(
+        expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
+        //devemos continuar o processo enquanto temos um list populado
+        takeWhile((list: ListResource<T>) => {
+          return isNotNullOrUndefined(list) && !list.isEmpty();
+        })
+      )
+      ;
   }
 
   protected get labelLog(): string {
