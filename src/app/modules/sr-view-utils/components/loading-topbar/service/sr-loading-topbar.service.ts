@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Subject} from "rxjs/Subject";
+import {Subject, Observable} from "rxjs";
 import {SrLoaderState} from "../model/sr-loading";
-import {Observable} from "rxjs/Observable";
 
 /**
  * @author Joel Rodrigues Moreira

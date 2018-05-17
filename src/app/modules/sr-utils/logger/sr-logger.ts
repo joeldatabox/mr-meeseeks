@@ -1,4 +1,4 @@
-import {Level, Log, Logger} from "ng2-logger";
+import {Level, Log, Logger} from "ng2-logger/browser";
 import {isEmpty} from "../commons/sr-commons.model";
 
 export class SrLogg {

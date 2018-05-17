@@ -1,9 +1,8 @@
 import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
-import {map, startWith} from "rxjs/operators";
-import "rxjs/add/operator/debounceTime";
-import {Observable} from "rxjs/Observable";
+import {debounceTime, map, startWith} from "rxjs/operators";
+import {Observable} from "rxjs";
 import {isNotNullOrUndefined, isString} from "../../sr-utils";
 import {ListResource} from "../../sr-http/model";
 
@@ -27,7 +26,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
       .subscribe((event) => this.onItemSelected(event));
     //escutando evento do form
     this.form.valueChanges
-      .debounceTime(500)
+      .pipe(debounceTime(500))
       .pipe(
         startWith<string | T>(""),
         map((state: any) => {

@@ -1,6 +1,7 @@
+
+import {throwError as observableThrowError, Observable} from 'rxjs';
 import {Exclude} from "class-transformer";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 import {isNotNullOrUndefined, SrLogg} from "../../../sr-utils";
 
 export class ErrorMessage {
@@ -54,5 +55,5 @@ export function throwErrorMessage(response: HttpErrorResponse, log?: SrLogg): Ob
   if (isNotNullOrUndefined(log)) {
     log.e("error ocurred", throws);
   }
-  return Observable.throw(throws);
+  return observableThrowError(throws);
 }
