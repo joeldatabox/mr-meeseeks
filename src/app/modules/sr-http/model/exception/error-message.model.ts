@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError, Observable} from 'rxjs';
+import {Observable, throwError as observableThrowError} from "rxjs";
 import {Exclude} from "class-transformer";
 import {HttpErrorResponse} from "@angular/common/http";
 import {isNotNullOrUndefined, SrLogg} from "../../../sr-utils";
@@ -39,9 +38,18 @@ export class HttpStatus {
   }
 }
 
+function connectionError() {
+  const message: ErrorMessage = new ErrorMessage();
+  message.status = new HttpStatus({code: 504, reasonPhrase: "Gateway Timeout", statusName: "TIMEOUT"});
+  message.message = "Parece que você está sem conexão com o servidor";
+  return message;
+}
+
 export function throwErrorMessage(response: HttpErrorResponse, log?: SrLogg): Observable<any> {
   let throws = null;
-  if (response.headers.has("error-message")) {
+  if (response.constructor.name === "TypeError") {
+    throws = connectionError();
+  } else if (response.headers.has("error-message")) {
     const error = new ErrorMessage(response.error);
     throws = new ErrorMessage(response.error);
   } else if (response.status === 504) {
