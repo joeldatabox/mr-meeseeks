@@ -1,4 +1,13 @@
 /**
+ * Create a simple instance of a generic class;
+ * @param type -> the class you need to instantiate
+ * @return a simple instance of your class
+ */
+export function newInstanceOf<T>(type: { new(): T; }): T {
+  return new type();
+}
+
+/**
  * checks if any element is null or undefined
  * @param value -> array of any elements or single element
  * @return true if all values of parameters is null and undefined
