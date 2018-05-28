@@ -8,6 +8,7 @@ import {CovalentDialogsModule, CovalentLoadingModule} from "@covalent/core";
 import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr-loading-topbar.component";
 import {SrLoadingService} from "./services/loading/sr-loading.service";
 import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
+import {SrViewInjectorService} from "./services/view-injector/sr-view-injector.service";
 
 export * from "./components/index";
 
@@ -15,6 +16,7 @@ export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";
 export * from "./services/meta/sr-meta.service";
 export * from "./services/snack/sr-snack.service";
+export * from "./services/view-injector/sr-view-injector.service";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -42,7 +44,8 @@ export * from "./services/snack/sr-snack.service";
     SrSnackService,
     SrDialogService,
     SrLoadingService,
-    SrLoadingTopbarService
+    SrLoadingTopbarService,
+    SrViewInjectorService,
   ], schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
