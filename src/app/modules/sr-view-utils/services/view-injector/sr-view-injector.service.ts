@@ -1,4 +1,4 @@
-import {ComponentFactoryResolver, Inject, Injectable, ViewContainerRef} from "@angular/core";
+import {ComponentFactoryResolver, ComponentRef, Inject, Injectable, ViewContainerRef} from "@angular/core";
 
 @Injectable()
 export class SrViewInjectorService {
@@ -10,10 +10,11 @@ export class SrViewInjectorService {
    * @param viewContainer -> instance of the ViewContainerRef
    * @param component -> class of its component to be injected
    */
-  addFormIn(viewContainer: ViewContainerRef, component: any) {
+  addFormIn(viewContainer: ViewContainerRef, component: any): ComponentRef<any> {
     const factory = this.factoryResolver.resolveComponentFactory(component);
     const componentCreated = factory.create(viewContainer.parentInjector);
     viewContainer.insert(componentCreated.hostView);
+    return componentCreated;
   }
 
   /**
