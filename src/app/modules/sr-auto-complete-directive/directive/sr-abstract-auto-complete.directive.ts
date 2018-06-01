@@ -1,4 +1,4 @@
-import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core";
+import {AfterViewInit, ElementRef, EventEmitter, HostListener, OnInit} from "@angular/core";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith} from "rxjs/operators";
@@ -7,13 +7,10 @@ import {isNotNullOrUndefined, isString} from "../../sr-utils";
 import {ListResource} from "../../sr-http/model";
 
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit {
-  itemSelected: T;
-  @Input()
-  matAutoComplete: MatAutocomplete;
-  @Output()
-  onItemSelectedEvent: EventEmitter<T> = new EventEmitter<T>();
-  @Output()
-  onItensFiltered: EventEmitter<Array<T> | ListResource<T>> = new EventEmitter<Array<T> | ListResource<T>>();
+  abstract itemSelected: T;
+  abstract matAutoComplete: MatAutocomplete;
+  abstract onItemSelectedEvent: EventEmitter<T>;
+  abstract onItensFiltered: EventEmitter<Array<T> | ListResource<T>>;
 
   constructor(private elementRef: ElementRef, private form: NgControl) {
   }
