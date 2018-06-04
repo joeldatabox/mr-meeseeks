@@ -9,10 +9,14 @@ import {ListResource} from "../../sr-http/model";
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit {
   abstract itemSelected: T;
   abstract matAutoComplete: MatAutocomplete;
-  abstract onItemSelectedEvent: EventEmitter<T>;
-  abstract onItensFiltered: EventEmitter<Array<T> | ListResource<T>>;
+  onItemSelectedEvent: EventEmitter<T>;
+  onItensFiltered: EventEmitter<Array<T> | ListResource<T>>;
+  protected elementRef: ElementRef;
+  protected form: NgControl;
 
-  constructor(private elementRef: ElementRef, private form: NgControl) {
+  constructor(elementRef: ElementRef, form: NgControl) {
+    this.elementRef = elementRef;
+    this.form = form;
   }
 
   ngOnInit(): void {
