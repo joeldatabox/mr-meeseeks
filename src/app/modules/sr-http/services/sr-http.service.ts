@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
 import {Observable} from "rxjs";
+import {SrCriterionParam} from "../sr-criteria";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -22,6 +23,7 @@ export class SrHttpService {
 export class SrRequest {
   private _url: string;
   private _headers: Map<string, string>;
+  private _params: 
 
   constructor(private http: HttpClient) {
     this._headers = new Map();
@@ -85,6 +87,7 @@ export class SrRequest {
 
   private buildOptionsRequest() {
     let headers = new HttpHeaders();
+    let param = HttpParams
     this._headers.forEach((value, key) => {
       headers = headers.append(key, value);
     });
