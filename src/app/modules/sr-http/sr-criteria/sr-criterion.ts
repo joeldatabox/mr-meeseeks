@@ -18,9 +18,9 @@ export abstract class SrCriterion {
 
 export class SrCriterionParam {
   key: string;
-  value: string | [string];
+  value: string;
 
-  constructor(key: string, value: string | [string]) {
+  constructor(key: string, value: string) {
     this.key = key;
     this.value = value;
   }
