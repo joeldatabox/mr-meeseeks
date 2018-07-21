@@ -1,4 +1,4 @@
-import {SrCriterion} from "./sr-criterion";
+import {SrCriterion, SrCriterionParam} from "./sr-criterion";
 import {SrOperators} from "./sr-operators";
 import {isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
@@ -17,7 +17,7 @@ export class SrOr extends SrCriterion {
     }
   }
 
-  build(): string {
+  build(): Array<SrCriterionParam> {
     let query = "";
     this.criterions.forEach((cri: SrCriterion) => {
       const value = cri.build();
@@ -31,7 +31,8 @@ export class SrOr extends SrCriterion {
     if (query === "") {
       return null;
     }
-    return SrOperators.OR + "=[" + query + "]";
+    //return SrOperators.OR + "=[" + query + "]";
+    return Array.of(new SrCriterionParam(SrOperators.OR, "[" + query + "]"));
   }
 }
 
