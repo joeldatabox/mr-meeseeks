@@ -22,6 +22,13 @@ export class SrIn extends SrCriterion {
     }
     return Array.of(new SrCriterionParam(this.key.trim() + this.operator, this.value[0]));
   }
+
+  toString(): string {
+    if (this.value[0] === "") {
+      return null;
+    }
+    return this.key.trim() + this.operator + "=" + this.value[0];
+  }
 }
 
 export function $in(key: string, value: string[]);

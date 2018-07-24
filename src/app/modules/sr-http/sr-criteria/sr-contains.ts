@@ -18,6 +18,13 @@ export class SrContains extends SrCriterion {
     }
     return Array.of(new SrCriterionParam(this.key + this.operator, this.value[0]));
   }
+
+  toString(): string {
+    if (this.value[0] === "") {
+      return null;
+    }
+    return this.key + this.operator + "=" + this.value[0];
+  }
 }
 
 export function $contains(key: string, value: string): SrContains {

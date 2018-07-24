@@ -11,6 +11,8 @@ export abstract class SrCriterion {
 
   abstract build(): Array<SrCriterionParam>;
 
+  abstract toString(): string;
+
   isValid(): boolean {
     return isNotNullOrUndefined(this.build());
   }

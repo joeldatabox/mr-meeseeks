@@ -21,6 +21,15 @@ export class SrPaginator extends SrCriterion {
     }
     return skp.build().concat(lmt.build());
   }
+
+  toString(): string {
+    let skp = this.indexPage === 0 ? $skip(this.indexPage) : $skip(this.indexPage * this.pageSize);
+    const lmt = $limit(this.pageSize);
+    if (this.indexPage === 0) {
+      skp = $skip(this.indexPage);
+    }
+    return skp.build() + "&" + lmt.build();
+  }
 }
 
 export function $paginator(indexPage: number, pageSize: number): SrPaginator {

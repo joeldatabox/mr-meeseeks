@@ -14,6 +14,11 @@ export class SrSkip extends SrCriterion {
     if (isNullOrUndefined(this.number)) return null;
     return Array.of(new SrCriterionParam(SrOperators.SKIP, this.number.toString()));
   }
+
+  toString(): string {
+    if (isNullOrUndefined(this.number)) return null;
+    return SrOperators.SKIP + "=" + this.number;
+  }
 }
 
 export function $skip(value: number): SrSkip {

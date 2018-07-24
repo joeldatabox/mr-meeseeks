@@ -15,6 +15,11 @@ export class SrLimit extends SrCriterion {
     if (isNullOrUndefined(this.number)) return null;
     return Array.of(new SrCriterionParam(SrOperators.LIMIT, this.number.toString()));
   }
+
+  toString(): string {
+    if (isNullOrUndefined(this.number)) return null;
+    return SrOperators.LIMIT + "=" + this.number;
+  }
 }
 
 export function $limit(value: number): SrLimit {

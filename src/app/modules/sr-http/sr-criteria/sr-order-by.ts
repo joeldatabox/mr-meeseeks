@@ -21,6 +21,11 @@ export class SrOrderBy extends SrCriterion {
     return Array.of(new SrCriterionParam(this.operator, this.buildMultParams(this.value)));
   }
 
+  toString(): string {
+    if (isNullOrUndefined(this.value)) return null;
+    return this.operator + "=" + this.buildMultParams(this.value);
+  }
+
   protected buildMultParams(values: Array<string>) {
     let params = ";";
     values.forEach(i => params += i + ";");

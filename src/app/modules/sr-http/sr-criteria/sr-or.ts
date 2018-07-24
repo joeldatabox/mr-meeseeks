@@ -34,6 +34,23 @@ export class SrOr extends SrCriterion {
     //return SrOperators.OR + "=[" + query + "]";
     return Array.of(new SrCriterionParam(SrOperators.OR, "[" + query + "]"));
   }
+
+  toString(): string {
+    let query = "";
+    this.criterions.forEach((cri: SrCriterion) => {
+      const value = cri.build();
+      if (isNotNullOrUndefined(value)) {
+        query += value + ";;";
+      }
+    });
+    if (query.length !== 0) {
+      query = query.substr(0, query.length - 2);
+    }
+    if (query === "") {
+      return null;
+    }
+    return SrOperators.OR + "=[" + query + "]";
+  }
 }
 
 

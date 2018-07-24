@@ -28,12 +28,20 @@ export class SrRequest {
 
   constructor(private http: HttpClient) {
     this._headers = new Map();
+    this._params = new Array<SrCriterionParam>();
     this.acceptJsonOnly()
       .contentTypeJson();
   }
 
   public setHeader(key: string, value: string): SrRequest {
     this._headers.set(key, value);
+    return this;
+  }
+
+  public setParams(items: SrCriterionParam[]): SrRequest {
+    if (!isEmpty(items)) {
+      items.forEach(i => this._params.push(i));
+    }
     return this;
   }
 
@@ -89,11 +97,13 @@ export class SrRequest {
   private buildOptionsRequest() {
     const options = {};
     this.buildHeaders(options);
+    //console.log(JSON.stringify(options["headers"]));
     this.buildParams(options);
+    console.log(JSON.stringify(options["params"]));
     return options;
   }
 
-  private buildHeaders(options: any): void {
+  private buildHeaders(options: {}): void {
     let headers = new HttpHeaders();
     this._headers.forEach((value, key) => {
       headers = headers.append(key, value);
@@ -101,14 +111,15 @@ export class SrRequest {
     options["headers"] = headers;
   }
 
-  private buildParams(options: any): void {
+  private buildParams(options: {}): void {
+    console.log(this._params);
     if (!isEmpty(this._params)) {
       const params = new HttpParams();
 
       this._params.forEach(value => {
         params.set(value.key, value.value);
       });
-      options[""] = params;
+      options["params"] = params;
     }
   }
 }

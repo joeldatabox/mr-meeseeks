@@ -30,6 +30,19 @@ export class SrQuery {
       });
     return v;
   }
+
+  toString(): string {
+    let result = "?";
+    this.criterions
+      .filter((c) => isNotNullOrUndefined(c))
+      .forEach((criterion: SrCriterion) => {
+        const value = criterion.build();
+        if (isNotNullOrUndefined(value)) {
+          result += criterion.build() + "&";
+        }
+      });
+    return result.substr(0, result.length - 1);
+  }
 }
 
 export function $query(...criterions: SrCriterion[]): SrQuery {
