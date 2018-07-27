@@ -17,24 +17,24 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   constructor(private clazz: any, private serviceUrl: string, private http: SrHttpService) {
   }
 
-  /*protected buildServiceUrl(query?: SrQuery) {
+  protected buildServiceUrl(query?: SrQuery) {
     if (isNullOrUndefined(query)) {
       return this.serviceUrl;
     }
     return this.serviceUrl + query.build();
-  }*/
+  }
 
   save(value: T): Observable<T> {
     return of(serialize(value))
       .pipe(
         map(payload => {
-          this.log.i("POST[" + this.serviceUrl + "]", JSON.parse(payload));
+          this.log.i("POST[" + this.buildServiceUrl() + "]", JSON.parse(payload));
           return payload;
         }),
         mergeMap(payload =>
           this.http
             .createRequest()
-            .url(this.serviceUrl)
+            .url(this.buildServiceUrl())
             .post(payload)
             //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
             //.map((res: Response) => res.json())
@@ -49,13 +49,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(serialize(value))
       .pipe(
         map(payload => {
-          this.log.i("PUT[" + this.serviceUrl + "/" + value.id + "]", JSON.parse(payload));
+          this.log.i("PUT[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(payload));
           return payload;
         }),
         mergeMap(payload =>
           this.http
             .createRequest()
-            .url(this.serviceUrl + "/" + value.id)
+            .url(this.buildServiceUrl() + "/" + value.id)
             .put(payload)
             .pipe(
               map((result) => deserialize(this.clazz, JSON.stringify(result))),
@@ -69,13 +69,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(id)
       .pipe(
         map(_id => {
-          this.log.i("GET[" + this.serviceUrl + "/" + _id + "]");
+          this.log.i("GET[" + this.buildServiceUrl() + "/" + _id + "]");
           return _id;
         }),
         mergeMap(_id =>
           this.http
             .createRequest()
-            .url(this.serviceUrl + "/" + _id)
+            .url(this.buildServiceUrl() + "/" + _id)
             .get()
             .pipe(
               map((result) => JSON.stringify(result)),
@@ -89,11 +89,11 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   first(): Observable<T> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.serviceUrl + "/first]")),
+        map(() => this.log.i("GET[" + this.buildServiceUrl() + "/first]")),
         mergeMap(() =>
           this.http
             .createRequest()
-            .url(this.serviceUrl + "/first")
+            .url(this.buildServiceUrl() + "/first")
             .get()
             .pipe(
               map((result) => JSON.stringify(result)),
@@ -108,13 +108,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(value)
       .pipe(
         map(_value => {
-          this.log.i("DELETE[" + this.serviceUrl + "/" + _value.id + "]", JSON.parse(serialize(_value)));
+          this.log.i("DELETE[" + this.buildServiceUrl() + "/" + _value.id + "]", JSON.parse(serialize(_value)));
           return _value;
         }),
         mergeMap(_value =>
           this.http
             .createRequest()
-            .url(this.serviceUrl + "/" + _value.id)
+            .url(this.buildServiceUrl() + "/" + _value.id)
             .delete()
             //.map((res: Response) => res.json())
             .pipe(
@@ -127,11 +127,11 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   count(): Observable<number> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.serviceUrl + "/count" + "]")),
+        map(() => this.log.i("GET[" + this.buildServiceUrl() + "/count" + "]")),
         mergeMap(() =>
           this.http
             .createRequest()
-            .url(this.serviceUrl + "/count")
+            .url(this.buildServiceUrl() + "/count")
             .acceptTextOnly()
             .get()
             .pipe(
@@ -145,24 +145,15 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   list(query?: SrQuery | string): Observable<ListResource<T>> {
     return of(query)
       .pipe(
-        map(() => {
-          if (isString(query)) {
-            this.log.i("GET[" + this.serviceUrl + "/" + (query as SrQuery).toString() + "]");
-          } else {
-            this.log.i("GET[" + this.serviceUrl + "/" + (query as string) + "]");
-          }
+        map(() => isString(query) ? query as string : this.buildServiceUrl(query as SrQuery)),
+        map(url => {
+          this.log.i("GET[" + url + "]");
+          return url;
         }),
-        mergeMap(() => {
-          const req = this.http.createRequest();
-          if (isNullOrUndefined(query)) {
-            req.url(this.serviceUrl);
-          } else if (isString(query)) {
-            req.url(this.serviceUrl + "/" + (query as string));
-          } else {
-            req.url(this.serviceUrl)
-              .setParams((query as SrQuery).build());
-          }
-          return req
+        mergeMap(url =>
+          this.http
+            .createRequest()
+            .url(url)
             .get()
             .pipe(
               map((result) => {
@@ -175,8 +166,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
                 return list;
               }),
               catchError((err) => throwErrorMessage(err, this.log))
-            );
-        })
+            )
+        )
       );
   }
 

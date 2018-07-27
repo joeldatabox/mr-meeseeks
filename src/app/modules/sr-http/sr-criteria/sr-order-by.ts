@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 
@@ -16,12 +16,7 @@ export class SrOrderBy extends SrCriterion {
     this.operator = operator;
   }
 
-  build(): Array<SrCriterionParam> {
-    if (isNullOrUndefined(this.value)) return null;
-    return Array.of(new SrCriterionParam(this.operator, this.buildMultParams(this.value)));
-  }
-
-  toString(): string {
+  build(): string {
     if (isNullOrUndefined(this.value)) return null;
     return this.operator + "=" + this.buildMultParams(this.value);
   }

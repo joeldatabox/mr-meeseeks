@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class SrQuery {
@@ -21,17 +21,7 @@ export class SrQuery {
     return this;
   }
 
-  build(): SrCriterionParam[] {
-    const v: Array<SrCriterionParam> = new Array<SrCriterionParam>();
-    this.criterions
-      .filter((c) => isNotNullOrUndefined(c) && c.isValid())
-      .forEach(c => {
-        c.build().forEach(i => v.push(i));
-      });
-    return v;
-  }
-
-  toString(): string {
+  build(): string {
     let result = "?";
     this.criterions
       .filter((c) => isNotNullOrUndefined(c))

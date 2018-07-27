@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {SrOperators} from "./sr-operators";
 import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
@@ -10,12 +10,7 @@ export class SrSkip extends SrCriterion {
     this.number = value;
   }
 
-  build(): Array<SrCriterionParam> {
-    if (isNullOrUndefined(this.number)) return null;
-    return Array.of(new SrCriterionParam(SrOperators.SKIP, this.number.toString()));
-  }
-
-  toString(): string {
+  build(): string {
     if (isNullOrUndefined(this.number)) return null;
     return SrOperators.SKIP + "=" + this.number;
   }

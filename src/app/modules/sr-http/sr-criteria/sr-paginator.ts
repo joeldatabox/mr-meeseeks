@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {$skip} from "./sr-skip";
 import {$limit} from "./sr-limit";
 
@@ -13,16 +13,7 @@ export class SrPaginator extends SrCriterion {
     this.pageSize = pageSize;
   }
 
-  build(): Array<SrCriterionParam> {
-    let skp = this.indexPage === 0 ? $skip(this.indexPage) : $skip(this.indexPage * this.pageSize);
-    const lmt = $limit(this.pageSize);
-    if (this.indexPage === 0) {
-      skp = $skip(this.indexPage);
-    }
-    return skp.build().concat(lmt.build());
-  }
-
-  toString(): string {
+  build(): string {
     let skp = this.indexPage === 0 ? $skip(this.indexPage) : $skip(this.indexPage * this.pageSize);
     const lmt = $limit(this.pageSize);
     if (this.indexPage === 0) {
