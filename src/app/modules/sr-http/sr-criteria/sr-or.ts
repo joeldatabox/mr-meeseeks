@@ -31,7 +31,7 @@ export class SrOr extends SrCriterion {
     if (query === "") {
       return null;
     }
-    return SrOperators.OR + "=[" + query + "]";
+    return SrOperators.OR + "=|" + query + "|";
   }
 }
 

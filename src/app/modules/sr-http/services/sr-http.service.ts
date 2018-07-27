@@ -65,22 +65,22 @@ export class SrRequest {
   }
 
   public get(): Observable<any> {
-    return this.http.get(this._url, this.buildOptionsRequest());
+    return this.http.get(encodeURI(this._url), this.buildOptionsRequest());
   }
 
   public post(body?: any): Observable<any> {
     return this.http
-      .post(this._url, body, this.buildOptionsRequest());
+      .post(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public put(body?: any): Observable<any> {
     return this.http
-      .put(this._url, body, this.buildOptionsRequest());
+      .put(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public delete(): Observable<any> {
     return this.http
-      .delete(this._url, this.buildOptionsRequest());
+      .delete(encodeURI(this._url), this.buildOptionsRequest());
   }
 
   private buildOptionsRequest() {
