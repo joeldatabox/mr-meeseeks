@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {SrOperators} from "./sr-operators";
 
 export class SrIs extends SrCriterion {
@@ -12,11 +12,11 @@ export class SrIs extends SrCriterion {
     this.operator = SrOperators.IS;
   }
 
-  build(): Array<SrCriterionParam> {
+  build(): string {
     if (this.value[0] === "") {
       return null;
     }
-    return Array.of(new SrCriterionParam(this.key + this.operator, this.value[0]));
+    return this.key + this.operator + "=" + this.value[0];
   }
 }
 

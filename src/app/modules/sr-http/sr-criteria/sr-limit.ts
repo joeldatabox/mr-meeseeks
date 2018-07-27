@@ -1,4 +1,4 @@
-import {SrCriterion, SrCriterionParam} from "./sr-criterion";
+import {SrCriterion} from "./sr-criterion";
 import {SrOperators} from "./sr-operators";
 import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
@@ -11,9 +11,9 @@ export class SrLimit extends SrCriterion {
     this.number = value;
   }
 
-  build(): Array<SrCriterionParam> {
+  build(): string {
     if (isNullOrUndefined(this.number)) return null;
-    return Array.of(new SrCriterionParam(SrOperators.LIMIT, this.number.toString()));
+    return SrOperators.LIMIT + "=" + this.number;
   }
 }
 
