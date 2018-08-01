@@ -58,7 +58,9 @@ export function throwErrorMessage(response: HttpErrorResponse, log?: SrLogg): Ob
     message.message = "Parece que você está sem conexão com o servidor";
     throws = message;
   } else {
-    throws = (response.error || "Server error");
+    throws = new ErrorMessage();
+    throws.message = "Server error";
+    throws.details = response.error;
   }
   if (isNotNullOrUndefined(log)) {
     log.e("error ocurred", throws);

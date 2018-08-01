@@ -1,7 +1,7 @@
 import {Injectable, ViewContainerRef} from "@angular/core";
 import {IAlertConfig, IConfirmConfig, TdDialogService} from "@covalent/core";
 import {Observable} from "rxjs";
-import "rxjs/add/operator/map";
+import {map} from "rxjs/operators";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -77,7 +77,9 @@ export class SrConfirmDialog {
     return this._dialogService
       .openConfirm(this.config)
       .afterClosed()
-      .map((resp: boolean) => resp);
+      .pipe(
+        map((resp: boolean) => resp)
+      );
   }
 }
 
@@ -123,6 +125,8 @@ export class SrShowMessageDialog {
     return this._dialogService
       .openAlert(this.config)
       .afterClosed()
-      .map((resp: boolean) => resp);
+      .pipe(
+        map((resp: boolean) => resp)
+      );
   }
 }
