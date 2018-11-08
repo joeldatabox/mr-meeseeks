@@ -13,7 +13,7 @@ import {catchError, expand, flatMap, map, takeWhile} from "rxjs/operators";
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.labelLog);
 
-  constructor(private clazz: any, private serviceUrl: string, private http: SrHttpService) {
+  constructor(protected clazz: any, protected serviceUrl: string, protected http: SrHttpService) {
   }
 
   protected buildServiceUrl(query?: SrQuery) {
