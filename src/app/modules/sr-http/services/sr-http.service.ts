@@ -21,9 +21,11 @@ export class SrHttpService {
 
 export class SrRequest {
   private _url: string;
+  // @ts-ignore
   private _headers: Map<string, string>;
 
   constructor(private http: HttpClient) {
+    // @ts-ignore
     this._headers = new Map();
     this.acceptJsonOnly()
       .contentTypeJson();
@@ -65,21 +67,25 @@ export class SrRequest {
   }
 
   public get(): Observable<any> {
+    // @ts-ignore
     return this.http.get(encodeURI(this._url), this.buildOptionsRequest());
   }
 
   public post(body?: any): Observable<any> {
     return this.http
+      // @ts-ignore
       .post(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public put(body?: any): Observable<any> {
     return this.http
+      // @ts-ignore
       .put(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public delete(): Observable<any> {
     return this.http
+      // @ts-ignore
       .delete(encodeURI(this._url), this.buildOptionsRequest());
   }
 

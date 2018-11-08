@@ -8,6 +8,7 @@ export class MetaData {
   links: Link[];
 
   constructor(inst?: any) {
+    // @ts-ignore
     this.links = new Array();
     if (isNotNullOrUndefined(inst)) {
       this.page = inst.page;
@@ -16,6 +17,7 @@ export class MetaData {
       this.totalRecords = inst.totalRecords;
       this.totalRecords = inst.totalRecords;
       if (!isEmpty(inst.links)) {
+        // @ts-ignore
         inst.links.forEach(l => this.links.push(new Link(l)));
       }
     }
@@ -55,6 +57,7 @@ export class MetaData {
   }
 
   protected hasRel(rel: string): boolean {
+    // @ts-ignore
     for (let i = 0; i < this.links.length; i++) {
       if (this.links[i].rel === rel) {
         return true;
@@ -64,6 +67,7 @@ export class MetaData {
   }
 
   protected getHref(rel: string): string {
+    // @ts-ignore
     for (let i = 0; i < this.links.length; i++) {
       if (this.links[i].rel === rel) {
         return this.links[i].href;

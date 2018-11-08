@@ -27,6 +27,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(serialize(value))
       .pipe(
         map(payload => {
+          // @ts-ignore
           this.log.i("POST[" + this.buildServiceUrl() + "]", JSON.parse(payload));
           return payload;
         }),
@@ -48,6 +49,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(serialize(value))
       .pipe(
         map(payload => {
+          // @ts-ignore
           this.log.i("PUT[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(payload));
           return payload;
         }),
@@ -57,6 +59,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl() + "/" + value.id)
             .put(payload)
             .pipe(
+              // @ts-ignore
               map((result) => deserialize(this.clazz, JSON.stringify(result))),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -77,6 +80,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl() + "/" + _id)
             .get()
             .pipe(
+              // @ts-ignore
               map((result) => JSON.stringify(result)),
               map((value: any) => deserialize(this.clazz, value)),
               catchError((err) => throwErrorMessage(err, this.log))
@@ -95,6 +99,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl() + "/first")
             .get()
             .pipe(
+              // @ts-ignore
               map((result) => JSON.stringify(result)),
               map((value: any) => deserialize(this.clazz, value)),
               catchError((err) => throwErrorMessage(err, this.log))
@@ -107,6 +112,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(value)
       .pipe(
         map(_value => {
+          // @ts-ignore
           this.log.i("DELETE[" + this.buildServiceUrl() + "/" + _value.id + "]", JSON.parse(serialize(_value)));
           return _value;
         }),
@@ -134,6 +140,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .acceptTextOnly()
             .get()
             .pipe(
+              // @ts-ignore
               map((value: string) => Number(value)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -158,7 +165,9 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               map((result) => {
                 const list = new ListResource<T>();
                 if (isNotNullOrUndefined(result)) {
+                  // @ts-ignore
                   list.records = <Array<T>>plainToClass(this.clazz, result.records);
+                  // @ts-ignore
                   list._metadata = deserialize(MetaData, JSON.stringify(result._metadata));
                   this.log.d("payload", list);
                 }

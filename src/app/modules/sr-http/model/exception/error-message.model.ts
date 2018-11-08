@@ -47,8 +47,15 @@ function connectionError() {
 
 export function throwErrorMessage(response: HttpErrorResponse, log?: SrLogg): Observable<any> {
   let throws = null;
+  // @ts-ignore
   if (response.constructor.name === "TypeError") {
     throws = connectionError();
+    // @ts-ignore
+  } else if (response.constructor.name === "Error") {
+    throws = new ErrorMessage();
+    // @ts-ignore
+    throws.message = (response as Error).stack;
+    throws.details = response;
   } else if (response.headers.has("error-message")) {
     const error = new ErrorMessage(response.error);
     throws = new ErrorMessage(response.error);
