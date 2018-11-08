@@ -8,18 +8,27 @@ import {SrLoadingTopbarService} from "../../components/loading-topbar/service/sr
  */
 @Injectable()
 export class SrLoadingService {
+  private itensRegistered: Set<string>;
 
   constructor(private tdLoading: TdLoadingService, private loadingTopBar: SrLoadingTopbarService) {
+    this.itensRegistered = new Set();
   }
 
   register(name?: string, registers?: number): boolean {
-    return this.tdLoading.register(name, registers);
+    if (!this.itensRegistered.has(name)) {
+      this.itensRegistered.add(name);
+      return this.tdLoading.register(name, registers);
+    }
+    return true;
   }
 
   timeOut(resolve: string, time?: number | 2000): void {
-    setTimeout(() => {
-      this.tdLoading.resolve(resolve);
-    }, time);
+    if (this.itensRegistered.has(resolve)) {
+      setTimeout(() => {
+        this.tdLoading.resolve(resolve);
+      }, time);
+      this.itensRegistered.delete(resolve);
+    }
   }
 
   showTopBar(): void {
