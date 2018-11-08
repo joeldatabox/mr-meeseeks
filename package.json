@@ -2,7 +2,7 @@
   "name": "sr-meeseeks",
   "author": "Joel Rodrigues Moreira",
   "repository": "https://github.com/joeldatabox/mr-meeseeks",
-  "version": "0.6.9",
+  "version": "0.7.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
