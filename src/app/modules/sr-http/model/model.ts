@@ -81,4 +81,14 @@ export namespace Model {
     }
     return model;
   }
+
+  export function serialize(model: Model): string {
+    return isNullOrUndefined(model) ? null : model.id;
+  }
+
+  export function deserialize(value: string, type): Model {
+    const model = Model.createNewModel(type);
+    model.id = value;
+    return model;
+  }
 }
