@@ -1,4 +1,5 @@
 import {isArray, isBoolean, isDate, isNotNullOrUndefined, isNullOrUndefined, isNumber, isObject, isString} from "../../sr-utils";
+import {TransformOptions} from "stream";
 
 export interface Model {
   id: string;
@@ -82,8 +83,16 @@ export namespace Model {
     return model;
   }
 
+  export function serializeOpts(): TransformOptions {
+    return {toPlainOnly: true};
+  }
+
   export function serialize(model: Model): string {
     return isNullOrUndefined(model) ? null : model.id;
+  }
+
+  export function deserializeOpts(): TransformOptions {
+    return {toClassOnly: true};
   }
 
   export function deserialize(value: string, type): Model {
