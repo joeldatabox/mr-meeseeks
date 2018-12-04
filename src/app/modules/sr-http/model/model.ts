@@ -1,5 +1,6 @@
 import {isArray, isBoolean, isDate, isNotNullOrUndefined, isNullOrUndefined, isNumber, isObject, isString} from "../../sr-utils";
-import {TransformOptions} from "stream";
+import {TransformOptions} from "class-transformer";
+
 
 export interface Model {
   id: string;
