@@ -60,7 +60,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .put(payload)
             .pipe(
               // @ts-ignore
-              map((result) => deserialize(this.clazz, JSON.stringify(result))),
+              //map((result) => deserialize(this.clazz, JSON.stringify(result))),
+              map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -81,8 +82,9 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .get()
             .pipe(
               // @ts-ignore
-              map((result) => JSON.stringify(result)),
-              map((value: any) => deserialize(this.clazz, value)),
+              /*map((result) => JSON.stringify(result)),
+              map((value: any) => deserialize(this.clazz, value)),*/
+              map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -100,8 +102,9 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .get()
             .pipe(
               // @ts-ignore
-              map((result) => JSON.stringify(result)),
-              map((value: any) => deserialize(this.clazz, value)),
+              /*map((result) => JSON.stringify(result)),
+              map((value: any) => deserialize(this.clazz, value)),*/
+              map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -162,7 +165,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(url)
             .get()
             .pipe(
-              map((result) => {
+              /*map((result) => {
                 const list = new ListResource<T>();
                 if (isNotNullOrUndefined(result)) {
                   // @ts-ignore
@@ -172,7 +175,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
                   this.log.d("payload", list);
                 }
                 return list;
-              }),
+              }),*/
+              map((result) => this.deserializeListResource(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -197,6 +201,31 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
 
   protected get labelLog(): string {
     return "AbstractRestService<T>";
+  }
+
+  protected deserializeItem(value: object): T {
+    try {
+      const result = deserialize(this.clazz, JSON.stringify(value)) as T;
+      this.log.d("payload response", result);
+      return result;
+    } catch (error) {
+      const errorResult = {};
+      errorResult["error"] = error;
+      errorResult["clazz"] = this.clazz;
+      errorResult["payload"] = value;
+      this.log.e("error on deserialize item ", errorResult);
+      throw errorResult;
+    }
+  }
+
+  protected deserializeListResource(value: any): ListResource<T> {
+    const list = new ListResource<T>();
+    if (isNotNullOrUndefined(value)) {
+      list.records = <Array<T>>plainToClass(this.clazz, value.records);
+      list._metadata = deserialize(MetaData, JSON.stringify(value._metadata));
+      this.log.d("payload response", list);
+    }
+    return list;
   }
 
 }
