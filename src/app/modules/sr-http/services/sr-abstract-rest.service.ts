@@ -221,9 +221,18 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeListResource(value: any): ListResource<T> {
     const list = new ListResource<T>();
     if (isNotNullOrUndefined(value)) {
-      list.records = <Array<T>>plainToClass(this.clazz, value.records);
-      list._metadata = deserialize(MetaData, JSON.stringify(value._metadata));
-      this.log.d("payload response", list);
+      try {
+        list.records = <Array<T>>plainToClass(this.clazz, value.records);
+        list._metadata = deserialize(MetaData, JSON.stringify(value._metadata));
+        this.log.d("payload response", list);
+      } catch (error) {
+        const errorResult = {};
+        errorResult["error"] = error;
+        errorResult["clazz"] = this.clazz;
+        errorResult["payload"] = value;
+        this.log.e("error on deserialize ", errorResult);
+        throw errorResult;
+      }
     }
     return list;
   }
