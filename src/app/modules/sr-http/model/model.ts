@@ -1,4 +1,4 @@
-import {isNullOrUndefined} from "../../sr-utils";
+import {isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
 import {plainToClass, TransformOptions} from "class-transformer";
 
 
@@ -101,9 +101,29 @@ export namespace Model {
     return {toClassOnly: true};
   }
 
-  export function deserialize(value: string, type): Model {
-    const model = Model.createNewModel(type);
-    model.id = value;
+  export function deserialize(value: string | any, type): Model {
+    //se for algo null apenas retornamos
+    if (isNullOrUndefined(value)) return null;
+    //criando uma nova instancia
+    let model = Model.createNewModel(type);
+
+    //é uma string?
+    if (isString(value)) {
+      //está vazia ?
+      if (isEmpty(value)) {
+        //apenas atribuimos null
+        model = null;
+      } else {
+        //apenas atribui o valor apara o id
+        model.id = value;
+      }
+    } else if (isObject(value)) {
+      //se chegou aqui, quer dizer que é um objeto
+      //realizando o databinding necessário
+      model = databinding(value as any, type) as Model;
+    } else {
+      model = value;
+    }
     return model;
   }
 }
