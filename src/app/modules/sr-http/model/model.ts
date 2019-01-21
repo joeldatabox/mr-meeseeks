@@ -1,5 +1,5 @@
-import {isArray, isBoolean, isDate, isNotNullOrUndefined, isNullOrUndefined, isNumber, isObject, isString} from "../../sr-utils";
-import {TransformOptions} from "class-transformer";
+import {isNullOrUndefined} from "../../sr-utils";
+import {plainToClass, TransformOptions} from "class-transformer";
 
 
 export interface Model {
@@ -16,15 +16,8 @@ export namespace Model {
     return new type();
   }
 
-  /**
-   * Realiza o processo de databinding de um determinado component
-   * para um modelo qualquer
-   * @param value -> valor a ser usado no processo
-   * @param model -> modelo para fazer o databinding
-   *
-   * @return model -> modelo com o databinding já realizado
-   */
-  export function databinding(value: any, model: any): object {
+
+  /*export function databinding(value: any, model: any): object {
     //se o value for null apenas setamos null também
     if (isNullOrUndefined(value)) {
       model = null;
@@ -82,6 +75,18 @@ export namespace Model {
       });
     }
     return model;
+  }*/
+
+  /**
+   * Realiza o processo de databinding de um determinado component
+   * para um modelo qualquer
+   * @param value -> valor a ser usado no processo
+   * @param clazz -> modelo para fazer o databinding
+   *
+   * @return instance -> instancia de modelo com o databinding já realizado!
+   */
+  export function databinding(value: any, clazz): object {
+    return plainToClass(clazz, value);
   }
 
   export function serializeOpts(): TransformOptions {
