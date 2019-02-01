@@ -1,5 +1,5 @@
 import {isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
-import {plainToClass, TransformOptions} from "class-transformer";
+import {plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
 
 
 export interface Model {
@@ -80,13 +80,19 @@ export namespace Model {
   /**
    * Realiza o processo de databinding de um determinado component
    * para um modelo qualquer
-   * @param value -> valor a ser usado no processo
-   * @param clazz -> modelo para fazer o databinding
+   *
+   * @param currentValue -> valor para se fezer merger
+   * @param value        -> valor a ser usado no processo
+   * @param clazz        -> modelo para fazer o databinding
    *
    * @return instance -> instancia de modelo com o databinding já realizado!
    */
-  export function databinding(value: any, clazz): object {
-    return plainToClass(clazz, value);
+  export function databinding(currentValue: any, value: any, clazz?: any): object {
+    if (isNullOrUndefined(currentValue)) {
+      return plainToClass(clazz, value);
+    }
+    plainToClassFromExist(currentValue, value);
+    return currentValue;
   }
 
   export function serializeOpts(): TransformOptions {
