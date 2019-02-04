@@ -49,7 +49,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     //vamos verificar se o usuário fez alguma modificação no input
     //se a inicial for a mesma, devemos inserir o itemSelected no formControl novamente
     //verificando se o item selecionado é diferente de nulo
-    if (isNotNullOrUndefined(this.itemSelected)) {
+    if (isNotNullOrUndefined(this.form.control.value)) {
       //se o value for uma string devemos validar o campo
       if (isString(this.form.control.value)) {
         //se o input tiver com uma string vazia não é necessário fazer nada
