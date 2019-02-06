@@ -44,6 +44,19 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     this.filter().subscribe(result => this.onItensFiltered.emit(result));
   }
 
+  @HostListener("document:click", ["$event"])
+  onClick($event: any) {
+    if (isNullOrUndefined(this.itemSelected)) {
+      this.itemSelected = this.form.control.value;
+    }
+  }
+
+  @HostListener("document:keydown", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
+    if (isNullOrUndefined(this.itemSelected)) {
+      this.itemSelected = this.form.control.value;
+    }
+  }
+
   @HostListener("blur", ["$event"])
   onBlur($event: any) {
     //vamos verificar se o usuário fez alguma modificação no input
@@ -54,14 +67,8 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
       if (isString(this.form.control.value)) {
         //se o input tiver com uma string vazia não é necessário fazer nada
         if (this.form.control.value.length > 0) {
-          //se o item selecionado for null e o form tiver algum valor,
-          //quer dizer que o valor foi recuperado do back-end
-          //logo não é necessário fazer qualquer tipo de validação
-          //apenas setamos o mesmo valor no itemSelected
-          if (isNullOrUndefined(this.itemSelected)) {
-            this.itemSelected = this.form.control.value;
-            //se o inicio descricao do item for igual ao que esta no input
-          } else if (this.display(this.itemSelected).startsWith(this.form.control.value)) {
+          //se o inicio descricao do item for igual ao que esta no input
+          if (this.display(this.itemSelected).startsWith(this.form.control.value)) {
             //setando o item selecionado novamente
             this.onItemSelected(this.itemSelected);
           } else {
