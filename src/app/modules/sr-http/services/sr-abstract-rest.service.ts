@@ -91,6 +91,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
+  findByIdFully(id: any): Observable<T> {
+    return this.findById(id);
+  }
+
   first(): Observable<T> {
     return of(null)
       .pipe(
@@ -109,6 +113,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             )
         )
       );
+  }
+
+  firstFully(): Observable<T> {
+    return this.first();
   }
 
   delete(value: T): Observable<T> {
@@ -183,11 +191,31 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
+  listFully(query?: SrQuery | string): Observable<ListResource<T>> {
+    return this.list(query);
+  }
+
   listAll(query?: SrQuery | string): Observable<ListResource<T>> {
     return of(query)
       .pipe(
         flatMap(() =>
           this.list(query)
+            .pipe(
+              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
+              //devemos continuar o processo enquanto temos um list populado
+              takeWhile((list: ListResource<T>) => {
+                return isNotNullOrUndefined(list) && !list.isEmpty();
+              })
+            )
+        )
+      );
+  }
+
+  listAllFully(query?: SrQuery | string): Observable<ListResource<T>> {
+    return of(query)
+      .pipe(
+        flatMap(() =>
+          this.listFully(query)
             .pipe(
               expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
