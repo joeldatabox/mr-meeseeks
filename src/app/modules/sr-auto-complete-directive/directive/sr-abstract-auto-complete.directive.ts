@@ -1,4 +1,4 @@
-import {AfterViewInit, ElementRef, EventEmitter, HostListener, OnInit} from "@angular/core";
+import {AfterViewInit, ElementRef, EventEmitter, HostListener, OnInit, Output} from "@angular/core";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith} from "rxjs/operators";
@@ -7,16 +7,14 @@ import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils"
 import {ListResource} from "../../sr-http/model";
 
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit {
-  abstract itemSelected: T;
+  itemSelected: T;
   abstract matAutoComplete: MatAutocomplete;
-  onItemSelectedEvent: EventEmitter<T>;
-  onItensFiltered: EventEmitter<Array<T> | ListResource<T>>;
-  protected elementRef: ElementRef;
-  protected form: NgControl;
+  @Output()
+  onItemSelectedEvent: EventEmitter<T> = new EventEmitter<T>();
+  @Output()
+  onItensFiltered: EventEmitter<Array<T> | ListResource<T>> = new EventEmitter<Array<T> | ListResource<T>>();
 
-  constructor(elementRef: ElementRef, form: NgControl) {
-    this.elementRef = elementRef;
-    this.form = form;
+  constructor(protected elementRef: ElementRef, protected form: NgControl) {
   }
 
   ngOnInit(): void {
@@ -68,7 +66,8 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
         //se o input tiver com uma string vazia não é necessário fazer nada
         if (this.form.control.value.length > 0) {
           //se o inicio descricao do item for igual ao que esta no input
-          if (this.display(this.itemSelected).startsWith(this.form.control.value)) {
+          const displayItemSelected = this.display(this.itemSelected);
+          if (isNotNullOrUndefined(displayItemSelected) && displayItemSelected.startsWith(this.form.control.value)) {
             //setando o item selecionado novamente
             this.onItemSelected(this.itemSelected);
           } else {
