@@ -246,6 +246,24 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     }
   }
 
+  protected deserializeArray(values): Array<T> {
+    let itens = new Array<T>();
+    if (isNotNullOrUndefined(values)) {
+      try {
+        itens = <Array<T>>plainToClass(this.clazz, values);
+        this.log.d("payload response", itens);
+      } catch (error) {
+        const errorResult = {};
+        errorResult["error"] = error;
+        errorResult["clazz"] = this.clazz;
+        errorResult["payload"] = values;
+        this.log.e("error on deserialize ", errorResult);
+        throw errorResult;
+      }
+    }
+    return itens;
+  }
+
   protected deserializeListResource(value: any): ListResource<T> {
     const list = new ListResource<T>();
     if (isNotNullOrUndefined(value)) {
