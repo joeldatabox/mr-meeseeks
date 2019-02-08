@@ -1,5 +1,6 @@
 import emailMask from "text-mask-addons/dist/emailMask";
 import {createAutoCorrectedDatePipe} from "text-mask-addons/dist/textMaskAddons";
+import {isEmpty} from "../sr-utils";
 
 const SrMaskUtil = {
   email: () => emailMask,
@@ -14,12 +15,14 @@ const SrMaskUtil = {
       mask: [/[0-9]/, /[0-9]/, /[0-9]/, ".", /[0-9]/, /[0-9]/, /[0-9]/, ".", /[0-9]/, /[0-9]/, /[0-9]/, "-", /[0-9]/, /[0-9]/]
     };
   },
-  date: () => {
+  date: (mask?: Array<any>, pipe?: string) => {
+    mask = isEmpty(mask) ? [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/] : mask;
+    pipe = isEmpty(pipe) ? createAutoCorrectedDatePipe("dd/MM/yyyy") : createAutoCorrectedDatePipe(pipe);
     return {
-      mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
+      mask: mask,
       placeholderChar: " ",
       keepCharPositions: false,
-      pipe: createAutoCorrectedDatePipe("dd/mm/yyyy")
+      pipe: pipe
     };
   }
 };
