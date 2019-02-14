@@ -1,4 +1,4 @@
-import createTextMaskInputElement from "../../../../node_modules/text-mask-core/src/createTextMaskInputElement";
+import {createTextMaskInputElement} from "text-mask-core/dist/textMaskCore";
 import emailMask from "text-mask-addons/dist/emailMask";
 import {createAutoCorrectedDatePipe} from "text-mask-addons/dist/textMaskAddons";
 import {isEmpty} from "../sr-utils";
