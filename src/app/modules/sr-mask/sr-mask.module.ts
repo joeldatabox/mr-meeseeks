@@ -9,6 +9,9 @@ export * from "./sr-mask.util";
   imports: [
     CommonModule,
     TextMaskModule
+  ],
+  exports: [
+    TextMaskModule
   ]
 })
 
