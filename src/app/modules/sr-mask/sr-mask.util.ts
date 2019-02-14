@@ -2,6 +2,7 @@ import {createTextMaskInputElement} from "text-mask-core/dist/textMaskCore";
 import emailMask from "text-mask-addons/dist/emailMask";
 import {createAutoCorrectedDatePipe} from "text-mask-addons/dist/textMaskAddons";
 import {isEmpty} from "../sr-utils";
+import {ViewContainerRef} from "@angular/core";
 
 const SrMaskUtil = {
   email: () => emailMask,
@@ -73,4 +74,32 @@ function addCustomMaskInput(textMaskConfig) {
 }
 
 
-export {SrMaskUtil, addCustomMaskInput};
+function addCustomMaskDateInput(ref: ViewContainerRef, mask?: Array<any>, pipe?: string): any {
+  /**
+   * Função usada como paliativa para adicionar mascaras em campos de dados;
+   *
+   * A mesma se faz necessária quando um campo já tem um CustomValueAcessor
+   *
+   * Exemplo de utilização
+   *
+   * maskedInputController;
+
+   * @ViewChild("input", { read: ViewContainerRef }) public input; //instancia do campo
+   *
+   * ngAfterViewInit(): void {
+   *    setTimeout(() => {
+   *     this.maskedInputController = addCustomMaskInput(this.input);
+   *  });
+   * }
+   *
+   * ngOnDestroy() {
+   *   this.maskedInputController.destroy();
+   * }
+   */
+  const custom = SrMaskUtil.date(mask, pipe);
+  custom["inputElement"] = ref.element.nativeElement;
+  return addCustomMaskInput(custom);
+}
+
+
+export {SrMaskUtil, addCustomMaskInput, addCustomMaskDateInput};
