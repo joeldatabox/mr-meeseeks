@@ -1,0 +1,16 @@
+@import "./../mixins";
+
+.carousel-slide {
+  @include frame();
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &-overlay {
+    @include frame();
+  }
+
+  &-content {
+    @include frame(1);
+  }
+}
