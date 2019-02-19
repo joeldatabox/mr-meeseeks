@@ -9,7 +9,7 @@
     </li>
   </ul>
 
-  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == 0" (click)="previous()" [ngClass]="" [ngClass]="autoHideArrows?'mat-button-navigate':''">
+  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == 0" (click)="previous()" [ngClass]="autoHideArrows?'mat-button-navigate':''">
     <mat-icon>navigate_before</mat-icon>
   </button>
   <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == slidesList.length - 1" (click)="next()" [ngClass]="autoHideArrows?'mat-button-navigate':''">
