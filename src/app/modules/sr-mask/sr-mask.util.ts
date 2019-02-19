@@ -4,19 +4,45 @@ import {createAutoCorrectedDatePipe} from "text-mask-addons/dist/textMaskAddons"
 import {isEmpty} from "../sr-utils";
 import {ViewContainerRef} from "@angular/core";
 
+
 const SrMaskUtil = {
+  /**
+   * @deprecated
+   * please using
+   * @link SrMaskService#email()
+   */
   email: () => emailMask,
+  /**
+   * @deprecated
+   * please using
+   * @link SrMaskService#fone()
+   */
   fone: () => {
     return {mask: ["(", /[1-9]/, /[1-9]/, ")", " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/]};
   },
+  /**
+   * @deprecated
+   * please using
+   * @link SrMaskService#cell()
+   */
   cell: () => {
     return {mask: ["(", /[1-9]/, /[1-9]/, ")", " ", /\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/]};
   },
+  /**
+   * @deprecated
+   * please using
+   * @link SrMaskService#cpf()
+   */
   cpf: () => {
     return {
       mask: [/[0-9]/, /[0-9]/, /[0-9]/, ".", /[0-9]/, /[0-9]/, /[0-9]/, ".", /[0-9]/, /[0-9]/, /[0-9]/, "-", /[0-9]/, /[0-9]/]
     };
   },
+  /**
+   * @deprecated
+   * please using
+   * @link SrMaskService#date()
+   */
   date: (mask?: Array<any>, pipe?: string) => {
     mask = isEmpty(mask) ? [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/] : mask;
     pipe = isEmpty(pipe) ? createAutoCorrectedDatePipe("dd/MM/yyyy") : createAutoCorrectedDatePipe(pipe);
@@ -31,6 +57,11 @@ const SrMaskUtil = {
 
 
 /**
+ * *
+ * @deprecated
+ * please using
+ * @link SrMaskService#addCustomMaskInput
+ *
  * Função usada como paliativa para adicionar mascaras em campos de dados;
  *
  * A mesma se faz necessária quando um campo já tem um CustomValueAcessor
@@ -73,7 +104,12 @@ function addCustomMaskInput(textMaskConfig) {
   };
 }
 
-
+/**
+ *
+ * @deprecated
+ * please using
+ * @link SrMaskService#addCustomMaskDateInput
+ */
 function addCustomMaskDateInput(ref: ViewContainerRef, mask?: Array<any>, pipe?: string): any {
   /**
    * Função usada como paliativa para adicionar mascaras em campos de dados;
