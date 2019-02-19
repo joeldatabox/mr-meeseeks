@@ -37,7 +37,7 @@ export class SrCarouselComponent implements AfterContentInit, AfterViewInit, SrC
   private _autoplay: Subject<boolean> = new Subject<boolean>();
   private _autoplayState: boolean = true;
   private _interval: Subject<number> = new BehaviorSubject<number>(5000);
-  private _loop: boolean;
+  private _loop: boolean = true;
   private _loopSubject: Subject<boolean> = new Subject<boolean>();
   private _maxWidth: string = "auto";
   private _maxWidthSubject: Subject<never> = new Subject<never>();
@@ -63,9 +63,13 @@ export class SrCarouselComponent implements AfterContentInit, AfterViewInit, SrC
   @Input()
   color: ThemePalette = "accent";
   @Input()
-  hideArrows: boolean = true;
+  hideArrows: boolean = false;
   @Input()
-  hideIndicators: boolean = true;
+  hideIndicators: boolean = false;
+  @Input()
+  autoHideArrows: boolean = true;
+  @Input()
+  autoHideIndicators: boolean = true;
 
   @Input()
   proportion: number = 25;
