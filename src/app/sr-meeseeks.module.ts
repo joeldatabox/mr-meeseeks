@@ -8,6 +8,7 @@ import {SrAutoCompleteDirectiveModule} from "./modules/sr-auto-complete-directiv
 import {SrLocatorServiceModule} from "./modules/sr-locator-service";
 import {SrMaskModule} from "./modules/sr-mask";
 import {SrValidatorModule} from "./modules/sr-validator";
+import {SrCarouselModule} from "./modules/sr-carousel/sr-carousel.module";
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import {SrValidatorModule} from "./modules/sr-validator";
   imports: [
     CommonModule,
     SrAutoCompleteDirectiveModule,
+    SrCarouselModule,
     SrHttpModule,
     SrLocalStorageModule,
     SrLocatorServiceModule,
@@ -26,6 +28,7 @@ import {SrValidatorModule} from "./modules/sr-validator";
   ],
   exports: [
     SrAutoCompleteDirectiveModule,
+    SrCarouselModule,
     SrHttpModule,
     SrLocalStorageModule,
     SrLocatorServiceModule,
