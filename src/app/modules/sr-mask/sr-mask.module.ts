@@ -4,6 +4,7 @@ import {TextMaskModule} from "angular2-text-mask";
 import {SrMaskService} from "./services/sr-mask.service";
 
 export * from "./sr-mask.util";
+export * from "./services/sr-mask.service";
 
 
 @NgModule({
