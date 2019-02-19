@@ -53,4 +53,26 @@
       margin: 7.5px;
     }
   }
+
+  .mat-button-navigate, .mat-button-indicator {
+    opacity: 0;
+    transition: .3s all ease;
+  }
+
+  [mat-icon-button] {
+    background: none;
+    transition: .5s all ease;
+  }
+}
+
+.carousel:hover {
+  .mat-button-navigate, .mat-button-indicator {
+    opacity: 1;
+    transition: .3s all ease;
+  }
+
+  [mat-icon-button] {
+    background: #f5f5f5;
+    transition: .5s all ease;
+  }
 }

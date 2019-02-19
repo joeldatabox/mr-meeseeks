@@ -9,19 +9,16 @@
     </li>
   </ul>
 
-  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == 0"
-          (click)="previous()">
-    <mat-icon>arrow_back</mat-icon>
+  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == 0" (click)="previous()" [ngClass]="" [ngClass]="autoHideArrows?'mat-button-navigate':''">
+    <mat-icon>navigate_before</mat-icon>
   </button>
-  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color"
-          [disabled]="!loop && currentIndex == slidesList.length - 1" (click)="next()">
-    <mat-icon>arrow_forward</mat-icon>
+  <button *ngIf="!hideArrows" mat-icon-button tabindex="-1" [color]="color" [disabled]="!loop && currentIndex == slidesList.length - 1" (click)="next()" [ngClass]="autoHideArrows?'mat-button-navigate':''">
+    <mat-icon>navigate_next</mat-icon>
   </button>
 
   <div *ngIf="!hideIndicators" class="carousel-indicators" tabindex="-1"
        [style.flex-direction]="orientation === 'rtl' ? 'row-reverse' : 'row'">
-    <button *ngFor="let slide of slidesList; let i = index" tabindex="-1" mat-mini-fab [color]="color"
-            [disabled]="i == currentIndex" (click)="slideTo(i)" (focus)="carouselContainer.focus()">
+    <button *ngFor="let slide of slidesList; let i = index" tabindex="-1" mat-mini-fab [color]="color" [disabled]="i == currentIndex" (click)="slideTo(i)" (focus)="carouselContainer.focus()" [ngClass]="autoHideIndicators?'mat-button-indicator':''">
     </button>
   </div>
 </div>
