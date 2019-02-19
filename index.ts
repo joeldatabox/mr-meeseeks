@@ -1,4 +1,5 @@
 export * from "./src/app/modules/sr-auto-complete-directive/sr-auto-complete-directive.module";
+export * from "./src/app/modules/sr-carousel/index";
 export * from "./src/app/modules/sr-http/index";
 export * from "./src/app/modules/sr-local-storage/index";
 export * from "./src/app/modules/sr-locator-service/index";
