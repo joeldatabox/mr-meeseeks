@@ -63,6 +63,11 @@
     background: none;
     transition: .5s all ease;
   }
+
+  background: none;
+  -webkit-transition: background-color 700ms linear;
+  -ms-transition: background-color 700ms linear;
+  transition: background-color 700ms linear;
 }
 
 .carousel:hover {
@@ -75,4 +80,9 @@
     background: #f5f5f5;
     transition: .5s all ease;
   }
+
+  background: rgba(0, 0, 0, 0.26);
+  -webkit-transition: background-color 700ms linear;
+  -ms-transition: background-color 700ms linear;
+  transition: background-color 700ms linear;
 }
