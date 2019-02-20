@@ -21,4 +21,6 @@
     <button *ngFor="let slide of slidesList; let i = index" tabindex="-1" mat-mini-fab [color]="color" [disabled]="i == currentIndex" (click)="slideTo(i)" (focus)="carouselContainer.focus()" [ngClass]="autoHideIndicators?'mat-button-indicator':''">
     </button>
   </div>
+
+  <div class="carousel-lis"></div>
 </div>
