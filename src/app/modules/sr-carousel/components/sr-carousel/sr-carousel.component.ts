@@ -70,6 +70,8 @@ export class SrCarouselComponent implements AfterContentInit, AfterViewInit, SrC
   autoHideArrows: boolean = true;
   @Input()
   autoHideIndicators: boolean = true;
+  @Input()
+  highlightButtons: boolean = true;
 
   @Input()
   proportion: number = 25;
