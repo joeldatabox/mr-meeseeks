@@ -2,7 +2,7 @@ import {Injectable, ViewContainerRef} from "@angular/core";
 import {isEmpty, isNullOrUndefined} from "../../sr-utils";
 import {createTextMaskInputElement} from "text-mask-core/dist/textMaskCore";
 import emailMask from "text-mask-addons/dist/emailMask";
-import {createAutoCorrectedDatePipe, createNumberMask} from "text-mask-addons/dist/textMaskAddons";
+import {createNumberMask} from "text-mask-addons/dist/textMaskAddons";
 import {NumberOptions} from "./number-options.interface";
 
 @Injectable({
@@ -77,14 +77,14 @@ export class SrMaskService {
     }
   }
 
-  date(mask?: Array<any>, pipe?: string) {
+  date(mask?: Array<any>/*, pipe?: string*/) {
     mask = isEmpty(mask) ? [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/] : mask;
-    pipe = isEmpty(pipe) ? createAutoCorrectedDatePipe("dd/MM/yyyy") : createAutoCorrectedDatePipe(pipe);
+    //pipe = isEmpty(pipe) ? createAutoCorrectedDatePipe("dd/MM/yyyy") : createAutoCorrectedDatePipe(pipe);
     return {
       mask: mask,
       placeholderChar: " ",
       keepCharPositions: false,
-      pipe: pipe
+      /*pipe: pipe*/
     };
   }
 
@@ -132,29 +132,30 @@ export class SrMaskService {
     };
   }
 
-  addCustomMaskDateInput(ref: ViewContainerRef, mask?: Array<any>, pipe?: string): any {
-    /**
-     * Função usada como paliativa para adicionar mascaras em campos de dados;
-     *
-     * A mesma se faz necessária quando um campo já tem um CustomValueAcessor
-     *
-     * Exemplo de utilização
-     *
-     * maskedInputController;
+  /**
+   * Função usada como paliativa para adicionar mascaras em campos de dados;
+   *
+   * A mesma se faz necessária quando um campo já tem um CustomValueAcessor
+   *
+   * Exemplo de utilização
+   *
+   * maskedInputController;
 
-     * @ViewChild("input", { read: ViewContainerRef }) public input; //instancia do campo
-     *
-     * ngAfterViewInit(): void {
-     *    setTimeout(() => {
-     *     this.maskedInputController = addCustomMaskInput(this.input);
-     *  });
-     * }
-     *
-     * ngOnDestroy() {
-     *   this.maskedInputController.destroy();
-     * }
-     */
-    const custom = this.date(mask, pipe);
+   * @ViewChild("input", { read: ViewContainerRef }) public input; //instancia do campo
+   *
+   * ngAfterViewInit(): void {
+   *    setTimeout(() => {
+   *     this.maskedInputController = addCustomMaskInput(this.input);
+   *  });
+   * }
+   *
+   * ngOnDestroy() {
+   *   this.maskedInputController.destroy();
+   * }
+   */
+  addCustomMaskDateInput(ref: ViewContainerRef, mask?: Array<any>): any {
+
+    const custom = this.date(mask);
     custom["inputElement"] = ref.element.nativeElement;
     return this.addCustomMaskInput(custom);
   }
