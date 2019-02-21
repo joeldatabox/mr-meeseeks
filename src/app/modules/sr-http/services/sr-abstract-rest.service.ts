@@ -1,14 +1,14 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
 import {isNotNullOrUndefined, isNullOrUndefined, isString, SrLogg} from "../../sr-utils";
-import {Observable, of} from "rxjs";
+import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
 import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model";
 import {ModelService} from "./model-service.interface";
-import {catchError, expand, flatMap, map, takeWhile} from "rxjs/operators";
+import {catchError, expand, map, mergeMap, takeWhile} from "rxjs/operators";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.labelLog);
@@ -31,7 +31,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           this.log.i("POST[" + this.buildServiceUrl() + "]", JSON.parse(payload));
           return payload;
         }),
-        flatMap(payload =>
+        mergeMap(payload =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl())
@@ -53,7 +53,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           this.log.i("PUT[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(payload));
           return payload;
         }),
-        flatMap(payload =>
+        mergeMap(payload =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl() + "/" + value.id)
@@ -75,7 +75,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           this.log.i("GET[" + this.buildServiceUrl() + "/" + _id + "]");
           return _id;
         }),
-        flatMap(_id =>
+        mergeMap(_id =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl() + "/" + _id)
@@ -91,6 +91,26 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
+  findByIds(ids: Array<string | T>): Observable<Array<T>>;
+  findByIds(...ids: T[] | string[]): Observable<Array<T>>;
+  findByIds(ids: any): Observable<Array<T>> {
+    return of(ids)
+      .pipe(
+        //pegando apenas os ids em forma de string
+        map((idss: Array<string | T>) => {
+          return idss.filter(id => isNotNullOrUndefined(id))
+            .map(id => isString(id) ? id as string : (id as T).id);
+        }),
+        //removendo qualquer id repetido
+        map((idss: Array<string>) => Array.from(new Set(idss))),
+        //criando pool de requisições para carregar os itens
+        map((idss: Array<string>) => idss.map(id => this.findById(id))),
+        mergeMap((idsRequest) => {
+          return forkJoin(idsRequest);
+        })
+      );
+  }
+
   findByIdFully(id: any): Observable<T> {
     return this.findById(id);
   }
@@ -99,7 +119,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(null)
       .pipe(
         map(() => this.log.i("GET[" + this.buildServiceUrl() + "/first]")),
-        flatMap(() =>
+        mergeMap(() =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl() + "/first")
@@ -127,7 +147,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           this.log.i("DELETE[" + this.buildServiceUrl() + "/" + _value.id + "]", JSON.parse(serialize(_value)));
           return _value;
         }),
-        flatMap(_value =>
+        mergeMap(_value =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl() + "/" + _value.id)
@@ -144,7 +164,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return of(null)
       .pipe(
         map(() => this.log.i("GET[" + this.buildServiceUrl() + "/count" + "]")),
-        flatMap(() =>
+        mergeMap(() =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl() + "/count")
@@ -167,7 +187,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           this.log.i("GET[" + url + "]");
           return url;
         }),
-        flatMap(url =>
+        mergeMap(url =>
           this.http
             .createRequest()
             .url(url)
@@ -198,7 +218,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   listAll(query?: SrQuery | string): Observable<ListResource<T>> {
     return of(query)
       .pipe(
-        flatMap(() =>
+        mergeMap(() =>
           this.list(query)
             .pipe(
               expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
@@ -214,7 +234,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   listAllFully(query?: SrQuery | string): Observable<ListResource<T>> {
     return of(query)
       .pipe(
-        flatMap(() =>
+        mergeMap(() =>
           this.listFully(query)
             .pipe(
               expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
@@ -282,5 +302,4 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     }
     return list;
   }
-
 }
