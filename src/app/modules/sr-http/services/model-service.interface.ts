@@ -23,6 +23,23 @@ export interface ModelService<T extends Model> {
    */
   findById(id: any): Observable<T>;
 
+  /**
+   * Find a list of record by id
+   * @param id -> array of id desired
+   */
+  findByIds(ids: Array<string | T>): Observable<Array<T>>;
+
+  /**
+   * Find a list of record by id
+   * @param id -> array of id desired
+   */
+  findByIds(...ids: T[] | string[]): Observable<Array<T>>;
+
+  /**
+   * Find a list of record by id
+   * @param id -> array of id desired
+   */
+  findByIds(ids: any): Observable<Array<T>>;
 
   /**
    * Find a record by id fully
