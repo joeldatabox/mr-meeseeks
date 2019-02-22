@@ -3,6 +3,7 @@ import {CommonModule} from "@angular/common";
 import {TextMaskModule} from "angular2-text-mask";
 import {SrMaskService} from "./services/sr-mask.service";
 import {SrDateMaskDirective} from "./directives/sr-date-mask.directive";
+import {SrMaskCurrencyDirective} from "./directives/sr-mask-currency.directive";
 
 export * from "./sr-mask.util";
 export * from "./services/sr-mask.service";
@@ -14,11 +15,13 @@ export * from "./services/sr-mask.service";
     TextMaskModule
   ],
   declarations: [
-    SrDateMaskDirective
+    SrDateMaskDirective,
+    SrMaskCurrencyDirective
   ],
   exports: [
     TextMaskModule,
-    SrDateMaskDirective
+    SrDateMaskDirective,
+    SrMaskCurrencyDirective
   ]
 })
 
