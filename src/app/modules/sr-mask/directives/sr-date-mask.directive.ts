@@ -1,7 +1,8 @@
 import {Directive, ElementRef, HostListener, Input, OnInit} from "@angular/core";
 import {NgControl} from "@angular/forms";
-import * as moment from "moment";
 import {isNullOrUndefined} from "../../sr-utils";
+import moment from "moment-es6";
+
 
 @Directive({
   selector: "[srDateMask]"
