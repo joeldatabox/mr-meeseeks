@@ -1,22 +1,69 @@
-import {Directive, ElementRef, HostListener, Input, OnInit} from "@angular/core";
+import {AfterViewInit, Directive, ElementRef, HostListener, Input, OnInit} from "@angular/core";
 import {NgControl} from "@angular/forms";
-import {isNullOrUndefined} from "../../sr-utils";
 import moment from "moment-es6";
+import {DeviceDetectorService} from "ngx-device-detector";
+import {MatDatepicker} from "@angular/material";
+import {isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils";
 
+interface Config {
+  mask: string;
+  datePicker: MatDatepicker<any>;
+}
 
 @Directive({
   selector: "[srDateMask]"
 })
-export class SrDateMaskDirective implements OnInit {
-  mask: string;
+export class SrDateMaskDirective implements OnInit, AfterViewInit {
+  private mask: string;
+  private datePicker: MatDatepicker<any>;
+  private _config: Config | MatDatepicker<any>;
 
-  @Input("srDateMask") config: { mask: string };
+  private alreadyOpened: boolean = false;
+  //gabiarra para controlle do evento onBlur
+  //o mesmo é chamado 2 vezes quando ganha e perde o foco
+  private isFocused: boolean = false;
 
-  constructor(private el: ElementRef, private form: NgControl) {
+  constructor(private el: ElementRef, private form: NgControl, private deviceService: DeviceDetectorService) {
+  }
+
+  @Input("srDateMask1")
+  set config(value: Config | MatDatepicker<any>) {
+    this._config = value;
+    console.log("setou config");
   }
 
   ngOnInit() {
-    this.mask = this.config.mask || "DD/MM/YYYY";
+    if (isNotNullOrUndefined(this._config)) {
+      if (this._config instanceof MatDatepicker) {
+        this.datePicker = this._config as MatDatepicker<any>;
+      } else {
+        if (isNotNullOrUndefined(this._config.mask)) {
+          this.mask = this._config.mask;
+        } else {
+          this.mask = "DD/MM/YYYY";
+        }
+        this.datePicker = this._config.datePicker;
+      }
+    } else {
+      this.mask = "DD/MM/YYYY";
+    }
+    console.log("chamoungOninit");
+  }
+
+  ngAfterViewInit(): void {
+    if (isNotNullOrUndefined(this.datePicker)) {
+      //controle de evento quando se abrir o calendario
+      this.datePicker.openedStream.subscribe(() => {
+        //so iremos adicionar o focus quando for o tipo desktop
+        if (!this.isTouch()) {
+          setTimeout(() => this.el.nativeElement.focus(), 100);
+        }
+        this.alreadyOpened = true;
+        console.log("notificou a abertura do calendario");
+      });
+    }
+
+    console.log("configurou o ngAfterViewInit");
   }
 
   @HostListener("input", ["$event"])
@@ -40,6 +87,26 @@ export class SrDateMaskDirective implements OnInit {
       }
     } else {
       this.form.control.setValue(null);
+    }
+    this.resetCalendar();
+    console.log("chamou o blur");
+  }
+
+  @HostListener("focus", ["$event"])
+  onFocus($event) {
+    this.openCalendar();
+  }
+
+  openCalendar() {
+    console.log(this.alreadyOpened);
+    console.log(this.datePicker);
+    if (isNotNullOrUndefined(this.datePicker)) {
+      console.log(this.alreadyOpened);
+
+      if (!this.alreadyOpened) {
+        this.datePicker.touchUi = this.isTouch();
+        this.datePicker.open();
+      }
     }
   }
 
@@ -77,5 +144,17 @@ export class SrDateMaskDirective implements OnInit {
 
   private toMoment(value: string, pattern: string): moment.Moment {
     return moment(value, pattern);
+  }
+
+  private isTouch(): boolean {
+    return this.deviceService.isMobile() || this.deviceService.isTablet();
+  }
+
+  private resetCalendar() {
+    if (isNotNullOrUndefined(this.datePicker) && this.alreadyOpened && this.isFocused) {
+      this.alreadyOpened = false;
+      this.isFocused = false;
+      //this.datePicker.close();
+    }
   }
 }
