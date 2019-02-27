@@ -1,13 +1,13 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isNotNullOrUndefined, isNullOrUndefined, isString, SrLogg} from "../../sr-utils";
+import {isNotNullOrUndefined, isString, SrLogg} from "../../sr-utils";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
 import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model";
-import {ModelService} from "./model-service.interface";
+import {ModelService, PathVariable} from "./model-service.interface";
 import {catchError, expand, map, mergeMap, takeWhile} from "rxjs/operators";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
@@ -16,25 +16,36 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   constructor(protected clazz: any, protected serviceUrl: string, protected http: SrHttpService) {
   }
 
-  protected buildServiceUrl(query?: SrQuery) {
-    if (isNullOrUndefined(query)) {
-      return this.serviceUrl;
+  protected buildServiceUrl(query?: SrQuery | string, pathVariable?: PathVariable): string {
+    let url: string = "";
+
+    if (isNotNullOrUndefined(query)) {
+      url = isString(query) ? query as string : this.serviceUrl + (query as SrQuery).build();
+    } else {
+      url = this.serviceUrl;
     }
-    return this.serviceUrl + query.build();
+
+    if (isNotNullOrUndefined(pathVariable)) {
+      Object.keys(pathVariable)
+        .forEach((key: string) => {
+          url = url.replace("{" + key + "}", pathVariable[key]);
+        });
+    }
+    return url;
   }
 
-  save(value: T): Observable<T> {
+  save(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(serialize(value))
       .pipe(
         map(payload => {
           // @ts-ignore
-          this.log.i("POST[" + this.buildServiceUrl() + "]", JSON.parse(payload));
+          this.log.i("POST[" + this.buildServiceUrl(null, pathVariable) + "]", JSON.parse(payload));
           return payload;
         }),
         mergeMap(payload =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl())
+            .url(this.buildServiceUrl(null, pathVariable))
             .post(payload)
             //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
             //.map((res: Response) => res.json())
@@ -45,18 +56,18 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  update(value: T): Observable<T> {
+  update(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(serialize(value))
       .pipe(
         map(payload => {
           // @ts-ignore
-          this.log.i("PUT[" + this.buildServiceUrl() + "/" + value.id + "]", JSON.parse(payload));
+          this.log.i("PUT[" + this.buildServiceUrl(null, pathVariable) + "/" + value.id + "]", JSON.parse(payload));
           return payload;
         }),
         mergeMap(payload =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl() + "/" + value.id)
+            .url(this.buildServiceUrl(null, pathVariable) + "/" + value.id)
             .put(payload)
             .pipe(
               // @ts-ignore
@@ -68,17 +79,17 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  findById(id: any): Observable<T> {
+  findById(id: any, pathVariable?: PathVariable): Observable<T> {
     return of(id)
       .pipe(
         map(_id => {
-          this.log.i("GET[" + this.buildServiceUrl() + "/" + _id + "]");
+          this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/" + _id + "]");
           return _id;
         }),
         mergeMap(_id =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl() + "/" + _id)
+            .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
             .get()
             .pipe(
               // @ts-ignore
@@ -91,9 +102,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  findByIds(ids: Array<string | T>): Observable<Array<T>>;
-  findByIds(...ids: T[] | string[]): Observable<Array<T>>;
-  findByIds(ids: any): Observable<Array<T>> {
+  findByIds(ids: Array<string | T>, pathVariable?: PathVariable): Observable<Array<T>>;
+  findByIds(ids: any, pathVariable?: PathVariable): Observable<Array<T>> {
     return of(ids)
       .pipe(
         //pegando apenas os ids em forma de string
@@ -104,25 +114,25 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         //removendo qualquer id repetido
         map((idss: Array<string>) => Array.from(new Set(idss))),
         //criando pool de requisições para carregar os itens
-        map((idss: Array<string>) => idss.map(id => this.findById(id))),
+        map((idss: Array<string>) => idss.map(id => this.findById(id, pathVariable))),
         mergeMap((idsRequest) => {
           return forkJoin(idsRequest);
         })
       );
   }
 
-  findByIdFully(id: any): Observable<T> {
-    return this.findById(id);
+  findByIdFully(id: any, pathVariable?: PathVariable): Observable<T> {
+    return this.findById(id, pathVariable);
   }
 
-  first(): Observable<T> {
+  first(pathVariable?: PathVariable): Observable<T> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.buildServiceUrl() + "/first]")),
+        map(() => this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/first]")),
         mergeMap(() =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl() + "/first")
+            .url(this.buildServiceUrl(null, pathVariable) + "/first")
             .get()
             .pipe(
               // @ts-ignore
@@ -135,22 +145,22 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  firstFully(): Observable<T> {
-    return this.first();
+  firstFully(pathVariable?: PathVariable): Observable<T> {
+    return this.first(pathVariable);
   }
 
-  delete(value: T): Observable<T> {
+  delete(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(value)
       .pipe(
         map(_value => {
           // @ts-ignore
-          this.log.i("DELETE[" + this.buildServiceUrl() + "/" + _value.id + "]", JSON.parse(serialize(_value)));
+          this.log.i("DELETE[" + this.buildServiceUrl(null, pathVariable) + "/" + _value.id + "]", JSON.parse(serialize(_value)));
           return _value;
         }),
         mergeMap(_value =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl() + "/" + _value.id)
+            .url(this.buildServiceUrl(null, pathVariable) + "/" + _value.id)
             .delete()
             //.map((res: Response) => res.json())
             .pipe(
@@ -160,14 +170,14 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  count(): Observable<number> {
+  count(pathVariable?: PathVariable): Observable<number> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.buildServiceUrl() + "/count" + "]")),
+        map(() => this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/count" + "]")),
         mergeMap(() =>
           this.http
             .createRequest()
-            .url(this.buildServiceUrl() + "/count")
+            .url(this.buildServiceUrl(null, pathVariable) + "/count")
             .acceptTextOnly()
             .get()
             .pipe(
@@ -179,10 +189,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  list(query?: SrQuery | string): Observable<ListResource<T>> {
+  list(query?: SrQuery | string, pathVariable?: PathVariable): Observable<ListResource<T>> {
     return of(query)
       .pipe(
-        map(() => isString(query) ? query as string : this.buildServiceUrl(query as SrQuery)),
+        map(() => this.buildServiceUrl(query, pathVariable)),
         map(url => {
           this.log.i("GET[" + url + "]");
           return url;
@@ -211,17 +221,17 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  listFully(query?: SrQuery | string): Observable<ListResource<T>> {
-    return this.list(query);
+  listFully(query?: SrQuery | string, pathVariable?: PathVariable): Observable<ListResource<T>> {
+    return this.list(query, pathVariable);
   }
 
-  listAll(query?: SrQuery | string): Observable<ListResource<T>> {
+  listAll(query?: SrQuery | string, pathVariable?: PathVariable): Observable<ListResource<T>> {
     return of(query)
       .pipe(
         mergeMap(() =>
-          this.list(query)
+          this.list(query, pathVariable)
             .pipe(
-              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
+              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
                 return isNotNullOrUndefined(list) && !list.isEmpty();
@@ -231,13 +241,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  listAllFully(query?: SrQuery | string): Observable<ListResource<T>> {
+  listAllFully(query?: SrQuery | string, pathVariable?: PathVariable): Observable<ListResource<T>> {
     return of(query)
       .pipe(
         mergeMap(() =>
           this.listFully(query)
             .pipe(
-              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage()) : of(null)),
+              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
                 return isNotNullOrUndefined(list) && !list.isEmpty();
