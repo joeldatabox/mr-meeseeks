@@ -1,6 +1,6 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isNotNullOrUndefined, isString, SrLogg} from "../../sr-utils";
+import {isEmpty, isNotNullOrUndefined, isString, SrLogg} from "../../sr-utils";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
@@ -106,17 +106,27 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   findByIds(ids: any, pathVariable?: PathVariable): Observable<Array<T>> {
     return of(ids)
       .pipe(
-        //pegando apenas os ids em forma de string
-        map((idss: Array<string | T>) => {
-          return idss.filter(id => isNotNullOrUndefined(id))
+        mergeMap((idss: Array<string | T>) => {
+          //se não tiver itens válidos, devemos retornar um array vazio
+          if (isEmpty(idss)) {
+            return of([]);
+          }
+          //pegando apenas itens válidos
+          const _ids = idss
+            .filter(id => isNotNullOrUndefined(id))
             .map(id => isString(id) ? id as string : (id as T).id);
-        }),
-        //removendo qualquer id repetido
-        map((idss: Array<string>) => Array.from(new Set(idss))),
-        //criando pool de requisições para carregar os itens
-        map((idss: Array<string>) => idss.map(id => this.findById(id, pathVariable))),
-        mergeMap((idsRequest) => {
-          return forkJoin(idsRequest);
+
+          if (isEmpty(_ids)) {
+            return of([]);
+          }
+          return of(_ids)
+            .pipe(
+              //removendo qualquer id repetido
+              map((_idss: Array<string>) => Array.from(new Set(_idss))),
+              //criando pool de requisições para carregar os itens
+              map((_idss: Array<string>) => _idss.map(id => this.findById(id, pathVariable))),
+              mergeMap((idsRequest) => forkJoin(idsRequest))
+            );
         })
       );
   }
