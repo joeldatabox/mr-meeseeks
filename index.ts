@@ -1,3 +1,4 @@
+export * from "./src/app/modules/charts";
 export * from "./src/app/modules/sr-auto-complete-directive/sr-auto-complete-directive.module";
 export * from "./src/app/modules/sr-carousel/index";
 export * from "./src/app/modules/sr-http/index";

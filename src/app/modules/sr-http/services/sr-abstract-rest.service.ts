@@ -11,7 +11,7 @@ import {ModelService, PathVariable} from "./model-service.interface";
 import {catchError, expand, map, mergeMap, takeWhile} from "rxjs/operators";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
-  protected readonly log: SrLogg = SrLogg.of(this.labelLog);
+  protected readonly log: SrLogg = SrLogg.of(this.constructor.name);
 
   constructor(protected clazz: any, protected serviceUrl: string, protected http: SrHttpService) {
   }
@@ -265,10 +265,6 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             )
         )
       );
-  }
-
-  protected get labelLog(): string {
-    return "AbstractRestService<T>";
   }
 
   protected deserializeItem(value: object): T {
