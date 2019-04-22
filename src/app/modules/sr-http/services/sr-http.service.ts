@@ -7,7 +7,9 @@ import {Observable} from "rxjs";
  * @author Joel Rodrigues Moreira
  * e-mail: <a href="mailto:joel.databox@gmail.com">joel.databox@gmail.com</a>
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class SrHttpService {
 
   constructor(private http: HttpClient) {
