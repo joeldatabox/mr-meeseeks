@@ -1,6 +1,7 @@
-import {NgModule} from "@angular/core";
+import {ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {SrHttpService} from "./services/sr-http.service";
+import {HttpClientModule} from "@angular/common/http";
 
 export * from "./model/index";
 export * from "./services/index";
@@ -8,12 +9,21 @@ export * from "./sr-criteria/index";
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule
   ],
-  providers: [
-    SrHttpService
-  ],
-  declarations: []
+  declarations: [],
+  exports: [
+    HttpClientModule
+  ]
 })
 export class SrHttpModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SrHttpModule,
+      providers: [
+        SrHttpService
+      ]
+    };
+  }
 }
