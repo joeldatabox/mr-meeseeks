@@ -1,4 +1,4 @@
-import {isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
+import {isArray, isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
 import {plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
 
 
@@ -99,15 +99,22 @@ export namespace Model {
     return {toPlainOnly: true};
   }
 
-  export function serialize(model: Model): string {
-    return isNullOrUndefined(model) ? null : model.id;
+  export function serialize(model: Model | Array<Model>): string | Array<string> {
+    if (isNullOrUndefined(model)) {
+      return null;
+    } else if (isArray(model)) {
+      return (model as Array<Model>)
+        .map(it => serialize(it) as string);
+    } else {
+      return (model as Model).id;
+    }
   }
 
   export function deserializeOpts(): TransformOptions {
     return {toClassOnly: true};
   }
 
-  export function deserialize(value: string | any, type): Model {
+  export function deserialize(value: string | Array<string> | any, type): Model | Array<Model> {
     //se for algo null apenas retornamos
     if (isNullOrUndefined(value)) return null;
     //criando uma nova instancia
@@ -123,6 +130,8 @@ export namespace Model {
         //apenas atribui o valor apara o id
         model.id = value;
       }
+    } else if (isArray(value)) {
+      return value.map(it => deserialize(it, type));
     } else if (isObject(value)) {
       //se chegou aqui, quer dizer que é um objeto
       //realizando o databinding necessário
