@@ -22,10 +22,10 @@ const INVALID_RESULT_POSITIVE_ONLY = {
 
 export function positiveOnly(control: AbstractControl | string | number): ValidationErrors {
   if (isNullOrUndefined(control)) {
-    return INVALID_RESULT_NO_NEGATIVE;
+    return INVALID_RESULT_POSITIVE_ONLY;
   }
   if (getNumber(control) <= 0) {
-    return INVALID_RESULT_NO_NEGATIVE;
+    return INVALID_RESULT_POSITIVE_ONLY;
   }
   return null;
 }
