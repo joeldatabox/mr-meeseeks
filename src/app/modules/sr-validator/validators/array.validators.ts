@@ -1,5 +1,5 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isArray, isEmpty, isNullOrUndefined} from "../../sr-utils";
+import {isArray, isNullOrUndefined} from "../../sr-utils";
 
 const INVALID_RESULT = {
   "array": "is empty"
@@ -9,11 +9,12 @@ export namespace array {
   export function min(lenght: number) {
     //criando callback com validação
     return function (control: AbstractControl | Array<any>): ValidationErrors {
-      if (isEmpty(control)) {
+      const _array = toArray(control);
+      if (isNullOrUndefined(array)) {
         return INVALID_RESULT;
       }
 
-      if (toArray(control).length < lenght) {
+      if (_array.length < lenght) {
         return INVALID_RESULT;
       }
       return null;
@@ -23,11 +24,12 @@ export namespace array {
   export function max(lenght: number) {
     //criando callback com validação
     return function (control: AbstractControl | Array<any>): ValidationErrors {
-      if (isEmpty(control)) {
+      const _array = toArray(control);
+      if (isNullOrUndefined(array)) {
         return INVALID_RESULT;
       }
 
-      if (toArray(control).length > lenght) {
+      if (_array.length > lenght) {
         return INVALID_RESULT;
       }
       return null;
@@ -42,11 +44,12 @@ export namespace array {
 
     //criando callback com validação
     return function (control: AbstractControl | Array<any>): ValidationErrors {
-      if (isEmpty(control)) {
+      const _array = toArray(control);
+      if (isNullOrUndefined(array)) {
         return INVALID_RESULT;
       }
-      const length = toArray(control).length;
-      if (length >= minValue && length <= maxValue) {
+
+      if (!(_array.length >= minValue && _array.length <= maxValue)) {
         return INVALID_RESULT;
       }
       return null;
