@@ -1,6 +1,8 @@
 import {ComponentFactoryResolver, ComponentRef, Inject, Injectable, ViewContainerRef} from "@angular/core";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class SrViewInjectorService {
   constructor(@Inject(ComponentFactoryResolver) private factoryResolver: ComponentFactoryResolver) {
   }

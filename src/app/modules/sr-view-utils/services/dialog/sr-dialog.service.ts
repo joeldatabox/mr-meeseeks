@@ -7,7 +7,9 @@ import {map} from "rxjs/operators";
  * @author Joel Rodrigues Moreira
  * e-mail: <a href="mailto:joel.databox@gmail.com">joel.databox@gmail.com</a>
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class SrDialogService {
 
   constructor(private _dialogService: TdDialogService) {
