@@ -6,7 +6,9 @@ import {SrLoadingTopbarService} from "../../components/loading-topbar/service/sr
  * @author Joel Rodrigues Moreira
  * e-mail: <a href="mailto:joel.databox@gmail.com">joel.databox@gmail.com</a>
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class SrLoadingService {
   private itensRegistered: Set<string>;
 

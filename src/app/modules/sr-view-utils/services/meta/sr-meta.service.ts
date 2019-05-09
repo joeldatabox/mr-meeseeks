@@ -5,7 +5,9 @@ import {Meta} from "@angular/platform-browser";
  * @author Joel Rodrigues Moreira
  * e-mail: <a href="mailto:joel.databox@gmail.com">joel.databox@gmail.com</a>
  */
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class SrMetaService {
 
   constructor(private meta: Meta) {

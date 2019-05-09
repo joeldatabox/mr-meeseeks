@@ -1,12 +1,12 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from "@angular/core";
+import {CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {SrMetaService} from "./services/meta/sr-meta.service";
-import {MatDialogModule, MatProgressBarModule, MatSnackBarModule} from "@angular/material";
-import {SrDialogService} from "./services/dialog/sr-dialog.service";
+import {MatDialogModule, MatProgressBarModule} from "@angular/material";
 import {CovalentDialogsModule, CovalentLoadingModule} from "@covalent/core";
 import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr-loading-topbar.component";
+import {SrMetaService} from "./services/meta/sr-meta.service";
+import {SrDialogService} from "./services/dialog/sr-dialog.service";
 import {SrLoadingService} from "./services/loading/sr-loading.service";
-import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
+import {SrLoadingTopbarService} from "./components/loading-topbar/service";
 import {SrViewInjectorService} from "./services/view-injector/sr-view-injector.service";
 
 export * from "./components/index";
@@ -23,7 +23,6 @@ export * from "./services/view-injector/sr-view-injector.service";
 @NgModule({
   imports: [
     CommonModule,
-    MatSnackBarModule,
     MatDialogModule,
     MatProgressBarModule,
     CovalentDialogsModule,
@@ -36,16 +35,21 @@ export * from "./services/view-injector/sr-view-injector.service";
     SrLoadingTopbarComponent,
     CovalentLoadingModule,
     CovalentDialogsModule
-  ],
-  providers: [
-    SrMetaService,
-    SrDialogService,
-    SrLoadingService,
-    SrLoadingTopbarService,
-    SrViewInjectorService,
   ], schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
 })
 export class SrViewUtilsModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SrViewUtilsModule,
+      providers: [
+        SrMetaService,
+        SrDialogService,
+        SrLoadingService,
+        SrLoadingTopbarService,
+        SrViewInjectorService,
+      ]
+    };
+  }
 }
