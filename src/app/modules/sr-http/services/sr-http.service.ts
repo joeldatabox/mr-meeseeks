@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
 import {Observable} from "rxjs";
 import {isNotNullOrUndefined, SrLogg} from "../../sr-utils";
@@ -25,43 +25,55 @@ export class SrHttpService {
 export class SrRequest {
   private _url: string;
   // @ts-ignore
-  private _headers: Map<string, string>;
+  private _headers: HttpHeaders;
+  private _params: HttpParams;
   private _log: SrLogg;
 
   constructor(private http: HttpClient) {
     // @ts-ignore
-    this._headers = new Map();
+    this._headers = new HttpHeaders();
+    this._params = new HttpParams();
     this.acceptJsonOnly()
       .contentTypeJson();
   }
 
-  public setHeader(key: string, value: string): SrRequest {
-    this._headers.set(key, value);
+  public setHeader(key: string, value: string | string[]): SrRequest {
+    this._headers = this._headers.set(key, value);
     return this;
   }
 
-  public appendHeader(key: string, value: string): SrRequest {
-    this._headers.has(key) ? this._headers.set(key, this._headers.get(key) + ", " + value) : this._headers.set(key, value);
+  public appendHeader(key: string, value: string | string[]): SrRequest {
+    this._headers = this._headers.append(key, value);
     return this;
   }
 
   public acceptJsonOnly(): SrRequest {
-    this._headers.set("Accept", SrMediaType.APPLICATION_JSON_ANY);
+    this._headers = this._headers.set("Accept", SrMediaType.APPLICATION_JSON_ANY);
     return this;
   }
 
   public acceptTextOnly(): SrRequest {
-    this._headers.set("Accept", SrMediaType.TEXT_PLAIN);
+    this._headers = this._headers.set("Accept", SrMediaType.TEXT_PLAIN);
     return this;
   }
 
   public contentTypeText(): SrRequest {
-    this._headers.set("Content-Type", SrMediaType.TEXT_PLAIN);
+    this._headers = this._headers.set("Content-Type", SrMediaType.TEXT_PLAIN);
     return this;
   }
 
   public contentTypeJson(): SrRequest {
-    this._headers.set("Content-Type", SrMediaType.APPLICATION_JSON_UTF8);
+    this._headers = this._headers.set("Content-Type", SrMediaType.APPLICATION_JSON_UTF8);
+    return this;
+  }
+
+  public setParams(key: string, value: string): SrRequest {
+    this._params = this._params.set(key, value);
+    return this;
+  }
+
+  public appendParam(key: string, value: string): SrRequest {
+    this._params = this._params.append(key, value);
     return this;
   }
 
@@ -101,16 +113,16 @@ export class SrRequest {
   }
 
   private buildOptionsRequest() {
-    let headers = new HttpHeaders();
-    this._headers.forEach((value, key) => {
-      headers = headers.append(key, value);
-    });
-    return {headers: headers};
+    return {headers: this._headers, params: this._params};
   }
 
   private logURL(type: "GET" | "PUT" | "DELETE" | "POST", url: string, payload?: any): void {
     if (isNotNullOrUndefined(this._log)) {
-      this._log.i(type + "[" + url + "]", payload);
+      if (this._params.keys().length > 0) {
+        this._log.i(type + "[" + url + this._params.toString() + "]", payload);
+      } else {
+        this._log.i(type + "[" + url + "]", payload);
+      }
     }
   }
 }
