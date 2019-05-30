@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
 import {Observable} from "rxjs";
+import {isNotNullOrUndefined, SrLogg} from "../../sr-utils";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -25,6 +26,7 @@ export class SrRequest {
   private _url: string;
   // @ts-ignore
   private _headers: Map<string, string>;
+  private _log: SrLogg;
 
   constructor(private http: HttpClient) {
     // @ts-ignore
@@ -68,26 +70,33 @@ export class SrRequest {
     return this;
   }
 
+  public usingLog(log: SrLogg): SrRequest {
+    this._log = log;
+    return this;
+  }
+
   public get(): Observable<any> {
-    // @ts-ignore
+    this.logURL("GET", this._url);
     return this.http.get(encodeURI(this._url), this.buildOptionsRequest());
   }
 
   public post(body?: any): Observable<any> {
+    this.logURL("POST", this._url, body);
     return this.http
-      // @ts-ignore
+    // @ts-ignore
       .post(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public put(body?: any): Observable<any> {
+    this.logURL("PUT", this._url, body);
     return this.http
-      // @ts-ignore
+    // @ts-ignore
       .put(encodeURI(this._url), body, this.buildOptionsRequest());
   }
 
   public delete(): Observable<any> {
+    this.logURL("DELETE", this._url);
     return this.http
-      // @ts-ignore
       .delete(encodeURI(this._url), this.buildOptionsRequest());
   }
 
@@ -97,5 +106,11 @@ export class SrRequest {
       headers = headers.append(key, value);
     });
     return {headers: headers};
+  }
+
+  private logURL(type: "GET" | "PUT" | "DELETE" | "POST", url: string, payload?: any): void {
+    if (isNotNullOrUndefined(this._log)) {
+      this._log.i(type + "[" + url + "]", payload);
+    }
   }
 }

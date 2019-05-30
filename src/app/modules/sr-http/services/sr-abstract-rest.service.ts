@@ -37,14 +37,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   save(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(serialize(value))
       .pipe(
-        map(payload => {
-          // @ts-ignore
-          this.log.i("POST[" + this.buildServiceUrl(null, pathVariable) + "]", JSON.parse(payload));
-          return payload;
-        }),
         mergeMap(payload =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(this.buildServiceUrl(null, pathVariable))
             .post(payload)
             //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
@@ -59,19 +55,12 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   update(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(serialize(value))
       .pipe(
-        map(payload => {
-          // @ts-ignore
-          this.log.i("PUT[" + this.buildServiceUrl(null, pathVariable) + "/" + value.id + "]", JSON.parse(payload));
-          return payload;
-        }),
         mergeMap(payload =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl(null, pathVariable) + "/" + value.id)
             .put(payload)
             .pipe(
-              // @ts-ignore
-              //map((result) => deserialize(this.clazz, JSON.stringify(result))),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -82,19 +71,12 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   findById(id: any, pathVariable?: PathVariable): Observable<T> {
     return of(id)
       .pipe(
-        map(_id => {
-          this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/" + _id + "]");
-          return _id;
-        }),
         mergeMap(_id =>
           this.http
             .createRequest()
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
             .get()
             .pipe(
-              // @ts-ignore
-              /*map((result) => JSON.stringify(result)),
-              map((value: any) => deserialize(this.clazz, value)),*/
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -138,16 +120,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   first(pathVariable?: PathVariable): Observable<T> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/first]")),
         mergeMap(() =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(this.buildServiceUrl(null, pathVariable) + "/first")
             .get()
             .pipe(
-              // @ts-ignore
-              /*map((result) => JSON.stringify(result)),
-              map((value: any) => deserialize(this.clazz, value)),*/
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -162,17 +141,12 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   delete(value: T, pathVariable?: PathVariable): Observable<T> {
     return of(value)
       .pipe(
-        map(_value => {
-          // @ts-ignore
-          this.log.i("DELETE[" + this.buildServiceUrl(null, pathVariable) + "/" + _value.id + "]", JSON.parse(serialize(_value)));
-          return _value;
-        }),
         mergeMap(_value =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _value.id)
             .delete()
-            //.map((res: Response) => res.json())
             .pipe(
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -183,15 +157,14 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   count(pathVariable?: PathVariable): Observable<number> {
     return of(null)
       .pipe(
-        map(() => this.log.i("GET[" + this.buildServiceUrl(null, pathVariable) + "/count" + "]")),
         mergeMap(() =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(this.buildServiceUrl(null, pathVariable) + "/count")
             .acceptTextOnly()
             .get()
             .pipe(
-              // @ts-ignore
               map((value: string) => Number(value)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -200,30 +173,16 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   }
 
   list(query?: SrQuery | string, pathVariable?: PathVariable): Observable<ListResource<T>> {
-    return of(query)
+    return of([query])
       .pipe(
         map(() => this.buildServiceUrl(query, pathVariable)),
-        map(url => {
-          this.log.i("GET[" + url + "]");
-          return url;
-        }),
         mergeMap(url =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(url)
             .get()
             .pipe(
-              /*map((result) => {
-                const list = new ListResource<T>();
-                if (isNotNullOrUndefined(result)) {
-                  // @ts-ignore
-                  list.records = <Array<T>>plainToClass(this.clazz, result.records);
-                  // @ts-ignore
-                  list._metadata = deserialize(MetaData, JSON.stringify(result._metadata));
-                  this.log.d("payload", list);
-                }
-                return list;
-              }),*/
               map((result) => this.deserializeListResource(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
