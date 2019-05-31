@@ -1,6 +1,6 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isEmpty, isNotNullOrUndefined, isString, SrLogg} from "../../sr-utils";
+import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString, SrLogg} from "../../sr-utils";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
@@ -228,7 +228,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
 
   protected deserializeItem(value: object, clazz?: any);
   protected deserializeItem(value: object, clazz?: any): T {
-    if (isNotNullOrUndefined(clazz)) {
+    if (isNullOrUndefined(clazz)) {
       clazz = this.clazz;
     }
     try {
@@ -248,7 +248,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeArray(values, clazz?: any);
   protected deserializeArray(values, clazz?: any): Array<T> {
     let itens = new Array<T>();
-    if (isNotNullOrUndefined(clazz)) {
+    if (isNullOrUndefined(clazz)) {
       clazz = this.clazz;
     }
     if (isNotNullOrUndefined(values)) {
@@ -270,7 +270,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeListResource(value: any, clazz?: any);
   protected deserializeListResource(value: any, clazz?: any): ListResource<T> {
     const list = new ListResource<T>();
-    if (isNotNullOrUndefined(clazz)) {
+    if (isNullOrUndefined(clazz)) {
       clazz = this.clazz;
     }
     if (isNotNullOrUndefined(value)) {
