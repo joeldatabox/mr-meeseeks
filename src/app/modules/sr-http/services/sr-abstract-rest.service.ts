@@ -226,31 +226,39 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  protected deserializeItem(value: object): T {
+  protected deserializeItem(value: object, clazz?: any);
+  protected deserializeItem(value: object, clazz?: any): T {
+    if (isNotNullOrUndefined(clazz)) {
+      clazz = this.clazz;
+    }
     try {
-      const result = deserialize(this.clazz, JSON.stringify(value)) as T;
+      const result = deserialize(clazz, JSON.stringify(value)) as T;
       this.log.d("payload response", result);
       return result;
     } catch (error) {
       const errorResult = {};
       errorResult["error"] = error;
-      errorResult["clazz"] = this.clazz;
+      errorResult["clazz"] = clazz;
       errorResult["payload"] = value;
       this.log.e("error on deserialize item ", errorResult);
       throw errorResult;
     }
   }
 
-  protected deserializeArray(values): Array<T> {
+  protected deserializeArray(values, clazz?: any);
+  protected deserializeArray(values, clazz?: any): Array<T> {
     let itens = new Array<T>();
+    if (isNotNullOrUndefined(clazz)) {
+      clazz = this.clazz;
+    }
     if (isNotNullOrUndefined(values)) {
       try {
-        itens = <Array<T>>plainToClass(this.clazz, values);
+        itens = <Array<T>>plainToClass(clazz, values);
         this.log.d("payload response", itens);
       } catch (error) {
         const errorResult = {};
         errorResult["error"] = error;
-        errorResult["clazz"] = this.clazz;
+        errorResult["clazz"] = clazz;
         errorResult["payload"] = values;
         this.log.e("error on deserialize ", errorResult);
         throw errorResult;
@@ -259,17 +267,21 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
     return itens;
   }
 
-  protected deserializeListResource(value: any): ListResource<T> {
+  protected deserializeListResource(value: any, clazz?: any);
+  protected deserializeListResource(value: any, clazz?: any): ListResource<T> {
     const list = new ListResource<T>();
+    if (isNotNullOrUndefined(clazz)) {
+      clazz = this.clazz;
+    }
     if (isNotNullOrUndefined(value)) {
       try {
-        list.records = <Array<T>>plainToClass(this.clazz, value.records);
+        list.records = <Array<T>>plainToClass(clazz, value.records);
         list._metadata = deserialize(MetaData, JSON.stringify(value._metadata));
         this.log.d("payload response", list);
       } catch (error) {
         const errorResult = {};
         errorResult["error"] = error;
-        errorResult["clazz"] = this.clazz;
+        errorResult["clazz"] = clazz;
         errorResult["payload"] = value;
         this.log.e("error on deserialize ", errorResult);
         throw errorResult;
