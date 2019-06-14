@@ -1,5 +1,5 @@
 import {isArray, isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
-import {plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
+import {ClassTransformOptions, plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
 
 
 export interface Model {
@@ -87,11 +87,11 @@ export namespace Model {
    *
    * @return instance -> instancia de modelo com o databinding já realizado!
    */
-  export function databinding(currentValue: any, value: any, clazz?: any): object {
+  export function databinding(currentValue: any, value: any, clazz?: any, options?: ClassTransformOptions): object {
     if (isNullOrUndefined(currentValue)) {
-      return plainToClass(clazz, value);
+      return plainToClass(clazz, value, options);
     }
-    plainToClassFromExist(currentValue, value);
+    plainToClassFromExist(currentValue, value, options);
     return currentValue;
   }
 
