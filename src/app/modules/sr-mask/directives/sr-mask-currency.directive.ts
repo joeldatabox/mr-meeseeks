@@ -1,5 +1,6 @@
 import {Directive, ElementRef, HostListener, Input, OnInit} from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {isNullOrUndefined} from "../../sr-utils";
 
 
 @Directive({
@@ -25,10 +26,17 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit() {
-    this.separadorDecimal = this.config.decimal || ",";
-    this.separadorMilhar = this.config.milhar || ".";
-    this.prefixo = this.config.prefix || "";
-    this.sufixo = this.config.sufix || "";
+    if (isNullOrUndefined(this.config)) {
+      this.separadorDecimal = ",";
+      this.separadorMilhar = ".";
+      this.prefixo = "";
+      this.sufixo = "";
+    } else {
+      this.separadorDecimal = isNullOrUndefined(this.config.decimal) ? "," : this.config.decimal;
+      this.separadorMilhar = isNullOrUndefined(this.config.milhar) ? "." : this.config.milhar;
+      this.prefixo = isNullOrUndefined(this.config.prefix) ? "" : this.config.prefix;
+      this.sufixo = isNullOrUndefined(this.config.sufix) ? "" : this.config.sufix;
+    }
   }
 
   writeValue(value: any): void {
@@ -50,13 +58,6 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
     this.onTouched = fn;
   }
 
-  /*
-      @HostListener("keyup", ["$event"])
-      onKeyup($event: any) {
-          /!*console.log($event.target.value);*!/
-
-      }*/
-
   @HostListener("blur", ["$event"])
   onBlur($event: any) {
     this.onInputChange($event);
@@ -64,11 +65,6 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
 
   @HostListener("input", ["$event"])
   onInputChange($event) {
-    //guardando o indice atual do cursor
-    /*const currentSelection = $event.target.selectionStart;
-    const currentLenght = $event.target.value.length;
-    const otherMilhar = $event.target.value.length - 1;*/
-
     const valor: string = this.aplicarMascara($event.target.value);
     const currentMilhar = valor.split(".").length - 1;
     if (valor === "") {
@@ -84,17 +80,6 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
     }
 
     $event.target.value = valor;
-    //setando o indice do cursor
-    /*if ((currentSelection < valor.length - 1) && currentSelection !== currentLenght) {
-        if (currentMilhar !== otherMilhar) {
-            $event.target.selectionStart = currentSelection + (currentMilhar - otherMilhar);
-            $event.target.selectionEnd = currentSelection + (currentLenght - otherMilhar);
-        } else {
-            $event.target.selectionStart = currentSelection;
-            $event.target.selectionEnd = currentSelection;
-        }
-
-    }*/
   }
 
   /**
