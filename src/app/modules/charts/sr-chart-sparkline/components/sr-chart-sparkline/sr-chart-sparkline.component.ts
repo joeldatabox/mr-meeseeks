@@ -20,7 +20,7 @@ export class SrChartSparklineComponent implements OnInit {
 
   private _context2D: CanvasRenderingContext2D;
 
-  @ViewChild("sparklineCanvas", {read: ElementRef})
+  @ViewChild("sparklineCanvas", {read: ElementRef, static: true})
   sparklineCanvas: ElementRef;
 
   @Input("width")
