@@ -1,6 +1,6 @@
 import {Color} from "./color.model";
 import {CanvasGradientBuilder} from "./canvas-gradient.model";
-import {isArray, isNotNullOrUndefined} from "../../sr-utils";
+import {isArray, isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class ChartColor {
     private _backgroundColor: Color | Color[] | CanvasGradientBuilder;

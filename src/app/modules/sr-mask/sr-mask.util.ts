@@ -1,7 +1,7 @@
 import {createTextMaskInputElement} from "text-mask-core/dist/textMaskCore";
 import emailMask from "text-mask-addons/dist/emailMask";
 import {createAutoCorrectedDatePipe} from "text-mask-addons/dist/textMaskAddons";
-import {isEmpty} from "../sr-utils";
+import {isEmpty} from "../sr-utils/commons/sr-commons.model";
 import {ViewContainerRef} from "@angular/core";
 
 

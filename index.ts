@@ -7,4 +7,4 @@ export * from "./src/app/modules/sr-locator-service/index";
 export * from "./src/app/modules/sr-mask/index";
 export * from "./src/app/modules/sr-utils/index";
 export * from "./src/app/modules/sr-validator/index";
-export * from "./src/app/modules/sr-view-utils/index";
+export * from "./src/app/modules/sr-view-utils/sr-view-utils.module";

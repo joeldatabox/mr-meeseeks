@@ -1,6 +1,6 @@
 import {Color} from "./color.model";
 import {GradientColor} from "./gradient-color.model";
-import {isString} from "../../sr-utils";
+import {isString} from "../../sr-utils/commons/sr-commons.model";
 
 export class CanvasGradientBuilder {
     private colors: Array<GradientColor> = new Array<GradientColor>();

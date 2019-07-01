@@ -1,4 +1,4 @@
-import {isArray, isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils";
+import {isArray, isEmpty, isNullOrUndefined, isObject, isString} from "../../sr-utils/commons/sr-commons.model";
 import {ClassTransformOptions, plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
 
 

@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, V
 import {SrSparklineDataSet} from "../../model/sparkline-data-model.model";
 import {ChartColor} from "../../../model/chart-color.model";
 import {Chart} from "chart.js";
-import {isNullOrUndefined, isNumber} from "../../../../sr-utils";
+import {isNullOrUndefined, isNumber} from "../../../../sr-utils/commons/sr-commons.model";
 
 @Component({
   selector: "sr-chart-sparkline",

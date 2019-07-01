@@ -1,4 +1,4 @@
-import {isNotNullOrUndefined, isNullOrUndefined} from "../../../sr-utils";
+import {isNotNullOrUndefined, isNullOrUndefined} from "../../../sr-utils/commons/sr-commons.model";
 
 export class SrSparklineDataItem {
   private _label: any;

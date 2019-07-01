@@ -2,7 +2,8 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
 import {Observable} from "rxjs";
-import {isNotNullOrUndefined, SrLogg} from "../../sr-utils";
+import {isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
+import {SrLogg} from "../../sr-utils/logger/sr-logger";
 
 /**
  * @author Joel Rodrigues Moreira

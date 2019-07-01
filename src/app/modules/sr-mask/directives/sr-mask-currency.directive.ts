@@ -1,6 +1,6 @@
 import {Directive, ElementRef, HostListener, Input, OnInit} from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {isNullOrUndefined} from "../../sr-utils";
+import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 
 @Directive({

@@ -1,7 +1,8 @@
 import {Observable, throwError as observableThrowError} from "rxjs";
 import {Exclude} from "class-transformer";
 import {HttpErrorResponse} from "@angular/common/http";
-import {isNotNullOrUndefined, SrLogg} from "../../../sr-utils";
+import {isNotNullOrUndefined} from "../../../sr-utils/commons/sr-commons.model";
+import {SrLogg} from "../../../sr-utils/logger/sr-logger";
 
 export class ErrorMessage {
   status: HttpStatus;

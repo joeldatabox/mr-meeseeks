@@ -3,8 +3,8 @@ import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith} from "rxjs/operators";
 import {Observable} from "rxjs";
-import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils";
-import {ListResource} from "../../sr-http/model";
+import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
+import {ListResource} from "../../sr-http/model/list-resource.model";
 
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit {
   itemSelected: T;
