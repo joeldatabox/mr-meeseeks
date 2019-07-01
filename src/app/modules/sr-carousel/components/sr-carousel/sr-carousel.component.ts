@@ -53,10 +53,10 @@ export class SrCarouselComponent implements AfterContentInit, AfterViewInit, SrC
   @ContentChildren(SrCarouselSlideComponent)
   slidesList: QueryList<SrCarouselSlideComponent>;
 
-  @ViewChild("carouselContainer")
+  @ViewChild("carouselContainer", {static:true})
   private carouselContainer: ElementRef<HTMLDivElement>;
 
-  @ViewChild("carouselList")
+  @ViewChild("carouselList", {static:true})
   private _carouselList: ElementRef<HTMLElement>;
   listKeyManager: ListKeyManager<SrCarouselSlideComponent>;
 
