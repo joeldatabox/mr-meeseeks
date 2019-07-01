@@ -1,7 +1,8 @@
 import {Observable} from "rxjs";
 
-import {ListResource, Model} from "../model";
-import {SrQuery} from "../sr-criteria";
+import {ListResource} from "../model/list-resource.model";
+import {Model} from "../model/model";
+import {SrQuery} from "../sr-criteria/sr-query";
 
 export declare interface PathVariable {
   [key: string]: any;

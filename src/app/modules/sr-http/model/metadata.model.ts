@@ -1,4 +1,4 @@
-import {isEmpty, isNotNullOrUndefined} from "../../sr-utils";
+import {isEmpty, isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class MetaData {
   page: number;

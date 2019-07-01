@@ -1,6 +1,6 @@
 import {Color} from "./color.model";
 import {Error} from "tslint/lib/error";
-import {isNullOrUndefined} from "../../sr-utils";
+import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class GradientColor {
     offset: number;

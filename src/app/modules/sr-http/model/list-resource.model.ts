@@ -1,5 +1,5 @@
 import {MetaData} from "./metadata.model";
-import {isNullOrUndefined} from "../../sr-utils";
+import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class ListResource<T> {
 
