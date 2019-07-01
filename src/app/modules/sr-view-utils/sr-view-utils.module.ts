@@ -6,10 +6,12 @@ import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr
 import {SrMetaService} from "./services/meta/sr-meta.service";
 import {SrDialogService} from "./services/dialog/sr-dialog.service";
 import {SrLoadingService} from "./services/loading/sr-loading.service";
-import {SrLoadingTopbarService} from "./components/loading-topbar/service";
+import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
 import {SrViewInjectorService} from "./services/view-injector/sr-view-injector.service";
 
-export * from "./components/index";
+export * from "./components/loading-topbar/component/sr-loading-topbar.component";
+export * from "./components/loading-topbar/model/sr-loading";
+export * from "./components/loading-topbar/service/sr-loading-topbar.service";
 
 export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";

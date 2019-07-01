@@ -1,5 +1,5 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils";
+import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 
 const INVALID_RESULT = {
   "cpf": "invalid"

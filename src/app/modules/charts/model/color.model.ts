@@ -1,4 +1,4 @@
-import {isNotNullOrUndefined} from "../../sr-utils";
+import {isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class Color {
   value: string;

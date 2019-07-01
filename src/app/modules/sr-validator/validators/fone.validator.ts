@@ -1,5 +1,5 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils";
+import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 
 const FONE_REGEX = ".((10)|([1-9][1-9]).)\\s[2-5][0-9]{3}-[0-9]{4}";
 

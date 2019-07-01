@@ -13,7 +13,7 @@ export class SrCarouselSlideComponent implements ListKeyManagerOption, SrCarouse
   @Input() public hideOverlay = false;
   @Input() public disabled = false; // implements ListKeyManagerOption
 
-  @ViewChild(TemplateRef) public templateRef: TemplateRef<any>;
+  @ViewChild(TemplateRef, {static:true}) public templateRef: TemplateRef<any>;
 
   public ngOnInit(): void {
     if (this.image) {

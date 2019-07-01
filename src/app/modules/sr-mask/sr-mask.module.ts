@@ -14,7 +14,7 @@ export * from "./services/sr-mask.service";
   imports: [
     CommonModule,
     TextMaskModule,
-    DeviceDetectorModule.forRoot(),
+    DeviceDetectorModule,
   ],
   declarations: [
     SrDateMaskDirective,

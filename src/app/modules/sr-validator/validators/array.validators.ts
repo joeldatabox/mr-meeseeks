@@ -1,5 +1,5 @@
 import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {isArray, isNullOrUndefined} from "../../sr-utils";
+import {isArray, isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 const INVALID_RESULT = {
   "array": "is empty"
