@@ -8,10 +8,14 @@ import {SrDialogService} from "./services/dialog/sr-dialog.service";
 import {SrLoadingService} from "./services/loading/sr-loading.service";
 import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
 import {SrViewInjectorService} from "./services/view-injector/sr-view-injector.service";
+import {SrAutoTabDirective} from "./directives/sr-auto-tab.directive";
+import {RouterModule} from "@angular/router";
 
 export * from "./components/loading-topbar/component/sr-loading-topbar.component";
 export * from "./components/loading-topbar/model/sr-loading";
 export * from "./components/loading-topbar/service/sr-loading-topbar.service";
+
+export * from "./directives/sr-auto-tab.directive";
 
 export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";
@@ -25,18 +29,21 @@ export * from "./services/view-injector/sr-view-injector.service";
 @NgModule({
   imports: [
     CommonModule,
+    RouterModule,
     MatDialogModule,
     MatProgressBarModule,
     CovalentDialogsModule,
     CovalentLoadingModule
   ],
   declarations: [
-    SrLoadingTopbarComponent
+    SrLoadingTopbarComponent,
+    SrAutoTabDirective
   ],
   exports: [
     SrLoadingTopbarComponent,
     CovalentLoadingModule,
-    CovalentDialogsModule
+    CovalentDialogsModule,
+    SrAutoTabDirective
   ], schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
