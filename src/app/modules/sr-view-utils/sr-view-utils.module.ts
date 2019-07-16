@@ -9,7 +9,7 @@ import {SrLoadingService} from "./services/loading/sr-loading.service";
 import {SrLoadingTopbarService} from "./components/loading-topbar/service/sr-loading-topbar.service";
 import {SrViewInjectorService} from "./services/view-injector/sr-view-injector.service";
 import {SrAutoTabDirective} from "./directives/sr-auto-tab.directive";
-import {RouterModule} from "@angular/router";
+import {SrRouteUtilsModule} from "../sr-route-utils/sr-route-utils.module";
 
 export * from "./components/loading-topbar/component/sr-loading-topbar.component";
 export * from "./components/loading-topbar/model/sr-loading";
@@ -29,11 +29,12 @@ export * from "./services/view-injector/sr-view-injector.service";
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule,
     MatDialogModule,
     MatProgressBarModule,
     CovalentDialogsModule,
-    CovalentLoadingModule
+    CovalentLoadingModule,
+
+    SrRouteUtilsModule.forRoot()
   ],
   declarations: [
     SrLoadingTopbarComponent,

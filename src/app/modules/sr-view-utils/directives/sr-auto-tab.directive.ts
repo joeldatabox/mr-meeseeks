@@ -1,8 +1,8 @@
 import {AfterViewInit, Directive, Input} from "@angular/core";
 import {MatTab, MatTabGroup} from "@angular/material";
-import {ActivatedRoute, Router} from "@angular/router";
-import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
+import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {removeDiacritics} from "../../sr-utils/commons/sr-diacritics";
+import {SrQueryParamUtilsService} from "../../sr-route-utils/services/sr-query-param-utils.service";
 
 @Directive({
   selector: "[srAutoTab]"
@@ -13,7 +13,7 @@ export class SrAutoTabDirective implements AfterViewInit {
   @Input("srAutoTab")
   tabParam: string;
 
-  constructor(protected matTabGroup: MatTabGroup, protected router: Router, protected route: ActivatedRoute) {
+  constructor(protected matTabGroup: MatTabGroup, protected queryParamUtilsService: SrQueryParamUtilsService) {
   }
 
   ngAfterViewInit(): void {
@@ -34,11 +34,13 @@ export class SrAutoTabDirective implements AfterViewInit {
     });
 
     //verificando se tem algum parametro na url relacionado a tab
-    this.setIndexTab(this.route.snapshot.queryParamMap.get(this.tabParam));
+    this.setIndexTab(this.queryParamUtilsService.getQueryParameter(this.tabParam));
 
     //colocando um ouvinte para automatizar a atulização dos parametros
     this.matTabGroup.selectedIndexChange.subscribe(index => {
-      this.setQueryParameter(this.tabParam, this.tabs.get(index));
+      const _param = {};
+      _param[this.tabParam] = this.tabs.get(index);
+      this.queryParamUtilsService.setQueryParameter(_param);
     });
   }
 
@@ -56,10 +58,12 @@ export class SrAutoTabDirective implements AfterViewInit {
       index = param;
     }
     this.matTabGroup.selectedIndex = index;
-    this.setQueryParameter(this.tabParam, this.tabs.get(index));
+    const _param = {};
+    _param[this.tabParam] = this.tabs.get(index);
+    this.queryParamUtilsService.setQueryParameter(_param);
   }
 
-  setQueryParameter(key: string, value: string) {
+  /*setQueryParameter(key: string, value: string) {
     if (isNotNullOrUndefined(key)) {
       const params = {};
       const keys: Array<string> = this.route.snapshot.queryParamMap.keys;
@@ -69,6 +73,6 @@ export class SrAutoTabDirective implements AfterViewInit {
       params[key] = value;
       this.router.navigate([], {queryParams: params});
     }
-  }
+  }*/
 
 }
