@@ -1,3 +1,5 @@
+import {ListResource} from "../../sr-http/model";
+
 /**
  * Create a simple instance of a generic class;
  * @param type -> the class you need to instantiate
@@ -44,6 +46,9 @@ export function isNotNullOrUndefined(...value: any[]): boolean {
 export function isEmpty(value: any): boolean {
   if (isNullOrUndefined(value)) {
     return true;
+  }
+  if (value instanceof ListResource) {
+    return value.records.length === 0;
   }
   if (value.length > 0) {
     return false;
