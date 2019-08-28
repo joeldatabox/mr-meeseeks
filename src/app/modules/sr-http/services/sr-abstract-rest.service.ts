@@ -8,7 +8,7 @@ import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model/exception/error-message.model";
 import {ModelService, PathVariable} from "./model-service.interface";
-import {catchError, expand, map, mergeMap, takeWhile} from "rxjs/operators";
+import {catchError, expand, map, mergeMap, reduce, takeWhile} from "rxjs/operators";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
@@ -102,6 +102,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
           if (isEmpty(_ids)) {
             return of([]);
           }
+
           return of(_ids)
             .pipe(
               //removendo qualquer id repetido
@@ -205,6 +206,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
                 return isNotNullOrUndefined(list) && !list.isEmpty();
+              }),
+              map(list => list),
+              reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
+                return acumulator.pushAll(currentVaue);
               })
             )
         )
@@ -217,10 +222,14 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         mergeMap(() =>
           this.listFully(query)
             .pipe(
-              expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage(), pathVariable) : of(null)),
+              expand((list: ListResource<T>) => list.hasNextPage() ? this.listFully(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
                 return isNotNullOrUndefined(list) && !list.isEmpty();
+              }),
+              map(list => list),
+              reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
+                return acumulator.pushAll(currentVaue);
               })
             )
         )
