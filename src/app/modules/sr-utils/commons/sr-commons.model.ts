@@ -136,3 +136,14 @@ export function cloneObject(value: any): object {
   });
   return clone;
 }
+
+export function splitArray(values: Array<any>, size: number) {
+  if (isEmpty(values)) {
+    return [];
+  }
+  const result: Array<any> = new Array<any>();
+  while (values.length) {
+    result.push(values.splice(0, size));
+  }
+  return result;
+}
