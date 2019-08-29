@@ -1,6 +1,6 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
+import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
@@ -75,6 +75,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         mergeMap(_id =>
           this.http
             .createRequest()
+            .usingLog(this.log)
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
             .get()
             .pipe(
@@ -89,13 +90,13 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   findByIds(ids: any, pathVariable?: PathVariable): Observable<Array<T>> {
     return of(ids)
       .pipe(
-        mergeMap((idss: Array<string | T>) => {
+        mergeMap((ids: Array<string | T>) => {
           //se não tiver itens válidos, devemos retornar um array vazio
-          if (isEmpty(idss)) {
+          if (isEmpty(ids)) {
             return of([]);
           }
           //pegando apenas itens válidos
-          const _ids = idss
+          const _ids = ids
             .filter(id => isNotNullOrUndefined(id))
             .map(id => isString(id) ? id as string : (id as T).id);
 
@@ -108,8 +109,34 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               //removendo qualquer id repetido
               map((_idss: Array<string>) => Array.from(new Set(_idss))),
               //criando pool de requisições para carregar os itens
-              map((_idss: Array<string>) => _idss.map(id => this.findById(id, pathVariable))),
-              mergeMap((idsRequest) => forkJoin(idsRequest))
+              map((_idss: Array<string>) => {
+                return splitArray(_idss, 50).map(it => this.createRequestFindByIds(it, pathVariable));
+              }),
+              mergeMap((idsRequest: Array<Observable<T[]>>) => forkJoin(idsRequest)),
+              map((results: Array<Array<T>>) => {
+                return results.reduce((value, currentValue) => value.concat(currentValue), []);
+              })
+            );
+        })
+      );
+  }
+
+  private createRequestFindByIds(ids: Array<string>, pathVariable?: PathVariable): Observable<T[]> {
+    return of(ids)
+      .pipe(
+        mergeMap(idsRequest => {
+          const request = this.http
+            .createRequest()
+            .usingLog(this.log)
+            .url(this.buildServiceUrl(null, pathVariable) + "/ids");
+
+          //adicionado parametros da requisicao
+          idsRequest.forEach(idsr => request.appendParam("ids", idsr));
+
+          return request.get()
+            .pipe(
+              map((result) => this.deserializeArray(result)),
+              catchError((err) => throwErrorMessage(err, this.log))
             );
         })
       );
