@@ -42,18 +42,30 @@ export class ListResource<T> {
   }
 
   public hasFirstPage(): boolean {
+    if (isNullOrUndefined(this._metadata)) {
+      return false;
+    }
     return this._metadata.hasFirstPage();
   }
 
   public hasPreviusPage(): boolean {
+    if (isNullOrUndefined(this._metadata)) {
+      return false;
+    }
     return this._metadata.hasPreviusPage();
   }
 
   public hasNextPage(): boolean {
+    if (isNullOrUndefined(this._metadata)) {
+      return false;
+    }
     return this._metadata.hasNextPage();
   }
 
   public hasLastPage(): boolean {
+    if (isNullOrUndefined(this._metadata)) {
+      return false;
+    }
     return this._metadata.hasLastPage();
   }
 
