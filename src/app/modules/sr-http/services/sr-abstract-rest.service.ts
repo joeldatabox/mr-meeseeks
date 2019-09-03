@@ -232,7 +232,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
-                return isNotNullOrUndefined(list) && !list.isEmpty();
+                return isNotNullOrUndefined(list);
               }),
               map(list => list),
               reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
@@ -252,7 +252,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               expand((list: ListResource<T>) => list.hasNextPage() ? this.listFully(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
-                return isNotNullOrUndefined(list) && !list.isEmpty();
+                return isNotNullOrUndefined(list);
               }),
               map(list => list),
               reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
