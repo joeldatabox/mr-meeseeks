@@ -8,7 +8,7 @@ const INVALID_RESULT = {
 };
 
 export function validateCpfCnpj(control: AbstractControl | string): ValidationErrors {
-  if (isNullOrUndefined(validateCpf(control)) && isNullOrUndefined(validateCnpj(control))) {
+  if (isNullOrUndefined(validateCpf(control)) || isNullOrUndefined(validateCnpj(control))) {
     return null;
   }
   return INVALID_RESULT;
