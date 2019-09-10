@@ -21,48 +21,36 @@ export function validateCnpj(control: AbstractControl | string): ValidationError
   return null;
 }
 
-function validateCNPJ(cnpj) {
+function validateCNPJ(value) {
+  const cnpj = value.replace(/[^\d]+/g, "");
 
-  cnpj = cnpj.replace(/[^\d]+/g, "");
-
-  if (cnpj === "") return false;
-
+  // Valida a quantidade de caracteres
   if (cnpj.length !== 14)
     return false;
 
-
-  if (cnpj === "00000000000000" || cnpj === "11111111111111" || cnpj === "22222222222222" || cnpj === "33333333333333" || cnpj === "44444444444444" || cnpj === "55555555555555" || cnpj === "66666666666666" || cnpj === "77777777777777" || cnpj === "88888888888888" || cnpj === "99999999999999") {
+  // Elimina inválidos com todos os caracteres iguais
+  if (/^(\d)\1+$/.test(cnpj))
     return false;
-  }
 
-  let tamanho = cnpj.length - 2;
-  let numeros = cnpj.substring(0, tamanho);
-  const digitos = cnpj.substring(tamanho);
-  let soma = 0;
-  let pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += numeros.charAt(tamanho - i) * pos--;
-    if (pos < 2) {
-      pos = 9;
+  // Cáculo de validação
+  const t = cnpj.length - 2;
+  const d = cnpj.substring(t);
+  const d1 = Number(d.charAt(0));
+  const d2 = Number(d.charAt(1));
+  const calc = x => {
+    const n = cnpj.substring(0, x);
+    let y = x - 7;
+    let s = 0;
+    let r = 0;
+
+    for (let i = x; i >= 1; i--) {
+      s += n.charAt(x - i) * y--;
+      if (y < 2)
+        y = 9;
     }
-  }
-  let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-  if (resultado !== digitos.charAt(0)) {
-    return false;
-  }
-  tamanho = tamanho + 1;
-  numeros = cnpj.substring(0, tamanho);
-  soma = 0;
-  pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += numeros.charAt(tamanho - i) * pos--;
-    if (pos < 2)
-      pos = 9;
-  }
-  resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-  if (resultado !== digitos.charAt(1)) {
-    return false;
-  }
-  return true;
+    r = 11 - s % 11;
+    return r > 9 ? 0 : r;
+  };
 
+  return calc(t) === d1 && calc(t + 1) === d2;
 }
