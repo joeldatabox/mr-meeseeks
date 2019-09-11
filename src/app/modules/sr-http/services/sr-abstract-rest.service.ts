@@ -8,7 +8,7 @@ import {ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model/exception/error-message.model";
 import {ModelService, PathVariable} from "./model-service.interface";
-import {catchError, expand, map, mergeMap, reduce, takeWhile} from "rxjs/operators";
+import {catchError, expand, map, mergeMap, reduce, take, takeWhile} from "rxjs/operators";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
@@ -47,6 +47,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
             //.map((res: Response) => res.json())
             .pipe(
+              take(1),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -62,6 +63,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + value.id)
             .put(payload)
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -79,6 +81,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
             .get()
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -135,6 +138,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
 
           return request.get()
             .pipe(
+              take(1),
               map((result) => this.deserializeArray(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             );
@@ -156,6 +160,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/first")
             .get()
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -177,6 +182,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _value.id)
             .delete()
             .pipe(
+              take(1),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -194,6 +200,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .acceptTextOnly()
             .get()
             .pipe(
+              take(1),
               map((value: string) => Number(value)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
