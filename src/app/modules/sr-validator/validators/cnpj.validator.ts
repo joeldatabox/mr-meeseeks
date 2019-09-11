@@ -22,7 +22,10 @@ export function validateCnpj(control: AbstractControl | string): ValidationError
 }
 
 function validateCNPJ(value) {
-  const cnpj = value.replace(/[^\d]+/g, "");
+  const cnpj = value.replace(/\./gi, "")
+    .replace(/\-/gi, "")
+    .replace(/\_/gi, "")
+    .replace(/\//gi, "");
 
   // Valida a quantidade de caracteres
   if (cnpj.length !== 14)
