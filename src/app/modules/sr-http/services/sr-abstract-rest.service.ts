@@ -4,7 +4,7 @@ import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isObject, isString, sp
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
-import {ListResource} from "../model/list-resource.model";
+import {isListResource, ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model/exception/error-message.model";
 import {ModelService, PathVariable} from "./model-service.interface";
@@ -126,7 +126,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
 
                     let targetItens: Array<any> = null;
                     //pegando uma listagem de itens de um resource
-                    if ((targetList) instanceof ListResource) {
+                    if (isListResource(targetList)) {
                       targetItens = (targetList as ListResource<any>).records.filter(it => isNotNullOrUndefined(it));
                     } else {
                       targetItens = (targetList as Array<any>).filter(it => isNotNullOrUndefined(it));

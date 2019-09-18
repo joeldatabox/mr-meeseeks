@@ -1,5 +1,4 @@
-import {ListResource} from "../../sr-http/model";
-
+import {ListResource} from "../../sr-http/model/list-resource.model";
 /**
  * Create a simple instance of a generic class;
  * @param type -> the class you need to instantiate
@@ -101,14 +100,6 @@ export function isArray(value: any): boolean {
   return Array.isArray(value);
 }
 
-/**
- * checks if any value is instance of ListResource
- * @param value -> any
- * @return true if value is instance of ListResource
- */
-export function isListResource(value: any): boolean {
-  return value instanceof ListResource;
-}
 
 /**
  * checks if any value is number
