@@ -1,5 +1,4 @@
 import {MetaData} from "./metadata.model";
-import {isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class ListResource<T> {
 
@@ -15,7 +14,7 @@ export class ListResource<T> {
   }
 
   public isEmpty(): boolean {
-    if (!isNullOrUndefined(this.records)) {
+    if (!_isNullOrUndefined(this.records)) {
       return this.records.length === 0;
     }
     return true;
@@ -42,28 +41,28 @@ export class ListResource<T> {
   }
 
   public hasFirstPage(): boolean {
-    if (isNullOrUndefined(this._metadata)) {
+    if (_isNullOrUndefined(this._metadata)) {
       return false;
     }
     return this._metadata.hasFirstPage();
   }
 
   public hasPreviusPage(): boolean {
-    if (isNullOrUndefined(this._metadata)) {
+    if (_isNullOrUndefined(this._metadata)) {
       return false;
     }
     return this._metadata.hasPreviusPage();
   }
 
   public hasNextPage(): boolean {
-    if (isNullOrUndefined(this._metadata)) {
+    if (_isNullOrUndefined(this._metadata)) {
       return false;
     }
     return this._metadata.hasNextPage();
   }
 
   public hasLastPage(): boolean {
-    if (isNullOrUndefined(this._metadata)) {
+    if (_isNullOrUndefined(this._metadata)) {
       return false;
     }
     return this._metadata.hasLastPage();
@@ -76,4 +75,22 @@ export class ListResource<T> {
       return this.records.filter(item => item["id"] === id)[0];
     }
   }
+}
+
+function _isNullOrUndefined(...value: any[]): boolean {
+  if (value === null || value === undefined) return true;
+  let result = true;
+  for (let i = 0; i < value.length; i++) {
+    result = (value[i] === null || value[i] === undefined) && result;
+  }
+  return result;
+}
+
+/**
+ * checks if any value is instance of ListResource
+ * @param value -> any
+ * @return true if value is instance of ListResource
+ */
+export function isListResource(value: any): boolean {
+  return value instanceof ListResource;
 }
