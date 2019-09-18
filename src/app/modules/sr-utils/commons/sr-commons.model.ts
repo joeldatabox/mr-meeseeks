@@ -102,6 +102,15 @@ export function isArray(value: any): boolean {
 }
 
 /**
+ * checks if any value is instance of ListResource
+ * @param value -> any
+ * @return true if value is instance of ListResource
+ */
+export function isListResource(value: any): boolean {
+  return value instanceof ListResource;
+}
+
+/**
  * checks if any value is number
  * @param value -> any
  * @return true if value is instance of Number

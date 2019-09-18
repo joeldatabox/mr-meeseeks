@@ -1,6 +1,6 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
+import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isObject, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
@@ -89,8 +89,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  findByIds(ids: Array<string | T>, pathVariable?: PathVariable): Observable<Array<T>>;
-  findByIds(ids: any, pathVariable?: PathVariable): Observable<Array<T>> {
+  findByIds(ids: Array<string | T>, targetList?: ListResource<any> | Array<any>, pathVariable?: PathVariable): Observable<Array<T>>;
+  findByIds(ids: any, targetList?: any, pathVariable?: PathVariable): Observable<Array<T>> {
     return of(ids)
       .pipe(
         mergeMap((ids: Array<string | T>) => {
@@ -118,6 +118,42 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               mergeMap((idsRequest: Array<Observable<T[]>>) => forkJoin(idsRequest)),
               map((results: Array<Array<T>>) => {
                 return results.reduce((value, currentValue) => value.concat(currentValue), []);
+              }),
+              map((result: Array<T>) => {
+                //vamos fazer o processo de databinding
+                if (!isEmpty(targetList)) {
+                  result.forEach((resultIt: T) => {
+
+                    let targetItens: Array<any> = null;
+                    //pegando uma listagem de itens de um resource
+                    if ((targetList) instanceof ListResource) {
+                      targetItens = (targetList as ListResource<any>).records.filter(it => isNotNullOrUndefined(it));
+                    } else {
+                      targetItens = (targetList as Array<any>).filter(it => isNotNullOrUndefined(it));
+                    }
+                    //iterando a listagem de target
+                    //pode ser que estejamos interando um array de contas
+                    //nesse caso vamo ver se encontramo algum objeto com o id esperado
+                    let aux = false;
+                    targetItens.filter(it => resultIt.id === it["id"])
+                      .forEach((it: any, index: number) => {
+                        Model.databinding(it, resultIt);
+                        //targetItens[index] = resultIt;
+                        aux = true;
+                      });
+                    if (!aux) {
+                      targetItens.forEach(itTarget => {
+                        Object.keys(itTarget).filter(itKey =>
+                          isNotNullOrUndefined(itTarget[itKey]) &&
+                          isObject(itTarget[itKey]) &&
+                          isNotNullOrUndefined(itTarget[itKey]["id"]) &&
+                          itTarget[itKey]["id"] === resultIt.id
+                        ).map(itKey => itTarget[itKey] = resultIt);
+                      });
+                    }
+                  });
+                }
+                return result;
               })
             );
         })
