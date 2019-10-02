@@ -1,4 +1,4 @@
-import {AfterViewInit, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output} from "@angular/core";
+import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith, takeUntil} from "rxjs/operators";
@@ -12,6 +12,8 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
 
   itemSelected: T;
   abstract matAutoComplete: MatAutocomplete;
+  @Input()
+  limitRequest: number = 20;
   @Output()
   onItemSelectedEvent: EventEmitter<T> = new EventEmitter<T>();
   @Output()
@@ -33,7 +35,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
       .pipe(
         startWith<string | T>(""),
         map((state: any) => {
-          this.filter(state)
+          this.filter(state, this.limitRequest)
             .pipe(takeUntil(this.unsubscribes))
             .subscribe(itensFiltered => {
               this.onItensFiltered.emit(itensFiltered);
@@ -45,7 +47,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
 
   ngAfterViewInit(): void {
     //filtro inicial
-    this.filter().pipe(takeUntil(this.unsubscribes)).subscribe(result => this.onItensFiltered.emit(result));
+    this.filter(null, this.limitRequest).pipe(takeUntil(this.unsubscribes)).subscribe(result => this.onItensFiltered.emit(result));
   }
 
   @HostListener("document:click", ["$event"])
@@ -102,7 +104,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     this.unsubscribes.next();
   }
 
-  abstract filter(term?: string): Observable<Array<T> | ListResource<T>>;
+  abstract filter(term?: string, limitRequest?: number): Observable<Array<T> | ListResource<T>>;
 
   abstract display(value: T): string;
 }
