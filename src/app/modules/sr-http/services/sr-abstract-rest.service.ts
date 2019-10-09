@@ -1,14 +1,14 @@
 import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
-import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
+import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isObject, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
 import {forkJoin, Observable, of} from "rxjs";
 import {deserialize, plainToClass, serialize} from "class-transformer";
 import {Model} from "../model/model";
-import {ListResource} from "../model/list-resource.model";
+import {isListResource, ListResource} from "../model/list-resource.model";
 import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model/exception/error-message.model";
 import {ModelService, PathVariable} from "./model-service.interface";
-import {catchError, expand, map, mergeMap, reduce, takeWhile} from "rxjs/operators";
+import {catchError, expand, map, mergeMap, reduce, take, takeWhile} from "rxjs/operators";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
@@ -47,6 +47,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             //pelo fato de ser um poste não se tem necessidade de se pegar a resposta
             //.map((res: Response) => res.json())
             .pipe(
+              take(1),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -62,6 +63,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + value.id)
             .put(payload)
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -79,6 +81,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
             .get()
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -86,8 +89,8 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  findByIds(ids: Array<string | T>, pathVariable?: PathVariable): Observable<Array<T>>;
-  findByIds(ids: any, pathVariable?: PathVariable): Observable<Array<T>> {
+  findByIds(ids: Array<string | T>, targetList?: ListResource<any> | Array<any>, pathVariable?: PathVariable): Observable<Array<T>>;
+  findByIds(ids: any, targetList?: any, pathVariable?: PathVariable): Observable<Array<T>> {
     return of(ids)
       .pipe(
         mergeMap((ids: Array<string | T>) => {
@@ -115,6 +118,42 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               mergeMap((idsRequest: Array<Observable<T[]>>) => forkJoin(idsRequest)),
               map((results: Array<Array<T>>) => {
                 return results.reduce((value, currentValue) => value.concat(currentValue), []);
+              }),
+              map((result: Array<T>) => {
+                //vamos fazer o processo de databinding
+                if (!isEmpty(targetList)) {
+                  result.forEach((resultIt: T) => {
+
+                    let targetItens: Array<any> = null;
+                    //pegando uma listagem de itens de um resource
+                    if (isListResource(targetList)) {
+                      targetItens = (targetList as ListResource<any>).records.filter(it => isNotNullOrUndefined(it));
+                    } else {
+                      targetItens = (targetList as Array<any>).filter(it => isNotNullOrUndefined(it));
+                    }
+                    //iterando a listagem de target
+                    //pode ser que estejamos interando um array de contas
+                    //nesse caso vamo ver se encontramo algum objeto com o id esperado
+                    let aux = false;
+                    targetItens.filter(it => resultIt.id === it["id"])
+                      .forEach((it: any, index: number) => {
+                        Model.databinding(it, resultIt);
+                        //targetItens[index] = resultIt;
+                        aux = true;
+                      });
+                    if (!aux) {
+                      targetItens.forEach(itTarget => {
+                        Object.keys(itTarget).filter(itKey =>
+                          isNotNullOrUndefined(itTarget[itKey]) &&
+                          isObject(itTarget[itKey]) &&
+                          isNotNullOrUndefined(itTarget[itKey]["id"]) &&
+                          itTarget[itKey]["id"] === resultIt.id
+                        ).map(itKey => itTarget[itKey] = resultIt);
+                      });
+                    }
+                  });
+                }
+                return result;
               })
             );
         })
@@ -135,6 +174,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
 
           return request.get()
             .pipe(
+              take(1),
               map((result) => this.deserializeArray(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             );
@@ -156,6 +196,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/first")
             .get()
             .pipe(
+              take(1),
               map((result) => this.deserializeItem(result)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -177,6 +218,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .url(this.buildServiceUrl(null, pathVariable) + "/" + _value.id)
             .delete()
             .pipe(
+              take(1),
               catchError((err) => throwErrorMessage(err, this.log))
             )
         )
@@ -194,6 +236,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             .acceptTextOnly()
             .get()
             .pipe(
+              take(1),
               map((value: string) => Number(value)),
               catchError((err) => throwErrorMessage(err, this.log))
             )
@@ -232,7 +275,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               expand((list: ListResource<T>) => list.hasNextPage() ? this.list(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
-                return isNotNullOrUndefined(list) && !list.isEmpty();
+                return isNotNullOrUndefined(list);
               }),
               map(list => list),
               reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
@@ -252,7 +295,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
               expand((list: ListResource<T>) => list.hasNextPage() ? this.listFully(list._metadata.nextPage(), pathVariable) : of(null)),
               //devemos continuar o processo enquanto temos um list populado
               takeWhile((list: ListResource<T>) => {
-                return isNotNullOrUndefined(list) && !list.isEmpty();
+                return isNotNullOrUndefined(list);
               }),
               map(list => list),
               reduce((acumulator: ListResource<T>, currentVaue: ListResource<T>) => {
