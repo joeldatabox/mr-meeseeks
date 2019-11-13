@@ -1,5 +1,5 @@
 import {deserialize, plainToClass, TransformOptions} from "class-transformer";
-import {isNotNullOrUndefined} from "../../../sr-utils";
+import {isNotNullOrUndefined, SrLogg} from "../../../sr-utils";
 import {ListResource} from "../list-resource.model";
 import {MetaData} from "../metadata.model";
 
@@ -15,53 +15,66 @@ export abstract class ClassDeserialize<T> {
   abstract deserialize(value: string): T;
 }
 
-export function deserializeItem(value: object, clazz: any): any {
+export function deserializeItem(value: object, clazz: any, log?: SrLogg): any {
+
   try {
     const result = deserialize(clazz, JSON.stringify(value)) as any;
-    //this.log.d("payload response", result);
+    if (isNotNullOrUndefined(log)) {
+      log.d("payload response", result);
+    }
     return result;
   } catch (error) {
     const errorResult = {};
     errorResult["error"] = error;
     errorResult["clazz"] = clazz;
     errorResult["payload"] = value;
-    //this.log.e("error on deserialize item ", errorResult);
+    if (isNotNullOrUndefined(log)) {
+      log.e("error on deserialize item ", errorResult);
+    }
     throw errorResult;
   }
 }
 
-export function deserializeArray(values, clazz: any): Array<any> {
+export function deserializeArray(values, clazz: any, log?: SrLogg): Array<any> {
   let itens = new Array<any>();
   if (isNotNullOrUndefined(values)) {
     try {
       itens = <Array<any>>plainToClass(clazz, values);
-      this.log.d("payload response", itens);
+      if (isNotNullOrUndefined(log)) {
+        log.d("payload response", itens);
+      }
     } catch (error) {
       const errorResult = {};
       errorResult["error"] = error;
       errorResult["clazz"] = clazz;
       errorResult["payload"] = values;
-      this.log.e("error on deserialize ", errorResult);
+      if (isNotNullOrUndefined(log)) {
+        log.e("error on deserialize ", errorResult);
+      }
       throw errorResult;
     }
   }
   return itens;
 }
 
-export function deserializeListResource(value: any, clazz: any): ListResource<any> {
+export function deserializeListResource(value: any, clazz: any, log?: SrLogg): ListResource<any> {
   const list = new ListResource<any>();
 
   if (isNotNullOrUndefined(value)) {
     try {
       list.records = <Array<any>>plainToClass(clazz, value.records);
       list._metadata = deserialize(MetaData, JSON.stringify(value._metadata));
-      this.log.d("payload response", list);
+      if (isNotNullOrUndefined(log)) {
+        log.d("payload response", list);
+      }
     } catch (error) {
       const errorResult = {};
       errorResult["error"] = error;
       errorResult["clazz"] = clazz;
       errorResult["payload"] = value;
-      this.log.e("error on deserialize ", errorResult);
+      if (isNotNullOrUndefined(log)) {
+        log.e("error on deserialize ", errorResult);
+      }
       throw errorResult;
     }
   }
