@@ -42,7 +42,11 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
   writeValue(value: any): void {
     if (value != null && value !== undefined && value !== "") {
       if (!isNaN(value)) {
-        value = value.toFixed(5);
+        let valueStr = String(value);
+        if (!valueStr.includes(".")) {
+          valueStr = valueStr + ".00";
+        }
+        value = valueStr;
       }
       this.el.nativeElement.value = this.aplicarMascara(String(value));
     } else {

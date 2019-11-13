@@ -2,14 +2,18 @@ import {SrHttpService} from "./sr-http.service";
 import {SrQuery} from "../sr-criteria";
 import {isEmpty, isNotNullOrUndefined, isNullOrUndefined, isObject, isString, splitArray} from "../../sr-utils/commons/sr-commons.model";
 import {forkJoin, Observable, of} from "rxjs";
-import {deserialize, plainToClass, serialize} from "class-transformer";
+import {serialize} from "class-transformer";
 import {Model} from "../model/model";
 import {isListResource, ListResource} from "../model/list-resource.model";
-import {MetaData} from "../model/metadata.model";
 import {throwErrorMessage} from "../model/exception/error-message.model";
 import {ModelService, PathVariable} from "./model-service.interface";
 import {catchError, expand, map, mergeMap, reduce, take, takeWhile} from "rxjs/operators";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
+import {
+  deserializeArray as customDeserializeArray,
+  deserializeItem as customDeserializeItem,
+  deserializeListResource as customDeserializeListResource
+} from "../model";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.constructor.name);
@@ -312,6 +316,14 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       clazz = this.clazz;
     }
     try {
+      const result = customDeserializeItem(value, clazz);
+      this.log.d("payload response", result);
+      return result;
+    } catch (error) {
+      this.log.e("error on deserialize item ", error);
+      throw error;
+    }
+    /*try {
       const result = deserialize(clazz, JSON.stringify(value)) as T;
       this.log.d("payload response", result);
       return result;
@@ -322,13 +334,24 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       errorResult["payload"] = value;
       this.log.e("error on deserialize item ", errorResult);
       throw errorResult;
-    }
+    }*/
   }
 
   protected deserializeArray(values, clazz?: any);
   protected deserializeArray(values, clazz?: any): Array<T> {
     let itens = new Array<T>();
     if (isNullOrUndefined(clazz)) {
+      clazz = this.clazz;
+    }
+    try {
+      itens = customDeserializeArray(values, clazz);
+      this.log.d("payload response", itens);
+    } catch (error) {
+      this.log.e("error on deserialize ", error);
+      throw error;
+    }
+    return itens;
+    /*if (isNullOrUndefined(clazz)) {
       clazz = this.clazz;
     }
     if (isNotNullOrUndefined(values)) {
@@ -344,12 +367,24 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         throw errorResult;
       }
     }
-    return itens;
+    return itens;*/
   }
 
   protected deserializeListResource(value: any, clazz?: any);
   protected deserializeListResource(value: any, clazz?: any): ListResource<T> {
-    const list = new ListResource<T>();
+    let list = new ListResource<T>();
+    if (isNullOrUndefined(clazz)) {
+      clazz = this.clazz;
+    }
+    try {
+      list = customDeserializeListResource(value, clazz);
+      this.log.d("payload response", list);
+    } catch (error) {
+      this.log.e("error on deserialize ", error);
+      throw error;
+    }
+    return list;
+    /*const list = new ListResource<T>();
     if (isNullOrUndefined(clazz)) {
       clazz = this.clazz;
     }
@@ -367,6 +402,6 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         throw errorResult;
       }
     }
-    return list;
+    return list;*/
   }
 }
