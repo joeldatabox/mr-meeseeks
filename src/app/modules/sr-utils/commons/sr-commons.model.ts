@@ -1,4 +1,6 @@
 import {ListResource} from "../../sr-http/model/list-resource.model";
+import {Model} from "../../sr-http/model";
+
 /**
  * Create a simple instance of a generic class;
  * @param type -> the class you need to instantiate
@@ -119,9 +121,12 @@ export function isPrimitive(value: any): boolean {
   return isString(value) || isBoolean(value) || isDate(value) || isNumber(value);
 }
 
-export function cloneObject(value: any): object {
+export function cloneObject(value: any, clazz?: any): object {
   if (isNullOrUndefined(value)) {
     return null;
+  }
+  if (isNotNullOrUndefined(clazz)) {
+    return Model.databinding(null, value, clazz);
   }
   const clone = {};
 
