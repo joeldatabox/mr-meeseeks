@@ -8,24 +8,17 @@ export class SrLogg {
   private readonly _warn: SrLoggWarn;
 
   constructor(private value: string | Object) {
-    if (isString(value)) {
-      this._data = SrLoggData.of(value as string);
-      this._error = SrLoggError.of(value as string);
-      this._info = SrLoggInfo.of(value as string);
-      this._warn = SrLoggWarn.of(value as string);
-    } else {
-      this._data = SrLoggData.of((value as Object).constructor.name);
-      this._error = SrLoggError.of((value as Object).constructor.name);
-      this._info = SrLoggInfo.of((value as Object).constructor.name);
-      this._warn = SrLoggWarn.of((value as Object).constructor.name);
-    }
+    this._data = SrLoggData.of(value);
+    this._error = SrLoggError.of(value);
+    this._info = SrLoggInfo.of(value);
+    this._warn = SrLoggWarn.of(value);
   }
 
   public static setProductionMode() {
     Log.setProductionMode();
   }
 
-  public static of(value: string): SrLogg {
+  public static of(value: string | Object): SrLogg {
     return new SrLogg(value);
   }
 
@@ -53,8 +46,14 @@ export class SrLogg {
 export class SrLoggData {
   private readonly _data: Logger<object>;
 
-  constructor(private value: string) {
-    this._data = Log.create("d_" + value, Level.DATA);
+  constructor(private value: string | Object) {
+    let label: string = "";
+    if (isString(value)) {
+      label = value as string;
+    } else {
+      label = (value as Object).constructor.name;
+    }
+    this._data = Log.create("d_" + label, Level.DATA);
     this._data.color = "#16c6d0";
   }
 
@@ -62,7 +61,7 @@ export class SrLoggData {
     Log.setProductionMode();
   }
 
-  public static of(value: string): SrLoggData {
+  public static of(value: string | Object): SrLoggData {
     return new SrLoggData(value);
   }
 
@@ -75,8 +74,14 @@ export class SrLoggData {
 export class SrLoggError {
   private readonly _error: Logger<object>;
 
-  constructor(private value: string) {
-    this._error = Log.create("e_" + value, Level.ERROR);
+  constructor(private value: string | Object) {
+    let label: string = "";
+    if (isString(value)) {
+      label = value as string;
+    } else {
+      label = (value as Object).constructor.name;
+    }
+    this._error = Log.create("e_" + label, Level.ERROR);
     this._error.color = "#e26a6a";
   }
 
@@ -84,7 +89,7 @@ export class SrLoggError {
     Log.setProductionMode();
   }
 
-  public static of(value: string): SrLoggError {
+  public static of(value: string | Object): SrLoggError {
     return new SrLoggError(value);
   }
 
@@ -97,8 +102,14 @@ export class SrLoggError {
 export class SrLoggInfo {
   private readonly _info: Logger<object>;
 
-  constructor(private value: string) {
-    this._info = Log.create("i_" + value, Level.INFO);
+  constructor(private value: string | Object) {
+    let label: string = "";
+    if (isString(value)) {
+      label = value as string;
+    } else {
+      label = (value as Object).constructor.name;
+    }
+    this._info = Log.create("i_" + label, Level.INFO);
     this._info.color = "#92a2b9";
   }
 
@@ -106,7 +117,7 @@ export class SrLoggInfo {
     Log.setProductionMode();
   }
 
-  public static of(value: string): SrLoggInfo {
+  public static of(value: string | Object): SrLoggInfo {
     return new SrLoggInfo(value);
   }
 
@@ -119,8 +130,14 @@ export class SrLoggInfo {
 export class SrLoggWarn {
   private readonly _warn: Logger<object>;
 
-  constructor(private value: string) {
-    this._warn = Log.create("w_" + value, Level.WARN);
+  constructor(private value: string | Object) {
+    let label: string = "";
+    if (isString(value)) {
+      label = value as string;
+    } else {
+      label = (value as Object).constructor.name;
+    }
+    this._warn = Log.create("w_" + label, Level.WARN);
     this._warn.color = "#fcb66c";
   }
 
@@ -128,7 +145,7 @@ export class SrLoggWarn {
     Log.setProductionMode();
   }
 
-  public static of(value: string): SrLoggWarn {
+  public static of(value: string | Object): SrLoggWarn {
     return new SrLoggWarn(value);
   }
 
