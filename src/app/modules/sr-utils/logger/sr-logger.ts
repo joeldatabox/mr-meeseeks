@@ -1,5 +1,5 @@
 import {Level, Log, Logger} from "ng2-logger/browser";
-import {isEmpty} from "../commons/sr-commons.model";
+import {isEmpty, isString} from "../commons/sr-commons.model";
 
 export class SrLogg {
   private readonly _data: SrLoggData;
@@ -7,11 +7,18 @@ export class SrLogg {
   private readonly _info: SrLoggInfo;
   private readonly _warn: SrLoggWarn;
 
-  constructor(private value: string) {
-    this._data = SrLoggData.of(value);
-    this._error = SrLoggError.of(value);
-    this._info = SrLoggInfo.of(value);
-    this._warn = SrLoggWarn.of(value);
+  constructor(private value: string | Object) {
+    if (isString(value)) {
+      this._data = SrLoggData.of(value as string);
+      this._error = SrLoggError.of(value as string);
+      this._info = SrLoggInfo.of(value as string);
+      this._warn = SrLoggWarn.of(value as string);
+    } else {
+      this._data = SrLoggData.of((value as Object).constructor.name);
+      this._error = SrLoggError.of((value as Object).constructor.name);
+      this._info = SrLoggInfo.of((value as Object).constructor.name);
+      this._warn = SrLoggWarn.of((value as Object).constructor.name);
+    }
   }
 
   public static setProductionMode() {
