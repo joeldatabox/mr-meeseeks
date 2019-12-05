@@ -26,13 +26,13 @@ export class ErrorMessage {
 }
 
 export class HttpStatus {
-  code: number;
+  statusCode: number;
   reasonPhrase: string;
   statusName: string;
 
   constructor(value?: any) {
     if (isNotNullOrUndefined(value)) {
-      this.code = value.code;
+      this.statusCode = value.statusCode;
       this.reasonPhrase = value.reasonPhrase;
       this.statusName = value.statusName;
     }
