@@ -78,6 +78,13 @@ export class SrRequest {
     return this;
   }
 
+  public appendParamIsNotNullOrUndefined(key: string, value: string): SrRequest {
+    if (isNotNullOrUndefined(value)) {
+      this.appendParam(key, value);
+    }
+    return this;
+  }
+
   public url(url: string): SrRequest {
     this._url = url;
     return this;
