@@ -2,8 +2,13 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SrMediaType} from "./sr-media-type";
 import {Observable} from "rxjs";
-import {isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
+import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
+import {Model} from "../model";
+import moment from "moment-es6";
+
+const DATE_TIME_PATTERN = "YYYY-MM-DDTHH:mm:ss.SSSZZ";
+const DATE_PATTERN = "YYYY-MM-DD";
 
 /**
  * @author Joel Rodrigues Moreira
@@ -73,14 +78,61 @@ export class SrRequest {
     return this;
   }
 
-  public appendParam(key: string, value: string): SrRequest {
-    this._params = this._params.append(key, value);
+  public appendParam(key: string, value: string | Model): SrRequest {
+    if (isNullOrUndefined(value)) {
+      this._params = this._params.append(key, value as any);
+    } else if (isString(value)) {
+      this._params = this._params.append(key, value as string);
+    } else {
+      this._params = this._params.append(key, (value as Model).id);
+    }
     return this;
   }
 
-  public appendParamIsNotNullOrUndefined(key: string, value: string): SrRequest {
+  public appendParamIfNotNullOrUndefined(key: string, value: string | Model): SrRequest {
     if (isNotNullOrUndefined(value)) {
       this.appendParam(key, value);
+    }
+    return this;
+  }
+
+  public appendParamDate(key: string, value: Date, pattern?: string): SrRequest {
+    if (isNullOrUndefined(pattern)) {
+      pattern = DATE_PATTERN;
+    }
+
+    if (isNotNullOrUndefined(value)) {
+      this.appendParam(key, moment(value).format(pattern));
+    } else {
+      this.appendParam(key, value as any);
+    }
+    return this;
+  }
+
+  public appendParamDateIfNotNullOrUndefined(key: string, value: Date): SrRequest {
+    if (isNotNullOrUndefined(value)) {
+      this.appendParamDate(key, value);
+    }
+    return this;
+  }
+
+  public appendParamDateTime(key: string, value: Date, pattern?: string): SrRequest {
+    if (isNullOrUndefined(pattern)) {
+      pattern = DATE_TIME_PATTERN;
+    }
+
+    if (isNotNullOrUndefined(value)) {
+      this.appendParam(key, moment(value).format(pattern));
+    } else {
+      this.appendParam(key, value as any);
+    }
+
+    return this;
+  }
+
+  public appendParamDateTimeIfNotNullOrUndefined(key: string, value: Date): SrRequest {
+    if (isNotNullOrUndefined(value)) {
+      this.appendParamDateTime(key, value);
     }
     return this;
   }
