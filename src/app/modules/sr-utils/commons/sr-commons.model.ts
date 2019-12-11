@@ -1,5 +1,5 @@
 import {ListResource} from "../../sr-http/model/list-resource.model";
-import {Model} from "../../sr-http/model";
+import {Model} from "../../sr-http/model/model";
 
 /**
  * Create a simple instance of a generic class;
