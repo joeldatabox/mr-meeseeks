@@ -95,9 +95,9 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     } else {
       this.itemSelected = (event as T);
     }
-    this.onItemSelectedEvent.emit(this.itemSelected);
     this.form.control.setValue(this.itemSelected);
     this.form.control.updateValueAndValidity();
+    this.onItemSelectedEvent.emit(this.itemSelected);
   }
 
   ngOnDestroy(): void {

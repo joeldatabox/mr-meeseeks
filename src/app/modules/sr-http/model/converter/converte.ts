@@ -1,5 +1,6 @@
 import {deserialize, plainToClass, TransformOptions} from "class-transformer";
-import {isNotNullOrUndefined, SrLogg} from "../../../sr-utils";
+import {isNotNullOrUndefined} from "../../../sr-utils/commons/sr-commons.model";
+import {SrLogg} from "../../../sr-utils/logger/sr-logger";
 import {ListResource} from "../list-resource.model";
 import {MetaData} from "../metadata.model";
 
