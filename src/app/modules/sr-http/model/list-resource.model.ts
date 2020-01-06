@@ -32,9 +32,10 @@ export class ListResource<T> {
   public pushAll(itens: Array<T> | ListResource<T>): ListResource<T> {
     let records;
     if (Array.isArray(itens)) {
-      records = itens;
+      records = itens as Array<T>;
     } else {
-      records = itens.records;
+      records = (itens as ListResource<T>).records;
+      this._metadata.add((itens as ListResource<T>)._metadata);
     }
     records.forEach(i => this.push(i));
     return this;
