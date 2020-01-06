@@ -79,6 +79,15 @@ export class MetaData {
     }
     return "";
   }
+
+  add(meta: MetaData): MetaData {
+    this.page = meta.page;
+    this.pageSize = meta.pageSize;
+    this.totalPages = meta.totalPages;
+    this.totalRecords = meta.totalRecords;
+    this.links = meta.links;
+    return this;
+  }
 }
 
 export class Link {
