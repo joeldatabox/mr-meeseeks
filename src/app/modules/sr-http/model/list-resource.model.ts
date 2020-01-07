@@ -76,6 +76,10 @@ export class ListResource<T> {
       return this.records.filter(item => item["id"] === id)[0];
     }
   }
+
+  public isComplete(): boolean {
+    return this._metadata.totalRecords === this.records.length;
+  }
 }
 
 function _isNullOrUndefined(...value: any[]): boolean {
