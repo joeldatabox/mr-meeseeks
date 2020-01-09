@@ -9,6 +9,7 @@ import {Subject} from "rxjs/internal/Subject";
 
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit, OnDestroy {
   protected unsubscribes: Subject<void> = new Subject();
+  protected debounceTimeValue: number = 500;
 
   itemSelected: T;
   abstract matAutoComplete: MatAutocomplete;
@@ -30,19 +31,25 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
       .pipe(takeUntil(this.unsubscribes))
       .subscribe((event) => this.onItemSelected(event));
     //escutando evento do form
-    this.form.valueChanges
-      .pipe(debounceTime(500))
+    this.valueChanges().pipe(
+      map((state: any) => {
+        this.filter(state, this.limitRequest)
+          .pipe(takeUntil(this.unsubscribes))
+          .subscribe(itensFiltered => {
+            this.onItensFiltered.emit(itensFiltered);
+          });
+      }),
+      takeUntil(this.unsubscribes)
+    ).subscribe();
+  }
+
+  protected valueChanges(): Observable<any> {
+    //escutando evento do form
+    return this.form.valueChanges
+      .pipe(debounceTime(this.debounceTimeValue))
       .pipe(
         startWith<string | T>(""),
-        map((state: any) => {
-          this.filter(state, this.limitRequest)
-            .pipe(takeUntil(this.unsubscribes))
-            .subscribe(itensFiltered => {
-              this.onItensFiltered.emit(itensFiltered);
-            });
-        }),
-        takeUntil(this.unsubscribes)
-      ).subscribe();
+      );
   }
 
   ngAfterViewInit(): void {
@@ -57,13 +64,14 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     }
   }
 
-  @HostListener("document:keydown", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
+  @HostListener("document:keydown", ["$event"])
+  onKeydownHandler(event: KeyboardEvent) {
     if (isNullOrUndefined(this.itemSelected)) {
       this.itemSelected = this.form.control.value;
     }
   }
 
-  @HostListener("blur", ["$event"])
+  @HostListener("blur", ["$event.target.value"])
   onBlur($event: any) {
     //vamos verificar se o usuário fez alguma modificação no input
     //se a inicial for a mesma, devemos inserir o itemSelected no formControl novamente
@@ -82,6 +90,8 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
             //removendo o item selecionado
             this.onItemSelected(null);
           }
+        } else {
+          this.onItemSelected(null);
         }
       }
     } else {
@@ -104,7 +114,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     this.unsubscribes.next();
   }
 
-  abstract filter(term?: string, limitRequest?: number): Observable<Array<T> | ListResource<T>>;
+  abstract filter(term?: any, limitRequest?: number): Observable<Array<T> | ListResource<T>>;
 
   abstract display(value: T): string;
 }

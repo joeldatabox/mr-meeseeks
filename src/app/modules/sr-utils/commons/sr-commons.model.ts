@@ -102,6 +102,15 @@ export function isArray(value: any): boolean {
   return Array.isArray(value);
 }
 
+/**
+ * checks if any value is instance of Array
+ * @param value -> any
+ * @param otherValue -> any
+ * @return true if both values are identical
+ */
+export function isEquals(value: any, otherValue: any): boolean {
+  return JSON.stringify(value) === JSON.stringify(otherValue);
+}
 
 /**
  * checks if any value is number
