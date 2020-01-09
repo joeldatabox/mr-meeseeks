@@ -85,7 +85,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
             return this.http
               .createRequest()
               .usingLog(this.log)
-              .url(this.buildServiceUrl(null, pathVariable) + "/" + isString(_id) ? _id as string : (_id as T).id)
+              .url(this.buildServiceUrl(null, pathVariable) + "/" + (isString(_id) ? _id as string : (_id as T).id))
               .get()
               .pipe(
                 take(1),
