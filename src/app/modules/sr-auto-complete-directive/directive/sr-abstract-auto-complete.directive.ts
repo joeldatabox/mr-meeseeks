@@ -2,7 +2,7 @@ import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnDestroy,
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith, takeUntil} from "rxjs/operators";
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {ListResource} from "../../sr-http/model/list-resource.model";
 import {Subject} from "rxjs/internal/Subject";
@@ -10,6 +10,7 @@ import {Subject} from "rxjs/internal/Subject";
 export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, AfterViewInit, OnDestroy {
   protected unsubscribes: Subject<void> = new Subject();
   protected debounceTimeValue: number = 500;
+  private subscription: Subscription = Subscription.EMPTY;
 
   itemSelected: T;
   abstract matAutoComplete: MatAutocomplete;
@@ -33,13 +34,14 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     //escutando evento do form
     this.valueChanges().pipe(
       map((state: any) => {
-        this.filter(state, this.limitRequest)
+        this.subscription.unsubscribe();
+        this.subscription = this.filter(state, this.limitRequest)
           .pipe(takeUntil(this.unsubscribes))
           .subscribe(itensFiltered => {
             this.onItensFiltered.emit(itensFiltered);
           });
       }),
-      takeUntil(this.unsubscribes)
+      takeUntil(this.unsubscribes),
     ).subscribe();
   }
 
@@ -111,6 +113,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     this.unsubscribes.next();
   }
 
