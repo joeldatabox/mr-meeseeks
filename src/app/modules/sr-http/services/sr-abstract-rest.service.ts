@@ -75,20 +75,24 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
       );
   }
 
-  findById(id: any, pathVariable?: PathVariable): Observable<T> {
+  findById(id: string | T, pathVariable?: PathVariable): Observable<T> {
     return of(id)
       .pipe(
-        mergeMap(_id =>
-          this.http
-            .createRequest()
-            .usingLog(this.log)
-            .url(this.buildServiceUrl(null, pathVariable) + "/" + _id)
-            .get()
-            .pipe(
-              take(1),
-              map((result) => this.deserializeItem(result)),
-              catchError((err) => throwErrorMessage(err, this.log))
-            )
+        mergeMap(_id => {
+            if (isNullOrUndefined(_id)) {
+              return of(null);
+            }
+            return this.http
+              .createRequest()
+              .usingLog(this.log)
+              .url(this.buildServiceUrl(null, pathVariable) + "/" + isString(_id) ? _id as string : (_id as T).id)
+              .get()
+              .pipe(
+                take(1),
+                map((result) => this.deserializeItem(result)),
+                catchError((err) => throwErrorMessage(err, this.log))
+              );
+          }
         )
       );
   }

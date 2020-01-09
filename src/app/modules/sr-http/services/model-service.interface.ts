@@ -25,7 +25,7 @@ export interface ModelService<T extends Model> {
    * Find a record by id
    * @param id -> id desired
    */
-  findById(id: any, pathVariable?: PathVariable): Observable<T>;
+  findById(id: string | T, pathVariable?: PathVariable): Observable<T>;
 
   /**
    * Find a list of record by id
