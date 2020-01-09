@@ -1,6 +1,29 @@
 import moment from "moment-es6";
 import {isDate, isNullOrUndefined} from "./sr-commons.model";
 
+export function formatDate(date: Date | moment.Moment, pattern: string): string {
+  return toMoment(date).format(pattern);
+}
+
+export function parseDate(date: string | Date, pattern: string): Date {
+  if (isDate(date)) {
+    return date as Date;
+  }
+  const current = moment(date as string, pattern);
+  if (!current.isValid()) {
+    throw new Error("Error. date =>" + date + ", pattern =>" + pattern);
+  }
+  return current.toDate();
+}
+
+export function isValidMoment(date: moment.Moment): boolean {
+  return date.isValid();
+}
+
+export function isValidDate(date: Date): boolean {
+  return isValidMoment(toMoment(date));
+}
+
 export function toMoment(date: Date | moment.Moment): moment.Moment {
   return isDate(date) ? moment(date as Date) : date as moment.Moment;
 }
