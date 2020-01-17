@@ -16,7 +16,7 @@ import {
 } from "../model";
 
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
-  protected readonly log: SrLogg = SrLogg.of(this.constructor.name);
+  protected readonly log: SrLogg = SrLogg.of(this.getNameOfService());
 
   constructor(protected clazz: any, protected serviceUrl: string, protected http: SrHttpService) {
   }
@@ -37,6 +37,10 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
         });
     }
     return url;
+  }
+
+  protected getNameOfService(): string {
+    return this.constructor.name;
   }
 
   save(value: T, pathVariable?: PathVariable): Observable<T> {
