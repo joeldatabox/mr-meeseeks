@@ -1,5 +1,5 @@
 import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material";
+import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subscription} from "rxjs";
@@ -21,7 +21,7 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
   @Output()
   onItensFiltered: EventEmitter<Array<T> | ListResource<T>> = new EventEmitter<Array<T> | ListResource<T>>();
 
-  constructor(protected elementRef: ElementRef, protected form: NgControl) {
+  constructor(protected elementRef: ElementRef, protected form: NgControl, protected trigger: MatAutocompleteTrigger) {
   }
 
   ngOnInit(): void {
@@ -59,14 +59,15 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     this.filter(null, this.limitRequest).pipe(takeUntil(this.unsubscribes)).subscribe(result => this.onItensFiltered.emit(result));
   }
 
-  @HostListener("document:click", ["$event"])
+  @HostListener("click", ["$event"])
   onClick($event: any) {
     if (isNullOrUndefined(this.itemSelected)) {
       this.itemSelected = this.form.control.value;
     }
+    this.trigger.openPanel();
   }
 
-  @HostListener("document:keydown", ["$event"])
+  @HostListener("keydown", ["$event"])
   onKeydownHandler(event: KeyboardEvent) {
     if (isNullOrUndefined(this.itemSelected)) {
       this.itemSelected = this.form.control.value;
