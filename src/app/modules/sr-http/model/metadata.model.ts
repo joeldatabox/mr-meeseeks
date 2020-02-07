@@ -5,6 +5,7 @@ export class MetaData {
   pageSize: number;
   totalPages: number;
   totalRecords: number;
+  totalAll: number;
   links: Link[];
 
   constructor(inst?: any) {
