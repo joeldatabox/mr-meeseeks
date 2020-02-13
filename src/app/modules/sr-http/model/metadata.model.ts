@@ -1,6 +1,7 @@
 import {isEmpty, isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
 export class MetaData {
+  totalLoadedRecords: number;
   page: number;
   pageSize: number;
   totalPages: number;
@@ -17,6 +18,8 @@ export class MetaData {
       this.totalPages = inst.totalPages;
       this.totalRecords = inst.totalRecords;
       this.totalRecords = inst.totalRecords;
+
+      this.totalLoadedRecords = this.pageSize;
       if (!isEmpty(inst.links)) {
         // @ts-ignore
         inst.links.forEach(l => this.links.push(new Link(l)));
@@ -86,6 +89,8 @@ export class MetaData {
     this.pageSize = meta.pageSize;
     this.totalPages = meta.totalPages;
     this.totalRecords = meta.totalRecords;
+    this.totalAll = meta.totalAll;
+    this.totalLoadedRecords += this.pageSize;
     this.links = meta.links;
     return this;
   }
