@@ -1,7 +1,9 @@
-import {isEmpty, isNotNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
+import {isEmpty, isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
+import {Exclude} from "class-transformer";
 
 export class MetaData {
-  totalLoadedRecords: number;
+  @Exclude()
+  private _totalLoadedRecords: number;
   page: number;
   pageSize: number;
   totalPages: number;
@@ -27,6 +29,17 @@ export class MetaData {
     }
   }
 
+
+  get totalLoadedRecords(): number {
+    if (isNullOrUndefined(this._totalLoadedRecords)) {
+      this._totalLoadedRecords = this.pageSize;
+    }
+    return this._totalLoadedRecords;
+  }
+
+  set totalLoadedRecords(value: number) {
+    this._totalLoadedRecords = value;
+  }
 
   public hasFirstPage(): boolean {
     return this.hasRel("first");
