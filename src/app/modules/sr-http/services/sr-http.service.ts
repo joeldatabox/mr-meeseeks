@@ -58,6 +58,11 @@ export class SrRequest {
     return this;
   }
 
+  public acceptPDFOnly(): SrRequest {
+    this._headers = this._headers.set("Accept", SrMediaType.APPLICATION_PDF);
+    return this;
+  }
+
   public acceptTextOnly(): SrRequest {
     this._headers = this._headers.set("Accept", SrMediaType.TEXT_PLAIN);
     return this;
