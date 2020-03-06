@@ -17,3 +17,9 @@ export enum SrResponseType {
   JSON = "json",
   TEXT = "text"
 }
+
+export enum SrHttpObserve {
+  BODY = "body",
+  EVENTS = "events",
+  RESPONSE = "response"
+}
