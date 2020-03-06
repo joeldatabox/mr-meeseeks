@@ -10,3 +10,10 @@ export class SrMediaType {
   public static readonly APPLICATION_PDF = "application/pdf";
   public static readonly TEXT_PLAIN = "text/plain";
 }
+
+export enum SrResponseType {
+  ARRAY_BUFFER = "arraybuffer",
+  BLOB = "blob",
+  JSON = "json",
+  TEXT = "text"
+}

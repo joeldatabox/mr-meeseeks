@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SrMediaType} from "./sr-media-type";
+import {SrMediaType, SrResponseType} from "./sr-media-type";
 import {Observable} from "rxjs";
 import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
@@ -32,6 +32,7 @@ export class SrRequest {
   private _url: string;
   // @ts-ignore
   private _headers: HttpHeaders;
+  private _responseType: string;
   private _params: HttpParams;
   private _log: SrLogg;
 
@@ -55,16 +56,25 @@ export class SrRequest {
 
   public acceptJsonOnly(): SrRequest {
     this._headers = this._headers.set("Accept", SrMediaType.APPLICATION_JSON_ANY);
+    if (isNullOrUndefined(this._responseType)) {
+      this.responseType(SrResponseType.JSON);
+    }
     return this;
   }
 
   public acceptPDFOnly(): SrRequest {
     this._headers = this._headers.set("Accept", SrMediaType.APPLICATION_PDF);
+    if (isNullOrUndefined(this._responseType)) {
+      this.responseType(SrResponseType.BLOB);
+    }
     return this;
   }
 
   public acceptTextOnly(): SrRequest {
     this._headers = this._headers.set("Accept", SrMediaType.TEXT_PLAIN);
+    if (isNullOrUndefined(this._responseType)) {
+      this.responseType(SrResponseType.TEXT);
+    }
     return this;
   }
 
@@ -75,6 +85,11 @@ export class SrRequest {
 
   public contentTypeJson(): SrRequest {
     this._headers = this._headers.set("Content-Type", SrMediaType.APPLICATION_JSON_UTF8);
+    return this;
+  }
+
+  public responseType(value: SrResponseType | string): SrRequest {
+    this._responseType = value;
     return this;
   }
 
@@ -177,8 +192,14 @@ export class SrRequest {
       .delete(encodeURI(this._url), this.buildOptionsRequest());
   }
 
-  private buildOptionsRequest() {
-    return {headers: this._headers, params: this._params};
+  private buildOptionsRequest(): any {
+    return {
+      headers: this._headers,
+      params: this._params,
+      reportProgress: undefined,
+      responseType: this._responseType as string,
+      withCredentials: undefined
+    };
   }
 
   private logURL(type: "GET" | "PUT" | "DELETE" | "POST", url: string, payload?: any): void {
