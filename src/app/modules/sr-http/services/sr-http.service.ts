@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {SrMediaType, SrResponseType} from "./sr-media-type";
+import {SrHttpObserve, SrMediaType, SrResponseType} from "./sr-media-type";
 import {Observable} from "rxjs";
 import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
@@ -35,13 +35,12 @@ export class SrRequest {
   private _responseType: string;
   private _params: HttpParams;
   private _log: SrLogg;
+  private _observer: SrHttpObserve;
 
   constructor(private http: HttpClient) {
     // @ts-ignore
     this._headers = new HttpHeaders();
     this._params = new HttpParams();
-    this.acceptJsonOnly()
-      .contentTypeJson();
   }
 
   public setHeader(key: string, value: string | string[]): SrRequest {
@@ -90,6 +89,11 @@ export class SrRequest {
 
   public responseType(value: SrResponseType | string): SrRequest {
     this._responseType = value;
+    return this;
+  }
+
+  public observe(observe: SrHttpObserve): SrRequest {
+    this._observer = observe;
     return this;
   }
 
@@ -169,35 +173,44 @@ export class SrRequest {
 
   public get(): Observable<any> {
     this.logURL("GET", this._url);
-    return this.http.get(encodeURI(this._url), this.buildOptionsRequest());
+    return this.http.get(encodeURI(this._url), this.buildOptionsRequest("get"));
   }
 
   public post(body?: any): Observable<any> {
     this.logURL("POST", this._url, body);
     return this.http
     // @ts-ignore
-      .post(encodeURI(this._url), body, this.buildOptionsRequest());
+      .post(encodeURI(this._url), body, this.buildOptionsRequest("post"));
   }
 
   public put(body?: any): Observable<any> {
     this.logURL("PUT", this._url, body);
     return this.http
     // @ts-ignore
-      .put(encodeURI(this._url), body, this.buildOptionsRequest());
+      .put(encodeURI(this._url), body, this.buildOptionsRequest("put"));
   }
 
   public delete(): Observable<any> {
     this.logURL("DELETE", this._url);
     return this.http
-      .delete(encodeURI(this._url), this.buildOptionsRequest());
+      .delete(encodeURI(this._url), this.buildOptionsRequest("delete"));
   }
 
-  private buildOptionsRequest(): any {
+  private buildOptionsRequest(type: "get" | "post" | "put" | "delete"): any {
+    if (!this._headers.has("Accept")) {
+      this.acceptJsonOnly();
+    }
+    if (type === "post" || type === "put") {
+      if (!this._headers.has("Content-Type")) {
+        this.contentTypeJson();
+      }
+    }
     return {
       headers: this._headers,
       params: this._params,
       reportProgress: undefined,
       responseType: this._responseType as string,
+      observe: this._observer,
       withCredentials: undefined
     };
   }
