@@ -34,7 +34,7 @@ export class SrAutoTabDirective implements AfterViewInit {
     });
 
     //verificando se tem algum parametro na url relacionado a tab
-    this.setIndexTab(this.queryParamUtilsService.getQueryParameter(this.tabParam));
+    this.setIndexTab(this.queryParamUtilsService.getParameter(this.tabParam));
 
     //colocando um ouvinte para automatizar a atulização dos parametros
     this.matTabGroup.selectedIndexChange.subscribe(index => {

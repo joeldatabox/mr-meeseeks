@@ -1,5 +1,6 @@
-import {ListResource} from "../../sr-http/model/list-resource.model";
+import {isListResource, ListResource} from "../../sr-http/model/list-resource.model";
 import {Model} from "../../sr-http/model/model";
+import {ErrorMessage} from "../../sr-http/model";
 
 /**
  * Create a simple instance of a generic class;
@@ -40,21 +41,33 @@ export function isNotNullOrUndefined(...value: any[]): boolean {
 }
 
 /**
- * checks if array or any element instance of String is null, undefined or empty
- * @param value -> array of any instance of String
+ * checks if array, ListResource or any element instance of String is null, undefined or empty
+ * @param value -> array, ListResource of any instance of String
  * @return true if value is null, undefined or empty
  */
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: string | ListResource<any> | Array<any>): boolean {
   if (isNullOrUndefined(value)) {
     return true;
   }
-  if (value instanceof ListResource) {
-    return value.records.length === 0;
+
+  if (isString(value) || isArray(value)) {
+    return (value as string | Array<any>).length === 0;
   }
-  if (value.length > 0) {
-    return false;
+
+  if (isListResource(value)) {
+    return (value as ListResource<any>).isEmpty();
   }
-  return true;
+
+  throw new ErrorMessage("value is not expected");
+}
+
+/**
+ * checks if array, ListResource or any element instance of String is not null, undefined or not empty
+ * @param value -> array, ListResource of any instance of String
+ * @return true if value is not null, undefined or not empty
+ */
+export function isNotEmpty(value: string | ListResource<any> | Array<any>): boolean {
+  return !isEmpty(value);
 }
 
 /**

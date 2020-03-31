@@ -218,7 +218,7 @@ export class SrRequest {
   private logURL(type: "GET" | "PUT" | "DELETE" | "POST", url: string, payload?: any): void {
     if (isNotNullOrUndefined(this._log)) {
       if (this._params.keys().length > 0) {
-        this._log.i(type + "[" + url + this._params.toString() + "]", payload);
+        this._log.i(type + "[" + url + "?" + this._params.toString() + "]", payload);
       } else {
         this._log.i(type + "[" + url + "]", payload);
       }
