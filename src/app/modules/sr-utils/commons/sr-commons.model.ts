@@ -45,7 +45,7 @@ export function isNotNullOrUndefined(...value: any[]): boolean {
  * @param value -> array, ListResource of any instance of String
  * @return true if value is null, undefined or empty
  */
-export function isEmpty(value: string | ListResource<any> | Array<any>): boolean {
+export function isEmpty(value: string | ListResource<any> | Array<any> | any): boolean {
   if (isNullOrUndefined(value)) {
     return true;
   }
@@ -58,6 +58,9 @@ export function isEmpty(value: string | ListResource<any> | Array<any>): boolean
     return (value as ListResource<any>).isEmpty();
   }
 
+  if ((value as any).length > 0) {
+    return false;
+  }
   throw new ErrorMessage("value is not expected");
 }
 
