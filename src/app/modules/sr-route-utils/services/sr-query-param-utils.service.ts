@@ -165,6 +165,17 @@ export class SrQueryParamUtilsService {
     return aux;
   }
 
+  addPrefix(value: QueryParam, prefix: string): QueryParam {
+    const newParams: QueryParam = {};
+    if (isNotNullOrUndefined(value)) {
+      prefix = this.preparePrefix(prefix);
+      Object.keys(value).forEach(key => {
+        newParams[prefix + key] = value[key];
+      });
+    }
+    return newParams;
+  }
+
   removePrefix(value: QueryParam, prefix: string): QueryParam {
     const newParams: QueryParam = {};
     if (isNotNullOrUndefined(value) && isNotEmpty(prefix)) {
