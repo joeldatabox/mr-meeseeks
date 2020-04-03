@@ -45,6 +45,8 @@ export class SrMaskCurrencyDirective implements ControlValueAccessor, OnInit {
         let valueStr = String(value);
         if (!valueStr.includes(".")) {
           valueStr = valueStr + ".00";
+        } else if (valueStr.split(".")[1].length === 1) {
+          valueStr = valueStr + "0";
         }
         value = valueStr;
       }
