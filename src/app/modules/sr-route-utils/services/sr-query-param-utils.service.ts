@@ -21,22 +21,24 @@ export class SrQueryParamUtilsService {
 
   setQueryParameter(params: { [key: string]: string | string[] }, prefix?: string): SrQueryParamUtilsService {
     if (params !== null && params !== undefined) {
-      const aux: QueryParam = {};
+      setTimeout(() => {
+        const aux: QueryParam = {};
 
-      const keys: Array<string> = this.route.snapshot.queryParamMap.keys;
-      if (keys !== null && keys.length !== 0) {
-        keys.forEach(_key => {
-          const value = this.route.snapshot.queryParamMap.getAll(_key);
-          aux[_key] = value.length === 1 ? value[0] : value;
+        const keys: Array<string> = this.route.snapshot.queryParamMap.keys;
+        if (keys !== null && keys.length !== 0) {
+          keys.forEach(_key => {
+            const value = this.route.snapshot.queryParamMap.getAll(_key);
+            aux[_key] = value.length === 1 ? value[0] : value;
+          });
+        }
+        prefix = this.preparePrefix(prefix);
+
+        Object.keys(params).forEach(key => {
+          aux[prefix + key] = params[key];
         });
-      }
-      prefix = this.preparePrefix(prefix);
 
-      Object.keys(params).forEach(key => {
-        aux[prefix + key] = params[key];
-      });
-
-      this.router.navigate([], {queryParams: aux});
+        this.router.navigate([], {queryParams: aux});
+      }, 0);
 
     }
     return this;
@@ -184,6 +186,29 @@ export class SrQueryParamUtilsService {
       });
     }
     return newParams;
+  }
+
+  remove(key: string, prefix?: string): SrQueryParamUtilsService {
+    //prefix = this.preparePrefix(prefix);
+    if (this.contains(key, prefix)) {
+      const aux = {};
+      const keys = this.getKeys(prefix);
+      prefix = this.preparePrefix(prefix);
+      if (isNotEmpty(keys)) {
+        keys.filter(k => k !== prefix + key).forEach(k => {
+          const parameters = this.getAllParameter(k);
+          if (isEmpty(parameters)) {
+            aux[k] = parameters;
+          } else if (parameters.length > 1) {
+            aux[k] = parameters;
+          } else {
+            aux[k] = parameters[0];
+          }
+        });
+      }
+      this.router.navigate([], {queryParams: aux});
+    }
+    return this;
   }
 
   private preparePrefix(prefix: string): string {
