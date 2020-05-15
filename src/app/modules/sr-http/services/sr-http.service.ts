@@ -2,10 +2,11 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SrHttpObserve, SrMediaType, SrResponseType} from "./sr-media-type";
 import {Observable} from "rxjs";
-import {isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
+import {isModel, isNotNullOrUndefined, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {SrLogg} from "../../sr-utils/logger/sr-logger";
 import {Model} from "../model";
 import moment from "moment-es6";
+import {Mode} from "crypto-js";
 
 const DATE_TIME_PATTERN = "YYYY-MM-DDTHH:mm:ss.SSSZZ";
 const DATE_PATTERN = "YYYY-MM-DD";
@@ -179,14 +180,14 @@ export class SrRequest {
   public post(body?: any): Observable<any> {
     this.logURL("POST", this._url, body);
     return this.http
-    // @ts-ignore
+      // @ts-ignore
       .post(encodeURI(this._url), body, this.buildOptionsRequest("post"));
   }
 
   public put(body?: any): Observable<any> {
     this.logURL("PUT", this._url, body);
     return this.http
-    // @ts-ignore
+      // @ts-ignore
       .put(encodeURI(this._url), body, this.buildOptionsRequest("put"));
   }
 
