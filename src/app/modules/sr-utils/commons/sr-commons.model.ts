@@ -143,7 +143,7 @@ export function isNumber(value: any): boolean {
  * @return true if value is instance of Model
  */
 export function isModel(value: any): boolean {
-  return value instanceof Model;
+  return isNullOrUndefined(value) ? false : isObject(value) ? "id" in value : false;
 }
 
 /**
