@@ -138,6 +138,15 @@ export function isNumber(value: any): boolean {
 }
 
 /**
+ * checks if any value is instance of Model
+ * @param value -> any
+ * @return true if value is instance of Model
+ */
+export function isModel(value: any): boolean {
+  return isNullOrUndefined(value) ? false : isObject(value) ? "id" in value : false;
+}
+
+/**
  * checks if any value is string, boolean, date or number
  * @param value -> any
  * @return true if value is instance of Number

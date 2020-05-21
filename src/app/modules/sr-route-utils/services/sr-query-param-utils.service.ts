@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {isEmpty, isNotEmpty, isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils";
+import {isArray, isEmpty, isNotEmpty, isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils";
 import moment from "moment-es6";
 import {Model} from "../../sr-http/model";
 
@@ -21,34 +21,36 @@ export class SrQueryParamUtilsService {
 
   setQueryParameter(params: { [key: string]: string | string[] }, prefix?: string): SrQueryParamUtilsService {
     if (params !== null && params !== undefined) {
-      const aux: QueryParam = {};
+      setTimeout(() => {
+        const aux: QueryParam = {};
 
-      const keys: Array<string> = this.route.snapshot.queryParamMap.keys;
-      if (keys !== null && keys.length !== 0) {
-        keys.forEach(_key => {
-          const value = this.route.snapshot.queryParamMap.getAll(_key);
-          aux[_key] = value.length === 1 ? value[0] : value;
+        const keys: Array<string> = this.route.snapshot.queryParamMap.keys;
+        if (keys !== null && keys.length !== 0) {
+          keys.forEach(_key => {
+            const value = this.route.snapshot.queryParamMap.getAll(_key);
+            aux[_key] = value.length === 1 ? value[0] : value;
+          });
+        }
+        prefix = this.preparePrefix(prefix);
+
+        Object.keys(params).forEach(key => {
+          aux[prefix + key] = params[key];
         });
-      }
-      prefix = this.preparePrefix(prefix);
 
-      Object.keys(params).forEach(key => {
-        aux[prefix + key] = params[key];
-      });
-
-      this.router.navigate([], {queryParams: aux});
+        this.router.navigate([], {queryParams: aux});
+      }, 0);
 
     }
     return this;
   }
 
-  setParameter(key: string, value?: string, prefix?: string): SrQueryParamUtilsService {
+  setParameter(key: string, value?: string | Array<string>, prefix?: string): SrQueryParamUtilsService {
     const query = {};
     query[key] = value;
     return this.setQueryParameter(query, prefix);
   }
 
-  setParameterIfNotNul(key: string, value?: string, prefix?: string): SrQueryParamUtilsService {
+  setParameterIfNotNul(key: string, value?: string | Array<string>, prefix?: string): SrQueryParamUtilsService {
     if (isNotNullOrUndefined(value)) {
       return this.setParameter(key, value, prefix);
     }
@@ -59,15 +61,16 @@ export class SrQueryParamUtilsService {
     return this.route.snapshot.queryParamMap.get(this.preparePrefix(prefix) + key);
   }
 
-  setDateParameter(key: string, date: Date, pattenr?: string, prefix?: string): SrQueryParamUtilsService {
+  setDateParameter(key: string, date: Date | Array<Date>, pattenr?: string, prefix?: string): SrQueryParamUtilsService {
     if (isNullOrUndefined(pattenr)) {
       pattenr = DATE_PATTERN;
     }
-    this.setParameter(key, moment(date).format(pattenr), prefix);
+    this.setParameter(key, isArray(date) ?
+      (date as Array<Date>).map(dt => moment(dt).format(pattenr)) : moment(date as Date).format(pattenr), prefix);
     return this;
   }
 
-  setDateParameterIfNotNull(key: string, date: Date, pattern?: string, prefix?: string): SrQueryParamUtilsService {
+  setDateParameterIfNotNull(key: string, date: Date | Array<Date>, pattern?: string, prefix?: string): SrQueryParamUtilsService {
     if (isNotNullOrUndefined(date)) {
       return this.setDateParameter(key, date, pattern, prefix);
     }
@@ -85,14 +88,27 @@ export class SrQueryParamUtilsService {
     return momentValue.isValid() ? momentValue.toDate() : null;
   }
 
-  setDateTimeParameter(key: string, date: Date, pattenr?: string, prefix?: string): SrQueryParamUtilsService {
+  getAllDate(key: string, pattern?: string, prefix?: string): Array<Date> {
+    if (!this.contains(key, prefix)) {
+      return null;
+    }
+    if (isNullOrUndefined(pattern)) {
+      pattern = DATE_PATTERN;
+    }
+    return this.getAllParameter(key, prefix)
+      .map(it => moment(it, pattern))
+      .filter(it => it.isValid())
+      .map(it => it.toDate());
+  }
+
+  setDateTimeParameter(key: string, date: Date | Array<Date>, pattenr?: string, prefix?: string): SrQueryParamUtilsService {
     if (isNotNullOrUndefined(pattenr)) {
       pattenr = DATE_TIME_PATTERN;
     }
     return this.setDateParameter(key, date, pattenr, prefix);
   }
 
-  setDateTimeParameterIfNotNull(key: string, date: Date, pattern?: string, prefix?: string): SrQueryParamUtilsService {
+  setDateTimeParameterIfNotNull(key: string, date: Date | Array<Date>, pattern?: string, prefix?: string): SrQueryParamUtilsService {
     if (isNotNullOrUndefined(date)) {
       return this.setDateTimeParameter(key, date, pattern, prefix);
     }
@@ -106,14 +122,22 @@ export class SrQueryParamUtilsService {
     return this.getDate(key, pattern, prefix);
   }
 
-  setModelParam(key: string, model: Model, prefix?: string): SrQueryParamUtilsService {
-    this.setParameter(key, isNullOrUndefined(model) ? null : model.id, prefix);
+  getAllDateTime(key: string, pattern?: string, prefix?: string): Array<Date> {
+    if (isNullOrUndefined(pattern)) {
+      pattern = DATE_TIME_PATTERN;
+    }
+    return this.getAllDate(key, pattern, prefix);
+  }
+
+  setModelParam(key: string, model: Model | Array<Model>, prefix?: string): SrQueryParamUtilsService {
+    this.setParameter(key, isNullOrUndefined(model) ?
+      null : isArray(model) ? (model as Array<Model>).map(it => it.id) : (model as Model).id, prefix);
     return this;
   }
 
-  setModelParamIfNotNull(key: string, model: Model, prefix?: string): SrQueryParamUtilsService {
+  setModelParamIfNotNull(key: string, model: Model | Array<Model>, prefix?: string): SrQueryParamUtilsService {
     if (isNotNullOrUndefined(model)) {
-      this.setParameter(key, model.id, prefix);
+      this.setModelParam(key, model, prefix);
     }
     return this;
   }
@@ -125,6 +149,19 @@ export class SrQueryParamUtilsService {
     const newModel = Model.createNewModel(type);
     newModel.id = this.getParameter(key, prefix);
     return newModel;
+  }
+
+  getAllModel(key: string, type: any, prefix?: string): Array<Model> {
+    if (!this.contains(key)) {
+      return null;
+    }
+
+    return this.getAllParameter(key, prefix)
+      .map(it => {
+        const newModel = Model.createNewModel(type);
+        newModel.id = it;
+        return newModel;
+      });
   }
 
   contains(key: string, prefix?: string): boolean {
@@ -184,6 +221,29 @@ export class SrQueryParamUtilsService {
       });
     }
     return newParams;
+  }
+
+  remove(key: string, prefix?: string): SrQueryParamUtilsService {
+    //prefix = this.preparePrefix(prefix);
+    if (this.contains(key, prefix)) {
+      const aux = {};
+      const keys = this.getKeys(prefix);
+      prefix = this.preparePrefix(prefix);
+      if (isNotEmpty(keys)) {
+        keys.filter(k => k !== prefix + key).forEach(k => {
+          const parameters = this.getAllParameter(k);
+          if (isEmpty(parameters)) {
+            aux[k] = parameters;
+          } else if (parameters.length > 1) {
+            aux[k] = parameters;
+          } else {
+            aux[k] = parameters[0];
+          }
+        });
+      }
+      this.router.navigate([], {queryParams: aux});
+    }
+    return this;
   }
 
   private preparePrefix(prefix: string): string {

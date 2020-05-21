@@ -9,6 +9,8 @@ export declare interface PathVariable {
 }
 
 export interface ModelService<T extends Model> {
+  type: any;
+
   /**
    * Save a simple record
    * @param value -> value to be saved

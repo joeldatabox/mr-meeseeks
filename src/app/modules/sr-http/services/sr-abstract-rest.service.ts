@@ -18,7 +18,7 @@ import {
 export abstract class SrAbstractRestService<T extends Model> implements ModelService<T> {
   protected readonly log: SrLogg = SrLogg.of(this.getNameOfService());
 
-  constructor(protected clazz: any, protected serviceUrl: string, protected http: SrHttpService) {
+  constructor(public type: any, protected serviceUrl: string, protected http: SrHttpService) {
   }
 
   protected buildServiceUrl(query?: SrQuery | string, pathVariable?: PathVariable): string {
@@ -321,7 +321,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeItem(value: object, clazz?: any);
   protected deserializeItem(value: object, clazz?: any): T {
     if (isNullOrUndefined(clazz)) {
-      clazz = this.clazz;
+      clazz = this.type;
     }
     try {
       const result = customDeserializeItem(value, clazz);
@@ -349,7 +349,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeArray(values, clazz?: any): Array<T> {
     let itens = new Array<T>();
     if (isNullOrUndefined(clazz)) {
-      clazz = this.clazz;
+      clazz = this.type;
     }
     try {
       itens = customDeserializeArray(values, clazz);
@@ -382,7 +382,7 @@ export abstract class SrAbstractRestService<T extends Model> implements ModelSer
   protected deserializeListResource(value: any, clazz?: any): ListResource<T> {
     let list = new ListResource<T>();
     if (isNullOrUndefined(clazz)) {
-      clazz = this.clazz;
+      clazz = this.type;
     }
     try {
       list = customDeserializeListResource(value, clazz);
