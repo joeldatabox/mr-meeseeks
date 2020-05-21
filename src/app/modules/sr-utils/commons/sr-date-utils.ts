@@ -76,6 +76,10 @@ export function toLastDayOfWeek(date: Date | moment.Moment): Date {
     .toDate();
 }
 
+export function isBetween(date: Date | moment.Moment, dtIni: Date | moment.Moment, dtEnd: Date | moment.Moment): boolean {
+  return toMoment(date).isSameOrAfter(dtIni) && toMoment(date).isSameOrBefore(dtEnd);
+}
+
 
 /**
  * Remove horas, minutos, segundo e milisegundos
