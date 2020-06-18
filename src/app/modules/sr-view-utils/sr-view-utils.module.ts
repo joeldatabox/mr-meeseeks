@@ -50,7 +50,7 @@ export * from "./services/view-injector/sr-view-injector.service";
   ],
 })
 export class SrViewUtilsModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SrViewUtilsModule> {
     return {
       ngModule: SrViewUtilsModule,
       providers: [

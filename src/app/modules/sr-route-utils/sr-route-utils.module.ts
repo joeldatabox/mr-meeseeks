@@ -13,7 +13,7 @@ export * from "./services/sr-query-param-utils.service";
   exports: []
 })
 export class SrRouteUtilsModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SrRouteUtilsModule> {
     return {
       ngModule: SrRouteUtilsModule,
       providers: [

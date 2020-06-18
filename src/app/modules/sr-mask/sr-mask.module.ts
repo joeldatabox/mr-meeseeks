@@ -28,7 +28,7 @@ export * from "./services/sr-mask.service";
 })
 
 export class SrMaskModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SrMaskModule> {
     return {
       ngModule: SrMaskModule,
       providers: [
