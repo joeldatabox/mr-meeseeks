@@ -2,7 +2,7 @@ import {AfterViewInit, Directive, ElementRef, HostListener, Input, OnInit, Rende
 import {NgControl} from "@angular/forms";
 import moment from "moment-es6";
 import {DeviceDetectorService} from "ngx-device-detector";
-import {MatDatepicker} from "@angular/material";
+import { MatDatepicker } from "@angular/material/datepicker";
 import {delay} from "rxjs/operators";
 import {isEmpty, isNotNullOrUndefined, isNullOrUndefined} from "../../sr-utils/commons/sr-commons.model";
 
