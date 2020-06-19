@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {TdLoadingService} from "@covalent/core";
 import {SrLoadingTopbarService} from "../../components/loading-topbar/service/sr-loading-topbar.service";
+import {TdLoadingService} from "@covalent/core/loading";
 
 /**
  * @author Joel Rodrigues Moreira

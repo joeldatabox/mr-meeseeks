@@ -1,8 +1,9 @@
 import {CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import {CovalentDialogsModule, CovalentLoadingModule} from "@covalent/core";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {CovalentLoadingModule} from "@covalent/core/loading";
+import {CovalentDialogsModule} from "@covalent/core/dialogs";
 import {SrLoadingTopbarComponent} from "./components/loading-topbar/component/sr-loading-topbar.component";
 import {SrMetaService} from "./services/meta/sr-meta.service";
 import {SrDialogService} from "./services/dialog/sr-dialog.service";

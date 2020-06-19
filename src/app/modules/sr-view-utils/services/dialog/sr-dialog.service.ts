@@ -1,5 +1,5 @@
 import {Injectable, ViewContainerRef} from "@angular/core";
-import {IAlertConfig, IConfirmConfig, TdDialogService} from "@covalent/core";
+import {IAlertConfig, IConfirmConfig, TdDialogService} from "@covalent/core/dialogs";
 import {Observable} from "rxjs";
 import {map, take} from "rxjs/operators";
 
