@@ -11,7 +11,7 @@ export * from "./services/sr-local-storage.service";
   declarations: []
 })
 export class SrLocalStorageModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SrLocalStorageModule> {
     return {
       ngModule: SrLocalStorageModule,
       providers: [

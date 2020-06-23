@@ -16,7 +16,7 @@ import {
 } from "@angular/core";
 import {animate, AnimationBuilder, style} from "@angular/animations";
 import {Orientation, SrCarousel} from "../../model/sr-carousel";
-import {ThemePalette} from "@angular/material";
+import { ThemePalette } from "@angular/material/core";
 import {BehaviorSubject, interval, Observable, Subject} from "rxjs";
 import {filter, takeUntil} from "rxjs/operators";
 import {ListKeyManager} from "@angular/cdk/a11y";

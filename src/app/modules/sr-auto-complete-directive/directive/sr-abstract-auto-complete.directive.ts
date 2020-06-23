@@ -1,5 +1,5 @@
 import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material";
+import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subscription} from "rxjs";
