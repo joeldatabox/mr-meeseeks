@@ -1,6 +1,6 @@
 import {isListResource, ListResource} from "../../sr-http/model/list-resource.model";
-import {Model} from "../../sr-http/model/model";
-import {ErrorMessage} from "../../sr-http/model";
+//import {Model} from "../../sr-http/model/model";
+//import {ErrorMessage} from "../../sr-http/model/exception/error-message.model";
 
 /**
  * Create a simple instance of a generic class;
@@ -61,7 +61,7 @@ export function isEmpty(value: string | ListResource<any> | Array<any> | any): b
   if ((value as any).length > 0) {
     return false;
   }
-  throw new ErrorMessage("value is not expected");
+  throw new Error("value is not expected");
 }
 
 /**
@@ -153,27 +153,6 @@ export function isModel(value: any): boolean {
  */
 export function isPrimitive(value: any): boolean {
   return isString(value) || isBoolean(value) || isDate(value) || isNumber(value);
-}
-
-export function cloneObject(value: any, clazz?: any): object {
-  if (isNullOrUndefined(value)) {
-    return null;
-  }
-  if (isNotNullOrUndefined(clazz)) {
-    return Model.databinding(null, value, clazz);
-  }
-  const clone = {};
-
-  Object.keys(value).forEach(key => {
-    if (isArray(value[key])) {
-      clone[key] = new Array(value[key]);
-    } else if (isObject(value[key])) {
-      clone[key] = cloneObject(value[key]);
-    } else {
-      clone[key] = value[key];
-    }
-  });
-  return clone;
 }
 
 export function splitArray(values: Array<any>, size: number) {
