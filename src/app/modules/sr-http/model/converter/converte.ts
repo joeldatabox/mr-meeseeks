@@ -1,5 +1,5 @@
 import {deserialize, plainToClass, TransformOptions} from "class-transformer";
-import {isNotNullOrUndefined} from "../../../sr-utils/commons/sr-commons.model";
+//import {isNotNullOrUndefined} from "../../../sr-utils/commons/sr-commons.model";
 import {SrLogg} from "../../../sr-utils/logger/sr-logger";
 import {ListResource} from "../list-resource.model";
 import {MetaData} from "../metadata.model";
@@ -80,4 +80,13 @@ export function deserializeListResource(value: any, clazz: any, log?: SrLogg): L
     }
   }
   return list;
+}
+
+function isNotNullOrUndefined(...value: any[]): boolean {
+  if (value === null || value === undefined) return false;
+  let result = true;
+  for (let i = 0; i < value.length; i++) {
+    result = (!(value[i] === null || value[i] === undefined)) && result;
+  }
+  return result;
 }
