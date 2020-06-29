@@ -6,8 +6,9 @@ export function srDistinctUntilChanged<T>(): OperatorFunction<T, T> {
     return new Observable<T>(observer => {
       const wrapper = {
         next: value => {
-          if (JSON.stringify(value) !== JSON.stringify(lastValue)) {
-            lastValue = JSON.stringify(value);
+          const stringfiedValue = JSON.stringify(value);
+          if (stringfiedValue !== lastValue) {
+            lastValue = stringfiedValue;
             observer.next(value);
           }
         },
