@@ -1,5 +1,5 @@
 import {AfterViewInit, Directive, Input} from "@angular/core";
-import {MatTab, MatTabGroup} from "@angular/material";
+import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import {isEmpty, isNullOrUndefined, isString} from "../../sr-utils/commons/sr-commons.model";
 import {removeDiacritics} from "../../sr-utils/commons/sr-diacritics";
 import {SrQueryParamUtilsService} from "../../sr-route-utils/services/sr-query-param-utils.service";

@@ -102,4 +102,25 @@ export namespace Model {
     }
     return model;
   }
+
+  export function cloneObject(value: any, clazz?: any): object {
+    if (isNullOrUndefined(value)) {
+      return null;
+    }
+    if (isNotNullOrUndefined(clazz)) {
+      return databinding(null, value, clazz);
+    }
+    const clone = {};
+
+    Object.keys(value).forEach(key => {
+      if (isArray(value[key])) {
+        clone[key] = new Array(value[key]);
+      } else if (isObject(value[key])) {
+        clone[key] = cloneObject(value[key]);
+      } else {
+        clone[key] = value[key];
+      }
+    });
+    return clone;
+  }
 }

@@ -18,7 +18,7 @@ export * from "./sr-criteria/index";
   ]
 })
 export class SrHttpModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SrHttpModule> {
     return {
       ngModule: SrHttpModule,
       providers: [

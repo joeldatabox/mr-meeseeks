@@ -9,6 +9,8 @@ import {SrLocatorServiceModule} from "./modules/sr-locator-service";
 import {SrMaskModule} from "./modules/sr-mask";
 import {SrValidatorModule} from "./modules/sr-validator";
 import {SrCarouselModule} from "./modules/sr-carousel/sr-carousel.module";
+import {HammerModule} from "@angular/platform-browser";
+import {SrChartSparklineModule} from "./modules/charts";
 
 
 @NgModule({
@@ -18,13 +20,15 @@ import {SrCarouselModule} from "./modules/sr-carousel/sr-carousel.module";
   imports: [
     CommonModule,
     SrAutoCompleteDirectiveModule,
+    SrChartSparklineModule,
     SrCarouselModule,
     SrHttpModule,
     SrLocalStorageModule,
     SrLocatorServiceModule,
     SrMaskModule,
     SrValidatorModule,
-    SrViewUtilsModule
+    SrViewUtilsModule,
+    HammerModule
   ],
   exports: [
     SrAutoCompleteDirectiveModule,
