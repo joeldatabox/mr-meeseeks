@@ -1,1 +1,1 @@
-export * from "./rxjs/distinct-until-changed.js";
+export * from "./observables/distinct-until-changed.js";
