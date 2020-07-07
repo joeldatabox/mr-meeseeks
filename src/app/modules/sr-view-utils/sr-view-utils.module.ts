@@ -19,6 +19,8 @@ export * from "./components/loading-topbar/service/sr-loading-topbar.service";
 
 export * from "./directives/sr-auto-tab.directive";
 
+export * from "./obs/sr-distinct-until-changed";
+
 export * from "./services/dialog/sr-dialog.service";
 export * from "./services/loading/sr-loading.service";
 export * from "./services/meta/sr-meta.service";
