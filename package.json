@@ -14,7 +14,8 @@
     "build": "ng build",
     "test": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ node_modules/ .ng_pkg_build/ package-lock.json && npm install &&  npm-install-peers && ng-packagr -p ng-package.json && npm pack ",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
   },
   "peerDependencies": {
     "@angular/animations": "9.1.11",
