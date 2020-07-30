@@ -14,8 +14,7 @@
     "build": "ng build",
     "test": "rm -rf `find ./ -iname '*.tgz'` && rm -rf dist/ node_modules/ .ng_pkg_build/ package-lock.json && npm install &&  npm-install-peers && ng-packagr -p ng-package.json && npm pack ",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ngcc"
+    "e2e": "ng e2e"
   },
   "peerDependencies": {
     "@angular/animations": "9.1.11",
@@ -61,7 +60,7 @@
     "karma-jasmine": "~3.3.1",
     "karma-jasmine-html-reporter": "1.5.4",
     "moment-es6": "1.0.0",
-    "ng-packagr": "^9.1.5",
+    "ng-packagr": "^10.0.3",
     "npm-check-updates": "^7.0.1",
     "npm-install-peers": "1.2.1",
     "protractor": "~7.0.0",
