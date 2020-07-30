@@ -3,7 +3,12 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "types": []
+    "types": [],
+    "paths": {
+      "crypto": [
+        "../../node_modules/crypto-js"
+      ]
+    }
   },
   "files": [
     "main.ts",

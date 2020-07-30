@@ -24,7 +24,13 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "angular2-text-mask",
+              "class-transformer",
+              "moment-es6",
+              "crypto-js"
+            ]
           },
           "configurations": {
             "production": {
