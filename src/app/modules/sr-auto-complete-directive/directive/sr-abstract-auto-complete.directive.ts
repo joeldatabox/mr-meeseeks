@@ -1,5 +1,5 @@
 import {AfterViewInit, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {NgControl} from "@angular/forms";
 import {debounceTime, map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subscription} from "rxjs";
@@ -111,6 +111,9 @@ export abstract class SrAbstractAutoCompleteDirective<T> implements OnInit, Afte
     this.form.control.setValue(this.itemSelected);
     this.form.control.updateValueAndValidity();
     this.onItemSelectedEvent.emit(this.itemSelected);
+    if (isNotNullOrUndefined(this.itemSelected)) {
+      this.elementRef.nativeElement.value = "";
+    }
   }
 
   ngOnDestroy(): void {
