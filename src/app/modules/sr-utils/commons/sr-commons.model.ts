@@ -165,3 +165,38 @@ export function splitArray(values: Array<any>, size: number) {
   }
   return result;
 }
+
+const defaultCompatorArrayElement: (firstElement: any, secoundElement: any) => boolean = (firstElement: any, secoundElement: any) => {
+  return firstElement === secoundElement;
+};
+
+/**
+ * Checks whether both arrays are equal by ignoring item positions
+ * @param firstArray
+ * @param secoundArray
+ * @param optional callback to compare item by item
+ */
+export function arraysIsEqualsIgnoreOrder(firstArray: Array<any>, secoundArray: Array<any>,
+                                          callback?: (lastValue: any, newValue: any) => boolean): boolean {
+  if (
+    (isNullOrUndefined(firstArray) && isNotNullOrUndefined(secoundArray)) ||
+    (isNullOrUndefined(secoundArray) && isNotNullOrUndefined(firstArray)) ||
+    firstArray.length !== secoundArray.length
+  ) {
+    return false;
+  }
+  const uniqueValues = new Set([...firstArray, ...secoundArray]);
+  // @ts-ignore
+  for (const v of uniqueValues) {
+    if (isNullOrUndefined(callback)) {
+      const aCount = firstArray.filter(e => defaultCompatorArrayElement(e, v)).length;
+      const bCount = secoundArray.filter(e => defaultCompatorArrayElement(e, v)).length;
+      if (aCount !== bCount) return false;
+    } else {
+      const aCount = firstArray.filter(e => e === v).length;
+      const bCount = secoundArray.filter(e => e === v).length;
+      if (aCount !== bCount) return false;
+    }
+  }
+  return true;
+}
