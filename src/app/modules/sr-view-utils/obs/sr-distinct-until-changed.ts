@@ -1,15 +1,27 @@
 import {Observable, OperatorFunction} from "rxjs";
+import {isNullOrUndefined} from "../../sr-utils";
 
-export function srDistinctUntilChanged<T>(): OperatorFunction<T, T> {
+const defaultCompator: (lastValue: any, newValue: any) => boolean = (lastValue: any, newValue: any) => {
+  return lastValue !== newValue;
+};
+
+export function srDistinctUntilChanged<T>(callback?: (lastValue: any, newValue: any) => boolean): OperatorFunction<T, T> {
   return function (source: Observable<T>): Observable<T> {
     let lastValue = null;
     return new Observable<T>(subscriber => {
       source.subscribe({
         next(value: T): void {
-          const stringfiedValue = JSON.stringify(value);
-          if (stringfiedValue !== lastValue) {
-            lastValue = stringfiedValue;
-            subscriber.next(value as any);
+          if (isNullOrUndefined(callback)) {
+            const stringfiedValue = JSON.stringify(value);
+            if (defaultCompator(lastValue, stringfiedValue)) {
+              lastValue = stringfiedValue;
+              subscriber.next(value);
+            }
+          } else {
+            if (callback(lastValue, value)) {
+              lastValue = value;
+              subscriber.next(value);
+            }
           }
         }, error(err: any): void {
           subscriber.error(err);
@@ -19,22 +31,4 @@ export function srDistinctUntilChanged<T>(): OperatorFunction<T, T> {
       });
     });
   };
-
-  /*return function (source$: Observable<T>): Observable<T> {
-    let lastValue = null;
-    return new Observable<T>(observer => {
-      const wrapper = {
-        next: value => {
-          const stringfiedValue = JSON.stringify(value);
-          if (stringfiedValue !== lastValue) {
-            lastValue = stringfiedValue;
-            observer.next(value);
-          }
-        },
-        error: observer.error,
-        complete: observer.complete
-      };
-      return source$.subscribe(wrapper);
-    });
-  };*/
 }
