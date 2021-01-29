@@ -5,7 +5,7 @@ const defaultCompator: (lastValue: any, newValue: any) => boolean = (lastValue: 
   return lastValue !== newValue;
 };
 
-export function srDistinctUntilChanged<T>(callback?: (lastValue: any, newValue: any) => boolean): OperatorFunction<T, T> {
+export function srDistinctUntilChanged<T>(callback?: (lastValue: T, newValue: T) => boolean): OperatorFunction<T, T> {
   return function (source: Observable<T>): Observable<T> {
     let lastValue = null;
     return new Observable<T>(subscriber => {

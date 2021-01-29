@@ -18,34 +18,54 @@ export class SrLocalStorageService {
   constructor() {
   }
 
-  set(key: string, value: string, seedEncrypt?: string): SrLocalStorageService {
-    window.localStorage[key] = isEmpty(seedEncrypt) ? value : this.encripty(value, seedEncrypt);
+  set(key: string, value: string, seedEncrypt?: string, encryptKey?: boolean): SrLocalStorageService {
+    if (isEmpty(seedEncrypt)) {
+      window.localStorage[key] = value;
+    } else {
+      if (isNullOrUndefined(encryptKey)) {
+        encryptKey = true;
+      }
+      const localKey: string = encryptKey ? this.encripty(key, seedEncrypt) : key;
+      window.localStorage[localKey] = this.encripty(value, seedEncrypt);
+    }
     return this;
   }
 
-  get(key: string, defaultValue = null, seedEncrypt?: string): string {
+  get(key: string, defaultValue = null, seedEncrypt?: string, encryptKey?: boolean): string {
     if (isEmpty(seedEncrypt)) {
       return window.localStorage[key] || defaultValue;
     } else {
-      const result = window.localStorage[key];
+      if (isNullOrUndefined(encryptKey)) {
+        encryptKey = true;
+      }
+      const localKey: string = encryptKey ? this.decrypt(key, seedEncrypt) : key;
+      const result = window.localStorage[localKey];
       return isEmpty(result) ? defaultValue : this.decrypt(result, seedEncrypt);
     }
   }
 
-  setObject(key: string, value: object, seedEncrypt?: string): SrLocalStorageService {
+  setObject(key: string, value: object, seedEncrypt?: string, encryptKey?: boolean): SrLocalStorageService {
     if (isEmpty(seedEncrypt)) {
       window.localStorage[key] = JSON.stringify(value);
     } else {
-      window.localStorage[key] = JSON.stringify(this.encriptyObject(value, seedEncrypt));
+      if (isNullOrUndefined(encryptKey)) {
+        encryptKey = true;
+      }
+      const localKey: string = encryptKey ? this.encripty(key, seedEncrypt) : key;
+      window.localStorage[localKey] = JSON.stringify(this.encriptyObject(value, seedEncrypt));
     }
     return this;
   }
 
-  getObject(key: string, seedEncrypt?: string) {
+  getObject(key: string, seedEncrypt?: string, encryptKey?: boolean) {
     if (isEmpty(seedEncrypt)) {
       return JSON.parse(window.localStorage.getItem(key));
     } else {
-      return this.decriptyObject(JSON.parse(window.localStorage.getItem(key)), seedEncrypt);
+      if (isNullOrUndefined(encryptKey)) {
+        encryptKey = true;
+      }
+      const localKey: string = encryptKey ? this.decrypt(key, seedEncrypt) : key;
+      return this.decriptyObject(JSON.parse(window.localStorage.getItem(localKey)), seedEncrypt);
     }
   }
 
