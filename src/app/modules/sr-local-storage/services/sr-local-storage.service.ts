@@ -23,7 +23,7 @@ export class SrLocalStorageService {
       window.localStorage[key] = value;
     } else {
       if (isNullOrUndefined(encryptKey)) {
-        encryptKey = true;
+        encryptKey = false;
       }
       const localKey: string = encryptKey ? this.encripty(key, seedEncrypt) : key;
       window.localStorage[localKey] = this.encripty(value, seedEncrypt);
@@ -36,7 +36,7 @@ export class SrLocalStorageService {
       return window.localStorage[key] || defaultValue;
     } else {
       if (isNullOrUndefined(encryptKey)) {
-        encryptKey = true;
+        encryptKey = false;
       }
       const localKey: string = encryptKey ? this.decrypt(key, seedEncrypt) : key;
       const result = window.localStorage[localKey];
@@ -49,7 +49,7 @@ export class SrLocalStorageService {
       window.localStorage[key] = JSON.stringify(value);
     } else {
       if (isNullOrUndefined(encryptKey)) {
-        encryptKey = true;
+        encryptKey = false;
       }
       const localKey: string = encryptKey ? this.encripty(key, seedEncrypt) : key;
       window.localStorage[localKey] = JSON.stringify(this.encriptyObject(value, seedEncrypt));
@@ -62,15 +62,23 @@ export class SrLocalStorageService {
       return JSON.parse(window.localStorage.getItem(key));
     } else {
       if (isNullOrUndefined(encryptKey)) {
-        encryptKey = true;
+        encryptKey = false;
       }
       const localKey: string = encryptKey ? this.decrypt(key, seedEncrypt) : key;
       return this.decriptyObject(JSON.parse(window.localStorage.getItem(localKey)), seedEncrypt);
     }
   }
 
-  remove(key: string): SrLocalStorageService {
-    window.localStorage.removeItem(key);
+  remove(key: string, seedEncrypt?: string, encryptKey?: boolean): SrLocalStorageService {
+    if (isEmpty(seedEncrypt)) {
+      window.localStorage.removeItem(key);
+    } else {
+      if (isNullOrUndefined(encryptKey)) {
+        encryptKey = false;
+      }
+      const localKey: string = encryptKey ? this.decrypt(key, seedEncrypt) : key;
+      window.localStorage.removeItem(localKey);
+    }
     return this;
   }
 
