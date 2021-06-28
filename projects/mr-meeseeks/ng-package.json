@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/mr-meeseeks",
+  "lib": {
+    "entryFile": "src/public-api.ts",
+    "umdModuleIds": {
+      "class-transformer": "classTransformer",
+      "ng2-logger/browser": "browser",
+      "moment-es6": "moment",
+      "crypto-js": "Crypt",
+      "angular2-text-mask": "angular2TextMask",
+      "text-mask-core/dist/textMaskCore": "textMaskCore",
+      "text-mask-addons/dist/emailMask": "emailMask",
+      "text-mask-addons/dist/textMaskAddons": "textMaskAddons",
+      "ngx-device-detector": "i2$2",
+      "@covalent/core/loading": "i1$6",
+      "@covalent/core/dialogs": "i1$5"
+    }
+  }
+}
