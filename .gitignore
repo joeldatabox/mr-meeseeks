@@ -44,3 +44,4 @@ Thumbs.db
 /package-lock.json
 /.ng_pkg_build/
 /projects/mr-meeseeks/node_modules/
+/projects/mr-meeseeks/package-lock.json
