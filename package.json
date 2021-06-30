@@ -2,15 +2,15 @@
   "name": "sr-meeseeks",
   "author": "Joel Rodrigues Moreira",
   "repository": "https://github.com/joeldatabox/mr-meeseeks",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "clean": "rm -rf node_modules/ && rm -rf projects/mr-meeseeks/node_modules/",
+    "clean": "rm -rf node_modules/ && rm -rf dist/ && rm -rf projects/mr-meeseeks/node_modules/",
     "build": "ng build",
     "installAll": "npm run removePackageLock && npm install && cd projects/mr-meeseeks/ && npm-install-peers",
-    "removePackageLock": "rm package-lock.json && rm projects/mr-meeseeks/package-lock.json",
+    "removePackageLock": "rm -f package-lock.json && rm -f projects/mr-meeseeks/package-lock.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
