@@ -1,23 +1,23 @@
-# MrMeeseeks
+# MrMeeseeksTemp
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.5.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.0.
 
 ## Code scaffolding
 
-Run `ng generate component component-name --project mr-meeseeks` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project mr-meeseeks`.
-> Note: Don't forget to add `--project mr-meeseeks` or else it will be added to the default project in your `angular.json` file. 
+Run `ng generate component component-name --project mr-meeseeks-temp` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project mr-meeseeks-temp`.
+> Note: Don't forget to add `--project mr-meeseeks-temp` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 
-Run `ng build mr-meeseeks` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build mr-meeseeks-temp` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build mr-meeseeks`, go to the dist folder `cd dist/mr-meeseeks` and run `npm publish`.
+After building your library with `ng build mr-meeseeks-temp`, go to the dist folder `cd dist/mr-meeseeks-temp` and run `npm publish`.
 
 ## Running unit tests
 
-Run `ng test mr-meeseeks` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test mr-meeseeks-temp` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Further help
 

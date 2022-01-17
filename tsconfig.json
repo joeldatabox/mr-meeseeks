@@ -6,25 +6,26 @@
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "strictNullChecks": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
     "paths": {
-      "mr-meeseeks": [
-        "dist/mr-meeseeks/mr-meeseeks",
-        "dist/mr-meeseeks"
+      "mr-meeseeks-temp": [
+        "dist/mr-meeseeks-temp/mr-meeseeks-temp",
+        "dist/mr-meeseeks-temp"
       ]
     },
+    "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
     "lib": [
-      "es2018",
+      "es2020",
       "dom"
     ]
   },
