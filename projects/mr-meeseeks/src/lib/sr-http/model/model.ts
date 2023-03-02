@@ -8,10 +8,13 @@ import {
   isString
 } from "../../sr-utils/commons/sr-commons.model";
 import {ClassTransformOptions, plainToClass, plainToClassFromExist, TransformOptions} from "class-transformer";
+import {MetadataDocument} from "./metadata-document.model";
 
 
 export interface Model {
   id: string;
+
+  document: MetadataDocument;
 }
 
 export namespace Model {
