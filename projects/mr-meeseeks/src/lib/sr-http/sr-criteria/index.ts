@@ -1,6 +1,7 @@
 export * from "./sr-contains";
 export * from "./sr-criterion";
 export * from "./sr-gte";
+export * from "./sr-lte";
 export * from "./sr-in";
 export * from "./sr-is";
 export * from "./sr-limit";

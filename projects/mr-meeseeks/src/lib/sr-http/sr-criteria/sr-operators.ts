@@ -1,5 +1,6 @@
 export class SrOperators {
   public static readonly GTE: string = ".$gte";
+  public static readonly LTE: string = ".$lte";
   public static readonly LT: string = ".$lt";
   public static readonly IN: string = ".$in";
   public static readonly OR: string = ".$or";
